@@ -4,6 +4,8 @@ import 'package:after_layout/after_layout.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
+import 'package:groceries_shopping_app/screens/home.dart';
+import 'package:groceries_shopping_app/screens/main_home.dart';
 import 'package:groceries_shopping_app/widgets/IllustraionContainer.dart';
 import 'package:provider/provider.dart';
 
@@ -82,8 +84,15 @@ class _CheckOutState extends State<CheckOut> with AfterLayoutMixin<CheckOut> {
           ),
         ),
       ),
+      btnOkOnPress: () {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => MainHome()),
+            (route) => false);
+      },
       // btnOk: _buildFancyButtonOk,
       onDissmissCallback: (type) {
+        print("The dismiss type: $type");
         Provider.of<ProductsOperationsController>(context, listen: false)
             .clearCart();
         Navigator.pop(context);

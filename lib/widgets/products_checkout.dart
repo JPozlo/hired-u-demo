@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/models/product.dart';
 import 'package:groceries_shopping_app/product_provider.dart';
+import 'package:groceries_shopping_app/screens/checkout_page.dart';
 import 'package:groceries_shopping_app/screens/checkout_screen.dart';
 import 'dart:collection';
 import 'package:groceries_shopping_app/screens/new_home.dart';
@@ -87,7 +88,7 @@ class ProductsCheckout extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  DeliveryCard(totalPriceProvider: totalPriceProvider),
+                  // DeliveryCard(totalPriceProvider: totalPriceProvider),
                   SizedBox(height: response.setHeight(40)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -126,7 +127,7 @@ class ProductsCheckout extends StatelessWidget {
   Widget _buildNextButton(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (context) => CheckOut())),
+          context, MaterialPageRoute(builder: (context) => CheckoutPage())),
       child: Container(
         height: response.setHeight(55),
         decoration: BoxDecoration(
@@ -137,20 +138,20 @@ class ProductsCheckout extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                "Place Order",
+                "Checkout",
                 style: TextStyle(
                   fontSize: response.setFontSize(16),
                   fontWeight: FontWeight.w700,
                   color: Colors.black87,
                 ),
               ),
-              SizedBox(
-                width: 20,
-              ),
-              Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.black,
-              )
+              // SizedBox(
+              //   width: 20,
+              // ),
+              // Icon(
+              //   Icons.arrow_forward_ios,
+              //   color: Colors.black,
+              // )
             ],
           ),
         ),

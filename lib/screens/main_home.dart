@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/screens/home.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/widgets/drawer_widget.dart';
 
 class MainHome extends StatefulWidget {
   const MainHome({ Key key }) : super(key: key);
@@ -14,7 +15,7 @@ class _MainHomeState extends State<MainHome> {
   int _currentIndex = 0;
   final screens = [
     NewHome(),
-    NewHome(),
+    HomeDrawer(),
     NewHome(),
     NewHome()
   ];

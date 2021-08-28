@@ -30,6 +30,9 @@ dependencies:
   shared_preferences: ^2.0.7
   step_progress_indicator: ^1.0.1
   swipe_gesture_recognizer: ^0.0.2
+  flutter_money_formatter: ^0.8.3
+  flutter_credit_card: ^2.0.0
+  http: ^0.13.3
 
 flutter_icons:
   android: "launcher_icon"

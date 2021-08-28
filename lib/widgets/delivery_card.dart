@@ -38,25 +38,25 @@ class DeliveryCard extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   fontSize: response.setFontSize(15)),
             ),
-            SizedBox(height: response.setHeight(15)),
-            Text(
-              "All orders of \$40 or more\nqualify for FREE delivery.",
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: response.setFontSize(11),
-              ),
-            ),
-            SizedBox(height: response.setHeight(12)),
-            StepProgressIndicator(
-              fallbackLength: 140,
-              totalSteps: 40,
-              currentStep:
-                  totalPriceProvider <= 40 ? totalPriceProvider.round() : 40,
-              size: 4,
-              padding: 0,
-              selectedColor: Colors.yellow,
-              unselectedColor: Colors.grey,
-            )
+            // SizedBox(height: response.setHeight(15)),
+            // Text(
+            //   "All deliveries start with \$40.",
+            //   style: TextStyle(
+            //     color: Colors.white70,
+            //     fontSize: response.setFontSize(11),
+            //   ),
+            // ),
+            // SizedBox(height: response.setHeight(12)),
+            // StepProgressIndicator(
+            //   fallbackLength: 140,
+            //   totalSteps: 40,
+            //   currentStep:
+            //       totalPriceProvider <= 40 ? totalPriceProvider.round() : 40,
+            //   size: 4,
+            //   padding: 0,
+            //   selectedColor: Colors.yellow,
+            //   unselectedColor: Colors.grey,
+            // )
           ],
         ),
         Spacer(),

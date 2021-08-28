@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/models/product.dart';
+import 'package:groceries_shopping_app/product_provider.dart';
 import 'dart:collection';
 
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:provider/provider.dart';
 
 class Checkout extends StatelessWidget {
   const Checkout({
@@ -66,6 +68,22 @@ class Checkout extends StatelessWidget {
                 fontSize: response.setFontSize(15),
               ),
             ),
+                Spacer(flex: 8),
+                GestureDetector(
+                  onTap: (){
+                         Provider.of<ProductsOperationsController>(context,
+                        listen: false)
+                    .deleteFromCart(index);
+                Provider.of<ProductsOperationsController>(context,
+                        listen: false)
+                    .returnTotalCost();
+                  },
+                  child:     Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                  ),
+                  
+                )
           ],
         ),
       ),

@@ -1,16 +1,26 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/product_provider.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/widgets/filters_screen.dart';
 import 'package:groceries_shopping_app/widgets/product_card.dart';
 import 'package:provider/provider.dart';
 
-class ProductsPreview extends StatelessWidget {
+class ProductsPreview extends StatefulWidget {
+  // const ProductsPreview({ Key key }) : super(key: key);
   ProductsPreview({this.opacityAnimation});
   final Animation<double> opacityAnimation;
+
+  @override
+  _ProductsPreviewState createState() => _ProductsPreviewState();
+}
+
+class _ProductsPreviewState extends State<ProductsPreview> {
+  int productsFilterCount = 0;
+
+
   @override
   Widget build(BuildContext context) {
     var listInfo =
@@ -82,41 +92,115 @@ class ProductsPreview extends StatelessWidget {
                 child: Padding(
                   padding:
                       EdgeInsets.symmetric(horizontal: response.setWidth(20)),
-                  child: Row(
-                    children: <Widget>[
-                      Hero(
-                        tag: 'backarrow',
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Icon(
-                            Icons.arrow_back_outlined,
-                            size: response.setHeight(25),
-                          ),
-                        ),
-                      ),
-                      Spacer(flex: 2),
-                      Text(
-                        "Pasta & Noodles",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: response.setFontSize(23),
-                        ),
-                      ),
-                      Spacer(flex: 8),
-                      GestureDetector(
-                          onTap: () async {
-                            await _buildAlartDialog(context);
-                          },
-                          child: FaIcon(FontAwesomeIcons.bars))
-                    ],
-                  ),
+                  child: getFilterBarUI(),
                 ),
               ),
             ),
           ),
         ),
+      ],
+    );
+  }
+
+  Widget getFilterBarUI() {
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          top: 100,
+          left: 0,
+          right: 0,
+          child: Container(
+            height: 24,
+            decoration: BoxDecoration(
+              color: AppTheme.mainScaffoldBackgroundColor,
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    offset: const Offset(0, -2),
+                    blurRadius: 8.0),
+              ],
+            ),
+          ),
+        ),
+        Container(
+          color: AppTheme.secondaryScaffoldColor,
+          child: Padding(
+            padding:
+                const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 4),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      '$productsFilterCount products found',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w100,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.grey.withOpacity(0.2),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(4.0),
+                    ),
+                    onTap: () async {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      final count = await Navigator.push<dynamic>(
+                        context,
+                        MaterialPageRoute<dynamic>(
+                            builder: (BuildContext context) => FiltersScreen(),
+                            fullscreenDialog: true),
+                      );
+                      print("The count is: $count");
+                      if(this.mounted){
+                        setState(() {
+                      productsFilterCount = count;
+                          
+                        });
+
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            'Filter',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w100,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Icon(Icons.sort,
+                                color: AppTheme.mainOrangeyColor),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Divider(
+            height: 1,
+          ),
+        )
       ],
     );
   }
