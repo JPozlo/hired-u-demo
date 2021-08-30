@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/product_provider.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
@@ -18,8 +19,7 @@ class ProductsPreview extends StatefulWidget {
 }
 
 class _ProductsPreviewState extends State<ProductsPreview> {
-  int productsFilterCount = 0;
-
+  int productsFilterCount = 6;
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +28,11 @@ class _ProductsPreviewState extends State<ProductsPreview> {
     return Stack(
       children: <Widget>[
         Positioned(
-          top: 0,
+          top: 90,
           left: 0,
           right: 0,
           child: Container(
-            height: response.screenHeight * 0.90,
+            height: response.screenHeight * 0.79,
             width: response.screenWidth,
             child: Padding(
               padding: EdgeInsets.only(bottom: response.setHeight(6.5)),
@@ -74,6 +74,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
           width: response.screenWidth,
           child: Container(
             height: response.setHeight(70),
+            margin: EdgeInsets.only(top: 6.0),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -92,8 +93,35 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                 child: Padding(
                   padding:
                       EdgeInsets.symmetric(horizontal: response.setWidth(20)),
-                  child: getFilterBarUI(),
+                  child: getTopBar(context),
                 ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 70,
+          left: 0,
+          width: response.screenWidth,
+          child: Container(
+            height: response.setHeight(70),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.5, 1],
+                colors: [
+                  AppTheme.mainScaffoldBackgroundColor,
+                  AppTheme.mainScaffoldBackgroundColor.withAlpha(150)
+                ],
+              ),
+            ),
+            child: Align(
+              alignment: Alignment(0, 0.4),
+              child: Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: response.setWidth(20)),
+                child: getFilterBarUI(),
               ),
             ),
           ),
@@ -102,15 +130,48 @@ class _ProductsPreviewState extends State<ProductsPreview> {
     );
   }
 
+  Widget getTopBar(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Hero(
+          tag: 'backarrow',
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(
+              Icons.arrow_back_ios,
+              size: response.setHeight(23),
+            ),
+          ),
+        ),
+        Spacer(flex: 5),
+        Text(
+          "Pasta & Noodles",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: response.setFontSize(18),
+          ),
+        ),
+        Spacer(flex: 5),
+        // GestureDetector(
+        //     onTap: () async {
+        //       await _buildAlartDialog(context);
+        //     },
+        //     child: FaIcon(FontAwesomeIcons.bars))
+      ],
+    );
+  }
+
   Widget getFilterBarUI() {
     return Stack(
       children: <Widget>[
         Positioned(
-          top: 100,
+          top: 0,
           left: 0,
           right: 0,
           child: Container(
-            height: 24,
+            height: 17,
             decoration: BoxDecoration(
               color: AppTheme.mainScaffoldBackgroundColor,
               boxShadow: <BoxShadow>[
@@ -123,7 +184,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
           ),
         ),
         Container(
-          color: AppTheme.secondaryScaffoldColor,
+          color: AppTheme.mainScaffoldBackgroundColor,
           child: Padding(
             padding:
                 const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 4),
@@ -136,7 +197,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                       '$productsFilterCount products found',
                       style: TextStyle(
                         fontWeight: FontWeight.w100,
-                        fontSize: 16,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -160,12 +221,10 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                             fullscreenDialog: true),
                       );
                       print("The count is: $count");
-                      if(this.mounted){
+                      if (this.mounted) {
                         setState(() {
-                      productsFilterCount = count;
-                          
+                          productsFilterCount = count;
                         });
-
                       }
                     },
                     child: Padding(
@@ -175,8 +234,8 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                           Text(
                             'Filter',
                             style: TextStyle(
-                              fontWeight: FontWeight.w100,
-                              fontSize: 16,
+                              fontWeight: FontWeight.w200,
+                              fontSize: 20,
                             ),
                           ),
                           Padding(
@@ -193,14 +252,14 @@ class _ProductsPreviewState extends State<ProductsPreview> {
             ),
           ),
         ),
-        const Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: Divider(
-            height: 1,
-          ),
-        )
+        // const Positioned(
+        //   top: 0,
+        //   left: 0,
+        //   right: 0,
+        //   child: Divider(
+        //     height: 1,
+        //   ),
+        // )
       ],
     );
   }

@@ -1,15 +1,25 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
+import 'package:groceries_shopping_app/models/product.dart';
+import 'package:groceries_shopping_app/product_provider.dart';
 import 'package:groceries_shopping_app/screens/checkout_screen.dart';
 import 'package:groceries_shopping_app/screens/create_location.dart';
 import 'package:groceries_shopping_app/screens/credit_card_payment.dart';
 import 'package:groceries_shopping_app/screens/credit_cards.dart';
 import 'package:groceries_shopping_app/screens/mpesa_payment.dart';
+import 'package:groceries_shopping_app/screens/new_home.dart';
 import 'package:groceries_shopping_app/utils/custom_text_style.dart';
+import 'package:groceries_shopping_app/utils/payment_method_options.dart';
+import 'package:groceries_shopping_app/utils/payment_method_options.dart';
+import 'package:provider/provider.dart';
 
 class CheckoutPage extends StatefulWidget {
-  const CheckoutPage({Key key}) : super(key: key);
+  const CheckoutPage({Key key, @required this.cartProductsProvider})
+      : super(key: key);
+  final UnmodifiableListView<Product> cartProductsProvider;
 
   @override
   _CheckoutPageState createState() => _CheckoutPageState();
@@ -19,70 +29,110 @@ class _CheckoutPageState extends State<CheckoutPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
   bool _value = false;
-  int val = -1;
+  // int val = -1;
+  PaymentMethodOptions val = PaymentMethodOptions.MPESA;
+  double _totalPrice;
+  double _deliveryPrice = 120.0;
+  double _taxPrice = 30.0;
+  double _orderTotal = 0.0;
+  double _totalOverallCharge = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _totalPrice =
+        Provider.of<ProductsOperationsController>(context, listen: false)
+            .totalCost;
+    _orderTotal = _totalPrice + _taxPrice;
+    _totalOverallCharge = _orderTotal + _deliveryPrice;
+    print("The Total Price is $_totalPrice");
+    print("The Tax is $_taxPrice");
+    print("The Order Total is $_orderTotal");
+    print("The Delivery Charges is $_deliveryPrice");
+    print("The Total is $_totalOverallCharge");
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-          title: Text(
-            "ADDRESS",
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
-        ),
-        body: Builder(builder: (context) {
-          return Column(
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  child: ListView(
+        body: SafeArea(
+          child: Builder(builder: (context) {
+            return Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      selectedAddressSection(),
-                      // standardDelivery(),
-                      // checkoutItem(),
-                      showMpesaOrCardOption(),
-                      priceSection()
+                      Hero(
+                        tag: 'backarrow',
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Icon(
+                            Icons.arrow_back_ios,
+                            size: response.setHeight(23),
+                          ),
+                        ),
+                      ),
+                      Spacer(flex: 5),
+                      Text(
+                        "Confirm Order",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: response.setFontSize(18),
+                        ),
+                      ),
+                      Spacer(flex: 5),
                     ],
                   ),
                 ),
-                flex: 90,
-              ),
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      /*Navigator.of(context).push(new MaterialPageRoute(
-                          builder: (context) => OrderPlacePage()));*/
-                      // showThankYouBottomSheet(context);
-                      showPaymentModalSheet(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: AppTheme.mainOrangeColor,
-                      textStyle: TextStyle(color: Colors.black),                    
-                    ),
-                    child: Text(
-                      "Place Order",
-                      style: CustomTextStyle.textFormFieldMedium.copyWith(
-                          color: Colors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold),
+                Expanded(
+                  child: Container(
+                    child: ListView(
+                      children: <Widget>[
+                        selectedAddressSection(),
+                        showMpesaOrCardOption(),
+                        priceSection(
+                            totalPrice: _totalPrice,
+                            taxPrice: _taxPrice,
+                            totalOverall: _totalOverallCharge,
+                            deliveryCharge: _deliveryPrice)
+                      ],
                     ),
                   ),
+                  flex: 90,
                 ),
-                flex: 10,
-              )
-            ],
-          );
-        }),
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showPaymentModalSheet(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: AppTheme.mainOrangeColor,
+                        textStyle: TextStyle(color: Colors.black),
+                      ),
+                      child: Text(
+                        "Confirm Order",
+                        style: CustomTextStyle.textFormFieldMedium.copyWith(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  flex: 10,
+                )
+              ],
+            );
+          }),
+        ),
       ),
     );
   }
@@ -93,7 +143,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         builder: (context) {
           return Container(
             height: 130,
-             decoration: BoxDecoration(
+            decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.grey.shade200, width: 2),
                 borderRadius: BorderRadius.only(
@@ -101,26 +151,27 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     topLeft: Radius.circular(16))),
             child: Column(
               children: [
-                Container(                
+                Container(
                   margin: EdgeInsets.only(left: 16, right: 16),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: AppTheme.mainOrangeColor,
                       padding: EdgeInsets.only(left: 48, right: 48),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(24))),
+                          borderRadius: BorderRadius.all(Radius.circular(13))),
                     ),
                     onPressed: () {
                       Widget selectedPaymentOption = MpesaPayment();
-                      if (val == 1) {
+                      if (val == PaymentMethodOptions.MPESA) {
                         selectedPaymentOption = MpesaPayment();
-                      } else if (val == 2) {
-                        selectedPaymentOption = CreditCardPayment();
+                      } else if (val == PaymentMethodOptions.CARD) {
+                        selectedPaymentOption = PayWithCreditCardPage();
                       }
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => selectedPaymentOption)).then((value) => Navigator.pop(context));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => selectedPaymentOption))
+                          .then((value) => Navigator.pop(context));
                     },
                     child: Text(
                       "Pay Now",
@@ -137,12 +188,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       primary: AppTheme.mainOrangeColor,
                       padding: EdgeInsets.only(left: 48, right: 48),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(24))),
+                          borderRadius: BorderRadius.all(Radius.circular(13))),
                     ),
                     onPressed: () {
-                      // send order info to API
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => CheckOut())).then((value) => Navigator.pop(context));
+                      // Send order info to API
+                      Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CheckOut()))
+                          .then((value) => Navigator.pop(context));
                     },
                     child: Text(
                       "Pay Later",
@@ -230,41 +284,60 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
 
   showMpesaOrCardOption() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          "Choose a payment option",
-          style: CustomTextStyle.textFormFieldMedium.copyWith(
-              fontSize: 12, color: Colors.black, fontWeight: FontWeight.w600),
-        ),
-        ListTile(
-          title: Text("Mpesa"),
-          leading: Radio(
-            value: 1,
-            groupValue: val,
-            onChanged: (value) {
-              setState(() {
-                val = value;
-              });
-            },
-            activeColor: Colors.green,
+    return Container(
+      margin: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(4)),
+      ),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4))),
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+              border: Border.all(color: Colors.grey.shade200)),
+          padding: EdgeInsets.only(left: 12, top: 8, right: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Choose a Payment Option",
+                style: CustomTextStyle.textFormFieldMedium.copyWith(
+                    fontSize: 15,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+              ),
+              ListTile(
+                title: Text("M-Pesa"),
+                leading: Radio<PaymentMethodOptions>(
+                  value: PaymentMethodOptions.MPESA,
+                  groupValue: val,
+                  onChanged: (PaymentMethodOptions value) {
+                    setState(() {
+                      val = value;
+                    });
+                  },
+                  activeColor: Colors.green,
+                ),
+              ),
+              ListTile(
+                title: Text("Credit Card"),
+                leading: Radio<PaymentMethodOptions>(
+                  value: PaymentMethodOptions.CARD,
+                  groupValue: val,
+                  onChanged: ( PaymentMethodOptions value) {
+                    setState(() {
+                      val = value;
+                    });
+                  },
+                  activeColor: Colors.green,
+                ),
+              ),
+            ],
           ),
         ),
-        ListTile(
-          title: Text("Credit Card"),
-          leading: Radio(
-            value: 2,
-            groupValue: val,
-            onChanged: (value) {
-              setState(() {
-                val = value;
-              });
-            },
-            activeColor: Colors.green,
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -276,7 +349,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         child: RaisedButton(
           onPressed: () {
             Navigator.of(context).push(
-                new MaterialPageRoute(builder: (context) => CreditCardsPage()));
+                new MaterialPageRoute(builder: (context) => PayWithCreditCardPage()));
           },
           child: Text(
             "Credit Card",
@@ -337,26 +410,26 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 height: 6,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
                     "Default Delivery Address",
                     style: CustomTextStyle.textFormFieldSemiBold
-                        .copyWith(fontSize: 14),
+                        .copyWith(fontSize: 15, fontWeight: FontWeight.bold),
                   ),
-                  Container(
-                    padding:
-                        EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
-                    decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.all(Radius.circular(16))),
-                    child: Text(
-                      "HOME",
-                      style: CustomTextStyle.textFormFieldBlack.copyWith(
-                          color: Colors.indigoAccent.shade200, fontSize: 8),
-                    ),
-                  )
+                  // Container(
+                  //   padding:
+                  //       EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
+                  //   decoration: BoxDecoration(
+                  //       shape: BoxShape.rectangle,
+                  //       color: Colors.grey.shade300,
+                  //       borderRadius: BorderRadius.all(Radius.circular(16))),
+                  //   child: Text(
+                  //     "HOME",
+                  //     style: CustomTextStyle.textFormFieldBlack.copyWith(
+                  //         color: Colors.indigoAccent.shade200, fontSize: 8),
+                  //   ),
+                  // )
                 ],
               ),
               createAddressText("Commerce House, Masai Lodge, Rongai", 16),
@@ -367,7 +440,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
               RichText(
                 text: TextSpan(children: [
                   TextSpan(
-                      text: "Mobile : ",
+                      text: "Mobile: ",
                       style: CustomTextStyle.textFormFieldMedium
                           .copyWith(fontSize: 12, color: Colors.grey.shade800)),
                   TextSpan(
@@ -564,7 +637,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
     );
   }
 
-  priceSection() {
+  priceSection(
+      {double totalPrice,
+      double taxPrice,
+      double orderTotal,
+      double deliveryCharge,
+      double totalOverall}) {
     return Container(
       margin: EdgeInsets.all(4),
       decoration: BoxDecoration(
@@ -585,12 +663,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
               SizedBox(
                 height: 4,
               ),
-              Text(
-                "PRICE DETAILS",
-                style: CustomTextStyle.textFormFieldMedium.copyWith(
-                    fontSize: 12,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Price Details",
+                    style: CustomTextStyle.textFormFieldMedium.copyWith(
+                        fontSize: 15,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
               SizedBox(
                 height: 4,
@@ -604,16 +687,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
               SizedBox(
                 height: 8,
               ),
-              createPriceItem("Total Price", getFormattedCurrency(5197),
+              createPriceItem("Total Price", getFormattedCurrency(totalPrice),
                   Colors.grey.shade700),
               // createPriceItem("Bag discount", getFormattedCurrency(3280),
               //     Colors.teal.shade300),
               createPriceItem(
-                  "Tax", getFormattedCurrency(96), Colors.grey.shade700),
-              createPriceItem("Order Total", getFormattedCurrency(2013),
-                  Colors.grey.shade700),
-              createPriceItem("Delivery Charges", getFormattedCurrency(4032),
-                  Colors.teal.shade300),
+                  "Tax", getFormattedCurrency(taxPrice), Colors.grey.shade700),
+              // createPriceItem("Order Total", getFormattedCurrency(orderTotal),
+              //     Colors.grey.shade700),
+              createPriceItem("Delivery Charges",
+                  getFormattedCurrency(deliveryCharge), Colors.teal.shade300),
               SizedBox(
                 height: 8,
               ),
@@ -636,7 +719,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         .copyWith(color: Colors.black, fontSize: 12),
                   ),
                   Text(
-                    getFormattedCurrency(2013),
+                    getFormattedCurrency(totalOverall),
                     style: CustomTextStyle.textFormFieldMedium
                         .copyWith(color: Colors.black, fontSize: 12),
                   )

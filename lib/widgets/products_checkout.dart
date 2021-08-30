@@ -27,9 +27,7 @@ class ProductsCheckout extends StatelessWidget {
   Widget build(BuildContext context) {
     var finalTotalCost = totalPriceProvider == 0
         ? 0
-        : (totalPriceProvider > 40
-            ? totalPriceProvider
-            : totalPriceProvider + 5);
+        : totalPriceProvider;
     var cartProductsProvider =
         Provider.of<ProductsOperationsController>(context).cart;
     return Stack(
@@ -127,7 +125,7 @@ class ProductsCheckout extends StatelessWidget {
   Widget _buildNextButton(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (context) => CheckoutPage())),
+          context, MaterialPageRoute(builder: (context) => CheckoutPage(cartProductsProvider: cartProductsProvider))),
       child: Container(
         height: response.setHeight(55),
         decoration: BoxDecoration(

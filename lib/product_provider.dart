@@ -75,6 +75,10 @@ class ProductsOperationsController extends ChangeNotifier {
               _productsInStock[index].orderedQuantity + (bulkOrder - 1),
         ),
       );
+      _shoppingCart.map((e) => {
+            _totalCost +=
+            (double.parse(e.price.replaceAll('\$', '')) *  e.orderedQuantity)
+      });
       notifyListeners();
     } else {
       _shoppingCart[indexInCard].makeOrder(bulkOrder: bulkOrder);
