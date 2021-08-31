@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
-import 'package:groceries_shopping_app/service_provider.dart';
+import 'package:groceries_shopping_app/providers/service_provider.dart';
 import 'package:groceries_shopping_app/widgets/service_card.dart';
 import 'package:provider/provider.dart';
 import 'package:response/response.dart';
@@ -16,6 +16,9 @@ class NewHome extends StatefulWidget {
 }
 
 class _NewHomeState extends State<NewHome> {
+
+
+
   @override
   Widget build(BuildContext context) {
     var listInfo = Provider.of<ServiceProvider>(context).servicesOffered;

@@ -21,8 +21,8 @@ class ServiceProvider extends ChangeNotifier{
         name: 'Mechanic',
         picPath: 'assets/mechanic.png',),
     Service(
-        name: 'Painting',
-        picPath: 'assets/paint.png',),
+        name: 'Maids',
+        picPath: 'assets/maid.png',),
   ];
 
   UnmodifiableListView<Service> get servicesOffered {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/models/product.dart';
-import 'package:groceries_shopping_app/product_provider.dart';
+import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'dart:collection';
 
 import 'package:groceries_shopping_app/screens/new_home.dart';

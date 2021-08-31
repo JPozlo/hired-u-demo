@@ -1,29 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
+import 'package:groceries_shopping_app/models/service_category.dart';
 import 'package:groceries_shopping_app/screens/grocery_home.dart';
 import 'package:groceries_shopping_app/screens/home.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
-import 'package:groceries_shopping_app/service_provider.dart';
+import 'package:groceries_shopping_app/providers/service_provider.dart';
+import 'package:groceries_shopping_app/utils/service_utils.dart';
 import 'package:groceries_shopping_app/widgets/details_page_transition.dart';
+import 'package:groceries_shopping_app/widgets/service_widget.dart';
 import 'package:provider/provider.dart';
 
 class ServiceCard extends StatelessWidget {
   ServiceCard({@required this.index, @required this.serviceName});
   final int index;
   final String serviceName;
+
   @override
   Widget build(BuildContext context) {
+
+    List<ServiceCategory> _maidServiceCategories = maidCategories;
+    List<ServiceCategory> _mechanicServiceCategories = mechanicCategories;
+    List<ServiceCategory> _carpenterServiceCategories = carpenterCategories;
+    List<ServiceCategory> _electricianServiceCategories = electricianCategories;
+
     Widget serviceDetails = HomeScreen();
-    if(serviceName == "Grocery"){
-      serviceDetails = HomeScreen();
+
+    switch (serviceName) {
+      case 'Grocery':
+        serviceDetails = HomeScreen();
+        break;
+      case 'Taxi':
+        serviceDetails = HomeScreen();
+        break;
+      case 'Electrician':
+        serviceDetails = ServiceWidget(
+            widgetTitle: "Elecrician",
+            serviceCategories: _electricianServiceCategories);
+        break;
+      case 'Carpenter':
+        serviceDetails = ServiceWidget(
+            widgetTitle: "Carpenter",
+            serviceCategories: _carpenterServiceCategories);
+        break;
+      case 'Mechanic':
+        serviceDetails = ServiceWidget(
+            widgetTitle: "Mechanic",
+            serviceCategories: _mechanicServiceCategories);
+        break;
+      case 'Maids':
+        serviceDetails = ServiceWidget(
+            widgetTitle: "Maids", serviceCategories: _maidServiceCategories);
+        break;
+      default:
+        serviceDetails = HomeScreen();
     }
-    var servicesOffered =
-        Provider.of<ServiceProvider>(context).servicesOffered;
+  
+      var servicesOffered =
+          Provider.of<ServiceProvider>(context).servicesOffered;
+
     return SingleChildScrollView(
       child: GestureDetector(
         onTap: () {
-          Navigator.push(context,
-              DetailsPageRoute(route: serviceDetails));
+          // if(serviceName == "Grocery"){
+          //     Navigator.of(context).push(MaterialPageRoute(
+          //       builder: (context) => serviceDetails,
+          //       settings: RouteSettings(name: "GroceryProducts")));
+          // } else{
+          // Navigator.push(context, DetailsPageRoute(route: serviceDetails));
+          // }
+          Navigator.push(context, DetailsPageRoute(route: serviceDetails));
         },
         child: Container(
           margin: EdgeInsets.symmetric(vertical: 10),
@@ -56,11 +101,11 @@ class ServiceCard extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Image.asset(
                         servicesOffered[index].picPath,
-                        scale: 0.2,  
+                        scale: 0.2,
                         // fit: BoxFit.fill,
                         height: 50,
                         width: 50,
-                        color: AppTheme.mainOrangeyColor,     
+                        color: AppTheme.mainOrangeyColor,
                       ),
                     ),
                   ),
@@ -79,7 +124,6 @@ class ServiceCard extends StatelessWidget {
                         ),
                       ),
                     ),
-    
                   ],
                 ),
               ],

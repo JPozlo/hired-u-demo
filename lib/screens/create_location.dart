@@ -4,6 +4,7 @@ import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
 import 'package:groceries_shopping_app/services/place_service.dart';
 import 'package:groceries_shopping_app/utils/custom_text_style.dart';
+import 'package:groceries_shopping_app/utils/helpers.dart';
 import 'package:groceries_shopping_app/widgets/address_search.dart';
 
 class CreateLocationPage extends StatefulWidget {
@@ -352,15 +353,5 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
     );
   }
 
-  showSnackBar(BuildContext context, String message, {String action = "OK"}) {
-    final _snackBar = SnackBar(
-      content: Text(message),
-      action: SnackBarAction(
-          label: action,
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          }),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(_snackBar);
-  }
+
 }

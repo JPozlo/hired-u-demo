@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
-import 'package:groceries_shopping_app/product_provider.dart';
+import 'package:groceries_shopping_app/providers/product_provider.dart';
+import 'package:groceries_shopping_app/screens/main_home.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
 import 'package:groceries_shopping_app/widgets/filters_screen.dart';
 import 'package:groceries_shopping_app/widgets/product_card.dart';
@@ -137,7 +137,13 @@ class _ProductsPreviewState extends State<ProductsPreview> {
           tag: 'backarrow',
           child: GestureDetector(
             onTap: () {
-              Navigator.pop(context);
+              // Navigator.pop(context);
+              // Navigator.pushAndRemoveUntil(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => MainHome()),
+              //     (route) => false);
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => MainHome()));
             },
             child: Icon(
               Icons.arrow_back_ios,

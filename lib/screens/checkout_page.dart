@@ -4,14 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/models/product.dart';
-import 'package:groceries_shopping_app/product_provider.dart';
+import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/screens/checkout_screen.dart';
 import 'package:groceries_shopping_app/screens/create_location.dart';
 import 'package:groceries_shopping_app/screens/credit_card_payment.dart';
 import 'package:groceries_shopping_app/screens/credit_cards.dart';
+import 'package:groceries_shopping_app/screens/home.dart';
 import 'package:groceries_shopping_app/screens/mpesa_payment.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
 import 'package:groceries_shopping_app/utils/custom_text_style.dart';
+import 'package:groceries_shopping_app/utils/helpers.dart';
 import 'package:groceries_shopping_app/utils/payment_method_options.dart';
 import 'package:groceries_shopping_app/utils/payment_method_options.dart';
 import 'package:provider/provider.dart';
@@ -70,7 +72,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         tag: 'backarrow',
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pop(context);
+                            // Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen()));
+                            // Navigator.pushAndRemoveUntil(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => HomeScreen()),
+                            //     (route) => false);
                           },
                           child: Icon(
                             Icons.arrow_back_ios,
@@ -326,7 +337,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 leading: Radio<PaymentMethodOptions>(
                   value: PaymentMethodOptions.CARD,
                   groupValue: val,
-                  onChanged: ( PaymentMethodOptions value) {
+                  onChanged: (PaymentMethodOptions value) {
                     setState(() {
                       val = value;
                     });
@@ -348,8 +359,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
         margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: RaisedButton(
           onPressed: () {
-            Navigator.of(context).push(
-                new MaterialPageRoute(builder: (context) => PayWithCreditCardPage()));
+            Navigator.of(context).push(new MaterialPageRoute(
+                builder: (context) => PayWithCreditCardPage()));
           },
           child: Text(
             "Credit Card",
@@ -730,14 +741,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
         ),
       ),
     );
-  }
-
-  String getFormattedCurrency(double amount) {
-    FlutterMoneyFormatter fmf = new FlutterMoneyFormatter(amount: amount);
-    fmf.settings.symbol = "₹";
-    fmf.settings.thousandSeparator = ",";
-    fmf.settings.decimalSeparator = ".";
-    return fmf.output.symbolOnLeft;
   }
 
   createPriceItem(String key, String value, Color color) {

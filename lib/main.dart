@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:groceries_shopping_app/product_provider.dart';
+import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/screens/home.dart';
 import 'package:groceries_shopping_app/screens/main_home.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
-import 'package:groceries_shopping_app/service_provider.dart';
+import 'package:groceries_shopping_app/providers/service_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:response/Response.dart';
 import 'local_database.dart';

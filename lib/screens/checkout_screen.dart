@@ -9,7 +9,7 @@ import 'package:groceries_shopping_app/screens/main_home.dart';
 import 'package:groceries_shopping_app/widgets/IllustraionContainer.dart';
 import 'package:provider/provider.dart';
 
-import '../product_provider.dart';
+import '../providers/product_provider.dart';
 
 class CheckOut extends StatefulWidget {
   const CheckOut({Key key}) : super(key: key);

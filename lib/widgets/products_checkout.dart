@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/models/product.dart';
-import 'package:groceries_shopping_app/product_provider.dart';
+import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/screens/checkout_page.dart';
 import 'package:groceries_shopping_app/screens/checkout_screen.dart';
 import 'dart:collection';
@@ -124,8 +124,15 @@ class ProductsCheckout extends StatelessWidget {
 
   Widget _buildNextButton(BuildContext context) {
     return GestureDetector(
+      // onTap: () => Navigator.of(context).push(
+      //   MaterialPageRoute(builder: (context) => CheckoutPage(cartProductsProvider: cartProductsProvider),
+      //   settings: RouteSettings(name: "CheckoutPage")
+      //   )),
       onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (context) => CheckoutPage(cartProductsProvider: cartProductsProvider))),
+          context,
+           MaterialPageRoute(builder: (context) => CheckoutPage(cartProductsProvider: cartProductsProvider))
+           ),
+
       child: Container(
         height: response.setHeight(55),
         decoration: BoxDecoration(
