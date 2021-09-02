@@ -11,6 +11,7 @@ String getFormattedCurrency(double amount) {
 
     showSnackBar(BuildContext context, String message, {String action = "OK"}) {
   final _snackBar = SnackBar(
+    duration: Duration(days: 365),
     content: Text(message),
     action: SnackBarAction(
         label: action,

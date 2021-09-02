@@ -329,7 +329,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       val = value;
                     });
                   },
-                  activeColor: Colors.green,
+                  activeColor: AppTheme.mainOrangeyColor,
                 ),
               ),
               ListTile(
@@ -342,7 +342,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       val = value;
                     });
                   },
-                  activeColor: Colors.green,
+                  activeColor: AppTheme.mainOrangeyColor,
                 ),
               ),
             ],

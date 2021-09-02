@@ -17,6 +17,16 @@ class ServiceDetails extends StatefulWidget {
 
 class _ServiceDetailsState extends State<ServiceDetails> {
   bool selected = false;
+  Map<ServiceSubCategory, bool> itemsMap;
+  List<ServiceSubCategory> _selectedItem = [];
+
+  @override
+  void initState() {
+    super.initState();
+    itemsMap = Map.fromIterable(this.widget.subServices,
+        key: (item) => item, value: (item) => false);
+    print("The map: $itemsMap");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,44 +58,26 @@ class _ServiceDetailsState extends State<ServiceDetails> {
           children: [
             ListView.builder(
                 shrinkWrap: true,
-                itemCount: this.widget.subServices.length,
+                itemCount: this.itemsMap.length,
                 itemBuilder: (context, index) {
-                  var currentItem = this.widget.subServices[index];
-                  return Card(
-                    shape: selected
-                        ? new RoundedRectangleBorder(
-                            side:
-                                new BorderSide(color: Colors.blue, width: 2.0),
-                            borderRadius: BorderRadius.circular(4.0))
-                        : new RoundedRectangleBorder(
-                            side:
-                                new BorderSide(color: Colors.white, width: 2.0),
-                            borderRadius: BorderRadius.circular(4.0)),
-                    child: Row(
-                      children: [
-                        new Padding(
-                          padding: new EdgeInsets.all(8.0),
-                          child: new Text(currentItem.name,
-                              style: const TextStyle(
-                                  fontSize: 15.0, fontFamily: 'Poppins')),
-                        ),
-                        new Padding(
-                          padding: new EdgeInsets.all(8.0),
-                          child: new Text(
-                              getFormattedCurrency(currentItem.price),
-                              style: const TextStyle(
-                                  fontSize: 15.0, fontFamily: 'Poppins')),
-                        ),
-                        new Checkbox(
-                            value: selected,
-                            onChanged: (value) {
-                              setState(() {
-                                selected = !selected;
-                              });
-                            })
-                      ],
-                    ),
-                  );
+                  ServiceSubCategory item = this.itemsMap.keys.elementAt(index);
+                  return CheckboxListTile(
+                      title: Text(item.name),
+                      subtitle: Text(getFormattedCurrency(item.price)),
+                      value: item.value,
+                      onChanged: (bool value) {
+                        print("Value $value");
+                        setState(() {
+                          item.value = value;
+                          if (item.value == true) {
+                            _selectedItem.add(item);
+                          } else
+                          {
+                            _selectedItem.remove(item);
+                          }
+                        });
+                        print("The selected items: $_selectedItem");
+                      });
                 }),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -105,7 +97,8 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                 ),
               ),
               onPressed: () {
-                showSnackBar(context, "Your order has been received!");
+                showSnackBar(context,
+                    "Your order has been received! Ordered items are\n${this._selectedItem.toString()}}");
               },
             )
           ],

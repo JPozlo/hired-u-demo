@@ -7,7 +7,13 @@ class ServiceCategory {
 }
 
 class ServiceSubCategory {
-  ServiceSubCategory({this.name, this.price});
+  ServiceSubCategory({this.name, this.price, this.value = false});
   final String name;
   final double price;
+  bool value;
+
+  @override
+  String toString() {
+    return "The service name: $name\nThe service price: $price";
+  }
 }
