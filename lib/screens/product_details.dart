@@ -6,6 +6,7 @@ import 'package:groceries_shopping_app/local_database.dart';
 import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/screens/home.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:provider/provider.dart';
 import '../appTheme.dart';
 
@@ -144,7 +145,7 @@ class _ProductDetailsState extends State<ProductDetails>
                             ),
                             SizedBox(height: response.setHeight(5)),
                             Text(
-                              productProvider[widget.productIndex].weight,
+                              productProvider[widget.productIndex].foodCategory,
                               style: TextStyle(
                                   fontSize: response.setFontSize(15),
                                   fontWeight: FontWeight.w500,
@@ -162,7 +163,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                       setState(() => orderQuantity++),
                                 ),
                                 Text(
-                                  productProvider[widget.productIndex].price,
+                                  getFormattedCurrency(productProvider[widget.productIndex].price)                                  ,
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                       fontSize: response.setFontSize(40),

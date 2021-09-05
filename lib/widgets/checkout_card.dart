@@ -17,7 +17,7 @@ class Checkout extends StatelessWidget {
   final int index;
   String _cost() {
     double totalCost =
-        double.parse(cartProductsProvider[index].price.replaceAll('\$', '')) *
+        cartProductsProvider[index].price *
             cartProductsProvider[index].orderedQuantity;
     return totalCost.toStringAsFixed(2);
   }

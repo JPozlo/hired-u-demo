@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
 import 'package:groceries_shopping_app/screens/product_details.dart';
+import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:groceries_shopping_app/widgets/details_page_transition.dart';
 import 'package:provider/provider.dart';
 import '../appTheme.dart';
@@ -55,7 +56,7 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    producInfoProvider[index].price,
+                    getFormattedCurrency(producInfoProvider[index].price),
                     style: TextStyle(
                       fontSize: response.setFontSize(24),
                       fontWeight: FontWeight.w900,
@@ -71,7 +72,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   SizedBox(height: response.setHeight(4)),
                   Text(
-                    producInfoProvider[index].weight,
+                    producInfoProvider[index].foodCategory,
                     style: TextStyle(
                       fontSize: response.setFontSize(14),
                       color: Colors.black54,

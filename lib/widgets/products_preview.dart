@@ -121,7 +121,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
               child: Padding(
                 padding:
                     EdgeInsets.symmetric(horizontal: response.setWidth(20)),
-                child: getFilterBarUI(),
+                child: getFilterBarUI(productsCount: listInfo.length),
               ),
             ),
           ),
@@ -169,7 +169,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
     );
   }
 
-  Widget getFilterBarUI() {
+  Widget getFilterBarUI({int productsCount}) {
     return Stack(
       children: <Widget>[
         Positioned(
@@ -200,7 +200,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      '$productsFilterCount products found',
+                      '$productsCount products found',
                       style: TextStyle(
                         fontWeight: FontWeight.w100,
                         fontSize: 20,
@@ -218,20 +218,15 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                     borderRadius: const BorderRadius.all(
                       Radius.circular(4.0),
                     ),
-                    onTap: () async {
+                    onTap: () {
                       FocusScope.of(context).requestFocus(FocusNode());
-                      final count = await Navigator.push<dynamic>(
+                      Navigator.push<dynamic>(
                         context,
                         MaterialPageRoute<dynamic>(
                             builder: (BuildContext context) => FiltersScreen(),
                             fullscreenDialog: true),
                       );
-                      print("The count is: $count");
-                      if (this.mounted) {
-                        setState(() {
-                          productsFilterCount = count;
-                        });
-                      }
+          
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8),

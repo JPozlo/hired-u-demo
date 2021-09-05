@@ -1,3 +1,5 @@
+import 'package:groceries_shopping_app/utils/constants.dart';
+
 class PopularFilterListData {
   PopularFilterListData({
     this.titleTxt = '',
@@ -36,24 +38,20 @@ class PopularFilterListData {
       isSelected: false,
     ),
     PopularFilterListData(
-      titleTxt: 'Drinks',
+      titleTxt: Constants.drinkFoodCategory,
       isSelected: false,
     ),
     PopularFilterListData(
-      titleTxt: 'Vegetables',
+      titleTxt: Constants.pastaFoodCategory,
       isSelected: false,
     ),
     PopularFilterListData(
-      titleTxt: 'Fruits',
+      titleTxt: Constants.wheatFoodCategory,
       isSelected: false,
     ),
     PopularFilterListData(
-      titleTxt: 'Pasta & Noodles',
+      titleTxt: Constants.wholeFoodCategory,
       isSelected: false
-    ),
-    PopularFilterListData(
-      titleTxt: 'Whole Meals',
-      isSelected: false,
     ),
   ];
 }

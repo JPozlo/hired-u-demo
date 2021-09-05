@@ -1,39 +1,53 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/models/product.dart';
+import 'package:groceries_shopping_app/utils/utils.dart';
 
 class ProductsOperationsController extends ChangeNotifier {
+  List<Product> allList;
+
   List<Product> _productsInStock = [
     Product(
         name: 'Fusilo ketchup Toglile',
         picPath: 'assets/ketchup.png',
-        price: '\$9.95',
-        weight: '550g'),
+        price: 10.95,
+        foodCategory: Constants.pastaFoodCategory
+        // weight: '550g'
+        ),
     Product(
         name: 'Togliatelle Rice Organic',
         picPath: 'assets/rice.png',
-        price: '\$7.99',
-        weight: '500g'),
+        price: 130.99,
+        foodCategory: Constants.wheatFoodCategory
+        // weight: '500g'
+        ),
     Product(
-        name: 'Organic Potatos',
-        picPath: 'assets/potatoes.png',
-        price: '\$4.99',
-        weight: '1000g'),
+      name: 'Organic Potatos',
+      picPath: 'assets/potatoes.png',
+      price: 104.99,
+      // weight: '1000g'
+    ),
     Product(
         name: 'Desolve Milk',
         picPath: 'assets/milk.png',
-        price: '\$9.99',
-        weight: '550g'),
+        price: 908.99,
+        foodCategory: Constants.drinkFoodCategory
+        // weight: '550g'
+        ),
     Product(
-        name: 'Fusilo Pasta Toglile',
-        picPath: 'assets/pasta.png',
-        price: '\$7.99',
-        weight: '500g'),
+      name: 'Fusilo Pasta Toglile',
+      picPath: 'assets/pasta.png',
+      foodCategory: Constants.wheatFoodCategory,
+      price: 679.32,
+      // weight: '500g'
+    ),
     Product(
         name: 'Organic Flour',
         picPath: 'assets/flour.png',
-        price: '\$10.95',
-        weight: '250g'),
+        price: 610.95,
+        foodCategory: Constants.wheatFoodCategory
+        // weight: '250g'
+        ),
   ];
 
   List<Product> _shoppingCart = [];
@@ -45,6 +59,42 @@ class ProductsOperationsController extends ChangeNotifier {
 
   UnmodifiableListView<Product> get productsInStock {
     return UnmodifiableListView(_productsInStock);
+  }
+
+  UnmodifiableListView<Product> productsFilteredByPriceInStock(
+      double lowPrice, double highPrice) {
+    var products = _productsInStock
+        .where((element) =>
+            (lowPrice <= element.price) && (element.price <= highPrice))
+        .toList();
+    return UnmodifiableListView(products);
+  }
+
+    UnmodifiableListView<Product> productsParamsFilteredByPriceInStock(List<Product> productsList,
+      double lowPrice, double highPrice) {
+    var products = productsList
+        .where((element) =>
+            (lowPrice <= element.price) && (element.price <= highPrice))
+        .toList();
+    return UnmodifiableListView(products);
+  }
+
+  set updateProductsList(List<Product> newList) {
+    _productsInStock = newList;
+    notifyListeners();
+  }
+
+  set updateDefaultProductsList(List<Product> newList) {
+    _productsInStock = newList;
+    notifyListeners();
+  }
+
+  UnmodifiableListView<Product> productsFilteredByCategoryInStock(
+      String category) {
+    var products = _productsInStock
+        .where((element) => element.foodCategory == category)
+        .toList();
+    return UnmodifiableListView(products);
   }
 
   UnmodifiableListView<Product> get cart {
@@ -70,15 +120,12 @@ class ProductsOperationsController extends ChangeNotifier {
           name: _productsInStock[index].name,
           picPath: _productsInStock[index].picPath,
           price: _productsInStock[index].price,
-          weight: _productsInStock[index].weight,
+          foodCategory: _productsInStock[index].foodCategory,
           orderedQuantity:
               _productsInStock[index].orderedQuantity + (bulkOrder - 1),
         ),
       );
-      _shoppingCart.map((e) => {
-            _totalCost +=
-            (double.parse(e.price.replaceAll('\$', '')) *  e.orderedQuantity)
-      });
+      _shoppingCart.map((e) => {_totalCost += e.price * e.orderedQuantity});
       notifyListeners();
     } else {
       _shoppingCart[indexInCard].makeOrder(bulkOrder: bulkOrder);
@@ -90,17 +137,13 @@ class ProductsOperationsController extends ChangeNotifier {
   void returnTotalCost() {
     if (_totalCost == 0) {
       for (int i = 0; i < _shoppingCart.length; i++) {
-        _totalCost +=
-            (double.parse(_shoppingCart[i].price.replaceAll('\$', '')) *
-                _shoppingCart[i].orderedQuantity);
+        _totalCost += _shoppingCart[i].price * _shoppingCart[i].orderedQuantity;
       }
       notifyListeners();
     } else {
       _totalCost = 0.0;
       for (int i = 0; i < _shoppingCart.length; i++) {
-        _totalCost +=
-            (double.parse(_shoppingCart[i].price.replaceAll('\$', '')) *
-                _shoppingCart[i].orderedQuantity);
+        _totalCost += _shoppingCart[i].price * _shoppingCart[i].orderedQuantity;
       }
       notifyListeners();
     }

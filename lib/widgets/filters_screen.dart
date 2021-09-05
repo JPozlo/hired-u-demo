@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
+import 'package:groceries_shopping_app/models/product.dart';
+import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/widgets/popular_filter_list.dart';
 import 'package:groceries_shopping_app/widgets/slider_view.dart';
+import 'package:provider/provider.dart';
 import 'range_slider_view.dart';
 
 class FiltersScreen extends StatefulWidget {
@@ -20,7 +23,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   int collectionsCount = 0;
 
-  RangeValues _values = const RangeValues(100, 600);
+  RangeValues _values = const RangeValues(10, 60);
   double distValue = 50.0;
 
   @override
@@ -69,16 +72,57 @@ class _FiltersScreenState extends State<FiltersScreen> {
                   child: InkWell(
                     borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                     highlightColor: Colors.transparent,
-                    onTap: () {
-                      print("The range of product price from 0 is: $distValue");
-                      print(
-                          "The range of product price starts from: ${_values.start} upto: ${_values.end}");
+                    onTap: () async {
+                      List<Product> categoryList = [];
+
                       if (_selectedCategories.isNotEmpty) {
+                        var value;
                         print(
-                            "The product categories selected is: ${_selectedCategories.map((e) => e.titleTxt)}");
+                            "Selected categories: ${_selectedCategories.map((e) => e.titleTxt)}");
+                        for (int i = 0; i < _selectedCategories.length; i++) {
+                          var category = _selectedCategories[i];
+                          value = Provider.of<ProductsOperationsController>(
+                                  context,
+                                  listen: false)
+                              .productsFilteredByCategoryInStock(
+                                  category.titleTxt);
+
+                          print("Value is $value");
+                        }
+
+                        var products =
+                             Provider.of<ProductsOperationsController>(
+                                    context,
+                                    listen: false)
+                                .productsParamsFilteredByPriceInStock(
+                                    value, _values.start, _values.end);
+
+                        Provider.of<ProductsOperationsController>(context,
+                                listen: false)
+                            .updateProductsList = products;
+                        // await _selectedCategories.map((e) {
+                        //   categoryList.addAll(
+                        //       Provider.of<ProductsOperationsController>(context,
+                        //               listen: false)
+                        //           .productsFilteredByCategoryInStock(
+                        //               e.titleTxt));
+                        //   print(
+                        //       "The category list value: ${categoryList.length}");
+                        // });
+                        print(
+                            "The product categories selected is: ${categoryList.map((e) => e.toString())}");
+                      } else {
+                        var products =
+                            await Provider.of<ProductsOperationsController>(
+                                    context,
+                                    listen: false)
+                                .productsFilteredByPriceInStock(
+                                    _values.start, _values.end);
+                        Provider.of<ProductsOperationsController>(context,
+                                listen: false)
+                            .updateProductsList = products;
                       }
-                      print("The collections count is: $collectionsCount");
-                      Navigator.pop(context, collectionsCount);
+                      Navigator.pop(context);
                     },
                     child: Center(
                       child: Text(
@@ -184,6 +228,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
       if (accomodationListData[0].isSelected) {
         accomodationListData.forEach((d) {
           d.isSelected = false;
+          setState(() {
+            _selectedCategories.clear();
+          });
         });
       } else {
         accomodationListData.forEach((d) {
@@ -206,10 +253,6 @@ class _FiltersScreenState extends State<FiltersScreen> {
           }
         }
       }
-
-      setState(() {
-        collectionsCount = count;
-      });
 
       if (count == accomodationListData.length - 1) {
         accomodationListData[0].isSelected = true;
