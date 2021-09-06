@@ -136,7 +136,7 @@ class ProductsCheckout extends StatelessWidget {
       child: Container(
         height: response.setHeight(55),
         decoration: BoxDecoration(
-            color: AppTheme.mainOrangeColor,
+            color: AppTheme.mainRedColor,
             borderRadius: BorderRadius.circular(response.setHeight(50))),
         child: Center(
           child: Row(
@@ -169,7 +169,7 @@ class ProductsCheckout extends StatelessWidget {
       itemCount: cartProductsProvider.length,
       itemBuilder: (BuildContext context, int index) {
         return Dismissible(
-          key: Key(cartProductsProvider[index].picPath),
+          key: Key(cartProductsProvider[index].picPath.first),
           direction: DismissDirection.endToStart,
           onDismissed: (direction) {
             Provider.of<ProductsOperationsController>(context, listen: false)

@@ -120,7 +120,7 @@ class _MpesaPaymentState extends State<MpesaPayment> {
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: AppTheme.mainOrangeyColor,
+              color: AppTheme.mainOrangeColor,
             ),
           ),
           hintText: "Enter Your Mobile Number",
@@ -152,7 +152,7 @@ class _MpesaPaymentState extends State<MpesaPayment> {
           }
         },
         style: ElevatedButton.styleFrom(
-          primary: AppTheme.mainOrangeColor,
+          primary: AppTheme.mainRedColor,
           textStyle: TextStyle(color: Colors.black),
         ),
         child: Text(

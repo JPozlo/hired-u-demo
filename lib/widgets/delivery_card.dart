@@ -22,7 +22,7 @@ class DeliveryCard extends StatelessWidget {
           radius: response.setWidth(22),
           child: FaIcon(
             FontAwesomeIcons.truckMoving,
-            color: AppTheme.mainOrangeColor,
+            color: AppTheme.mainRedColor,
             size: response.setHeight(20),
           ),
         ),

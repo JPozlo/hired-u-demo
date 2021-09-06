@@ -9,41 +9,42 @@ class ProductsOperationsController extends ChangeNotifier {
   List<Product> _productsInStock = [
     Product(
         name: 'Fusilo ketchup Toglile',
-        picPath: 'assets/ketchup.png',
+        picPath: ['assets/ketchup.png'],
         price: 10.95,
         foodCategory: Constants.pastaFoodCategory
         // weight: '550g'
         ),
     Product(
         name: 'Togliatelle Rice Organic',
-        picPath: 'assets/rice.png',
+        picPath: ['assets/rice.png', 'assets/flour.png', ],
         price: 130.99,
         foodCategory: Constants.wheatFoodCategory
         // weight: '500g'
         ),
     Product(
       name: 'Organic Potatos',
-      picPath: 'assets/potatoes.png',
+      picPath: ['assets/potatoes.png'],
       price: 104.99,
+      foodCategory: Constants.wholeFoodCategory
       // weight: '1000g'
     ),
     Product(
         name: 'Desolve Milk',
-        picPath: 'assets/milk.png',
+        picPath: ['assets/milk.png'],
         price: 908.99,
         foodCategory: Constants.drinkFoodCategory
         // weight: '550g'
         ),
     Product(
       name: 'Fusilo Pasta Toglile',
-      picPath: 'assets/pasta.png',
+      picPath: ['assets/pasta.png', 'assets/flour.png'],
       foodCategory: Constants.wheatFoodCategory,
       price: 679.32,
       // weight: '500g'
     ),
     Product(
         name: 'Organic Flour',
-        picPath: 'assets/flour.png',
+        picPath: ['assets/flour.png', 'assets/pasta.png'],
         price: 610.95,
         foodCategory: Constants.wheatFoodCategory
         // weight: '250g'

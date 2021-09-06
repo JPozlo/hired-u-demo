@@ -34,7 +34,7 @@ class Checkout extends StatelessWidget {
               backgroundColor: Colors.white,
               radius: response.setWidth(22),
               child: Image.asset(
-                cartProductsProvider[index].picPath,
+                cartProductsProvider[index].picPath.first,
                 scale: 7,
               ),
             ),

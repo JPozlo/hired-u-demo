@@ -105,7 +105,7 @@ class ServiceCard extends StatelessWidget {
                         // fit: BoxFit.fill,
                         height: 50,
                         width: 50,
-                        color: AppTheme.mainOrangeyColor,
+                        color: AppTheme.mainOrangeColor,
                       ),
                     ),
                   ),

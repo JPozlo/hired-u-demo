@@ -32,7 +32,7 @@ class _MainHomeState extends State<MainHome> {
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
         backgroundColor: AppTheme.mainDarkBackgroundColor,
-        selectedItemColor: AppTheme.mainOrangeyColor,
+        selectedItemColor: AppTheme.mainOrangeColor,
         unselectedItemColor: AppTheme.mainScaffoldBackgroundColor,
         showUnselectedLabels: false,
         type: BottomNavigationBarType.shifting,

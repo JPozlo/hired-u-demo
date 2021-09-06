@@ -47,7 +47,7 @@ class ProductCard extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.center,
                   child: Image.asset(
-                    producInfoProvider[index].picPath,
+                    producInfoProvider[index].picPath.first,
                     scale: 2.4,
                   ),
                 ),

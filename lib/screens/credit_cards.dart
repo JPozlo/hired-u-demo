@@ -100,7 +100,7 @@ class _PayWithCreditCardPageState extends State<PayWithCreditCardPage> {
           children: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: AppTheme.mainOrangeColor,
+                primary: AppTheme.mainRedColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -128,7 +128,7 @@ class _PayWithCreditCardPageState extends State<PayWithCreditCardPage> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: AppTheme.mainOrangeColor,
+                primary: AppTheme.mainRedColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),

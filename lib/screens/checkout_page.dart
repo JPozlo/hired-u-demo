@@ -126,7 +126,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         showPaymentModalSheet(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: AppTheme.mainOrangeColor,
+                        primary: AppTheme.mainRedColor,
                         textStyle: TextStyle(color: Colors.black),
                       ),
                       child: Text(
@@ -166,7 +166,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   margin: EdgeInsets.only(left: 16, right: 16),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: AppTheme.mainOrangeColor,
+                      primary: AppTheme.mainRedColor,
                       padding: EdgeInsets.only(left: 48, right: 48),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(13))),
@@ -196,7 +196,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   margin: EdgeInsets.only(left: 16, right: 16, bottom: 10),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: AppTheme.mainOrangeColor,
+                      primary: AppTheme.mainRedColor,
                       padding: EdgeInsets.only(left: 48, right: 48),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(13))),
@@ -265,7 +265,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: AppTheme.mainOrangeColor,
+                        primary: AppTheme.mainRedColor,
                         padding: EdgeInsets.only(left: 48, right: 48),
                         shape: RoundedRectangleBorder(
                             borderRadius:
@@ -329,7 +329,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       val = value;
                     });
                   },
-                  activeColor: AppTheme.mainOrangeyColor,
+                  activeColor: AppTheme.mainOrangeColor,
                 ),
               ),
               ListTile(
@@ -342,7 +342,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       val = value;
                     });
                   },
-                  activeColor: AppTheme.mainOrangeyColor,
+                  activeColor: AppTheme.mainOrangeColor,
                 ),
               ),
             ],
@@ -367,7 +367,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
             style: CustomTextStyle.textFormFieldMedium.copyWith(
                 color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
           ),
-          color: AppTheme.mainOrangeyColor,
+          color: AppTheme.mainOrangeColor,
           textColor: Colors.black,
         ),
       ),
@@ -391,7 +391,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
             style: CustomTextStyle.textFormFieldMedium.copyWith(
                 color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
           ),
-          color: AppTheme.mainOrangeyColor,
+          color: AppTheme.mainOrangeColor,
           textColor: Colors.black,
         ),
       ),

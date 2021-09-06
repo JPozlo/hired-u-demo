@@ -1,4 +1,5 @@
 import 'package:after_layout/after_layout.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,6 +9,7 @@ import 'package:groceries_shopping_app/screens/home.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
 import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../appTheme.dart';
 
 class ProductDetails extends StatefulWidget {
@@ -28,6 +30,8 @@ class _ProductDetailsState extends State<ProductDetails>
   double opacity = 1;
   int orderQuantity = 1;
   bool temp = false;
+  int _activeIndex = 0;
+  final _carouselController = CarouselController();
 
   @override
   void initState() {
@@ -114,14 +118,10 @@ class _ProductDetailsState extends State<ProductDetails>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Hero(
-                    tag: isToPreview
-                        ? '${productProvider[widget.productIndex].name}-name'
-                        : '${productProvider[widget.productIndex].picPath}-path',
-                    child: Image.asset(
-                        productProvider[widget.productIndex].picPath,
-                        scale: 0.8),
-                  ),
+                  productImages(productProvider[widget.productIndex].picPath,
+                      productProvider[widget.productIndex].name),
+                  SizedBox(height: 13),
+                  buildIndicator(productProvider[widget.productIndex].picPath),
                   Transform(
                     //0 < animation.value < 1
                     transform: Matrix4.translationValues(
@@ -163,7 +163,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                       setState(() => orderQuantity++),
                                 ),
                                 Text(
-                                  getFormattedCurrency(productProvider[widget.productIndex].price)                                  ,
+                                  getFormattedCurrency(
+                                      productProvider[widget.productIndex]
+                                          .price),
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                       fontSize: response.setFontSize(40),
@@ -189,33 +191,33 @@ class _ProductDetailsState extends State<ProductDetails>
                             ),
                             SizedBox(height: response.setHeight(25)),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Container(
-                                  height: response.setHeight(55),
-                                  width: response.setWidth(55),
-                                  decoration: BoxDecoration(
-                                      color: Colors.transparent,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: Colors.black12, width: 1)),
-                                  child: Center(
-                                    child: IconButton(
-                                        splashColor: Colors.transparent,
-                                        highlightColor: Colors.transparent,
-                                        hoverColor: Colors.transparent,
-                                        icon: FaIcon(isFavourite
-                                            ? FontAwesomeIcons.solidHeart
-                                            : FontAwesomeIcons.heart),
-                                        onPressed: () async {
-                                          setState(
-                                              () => isFavourite = !isFavourite);
-                                          await _utils.saveValueWithKey<bool>(
-                                              "${productProvider[widget.productIndex].name}-fav",
-                                              isFavourite);
-                                        }),
-                                  ),
-                                ),
+                                // Container(
+                                //   height: response.setHeight(55),
+                                //   width: response.setWidth(55),
+                                //   decoration: BoxDecoration(
+                                //       color: Colors.transparent,
+                                //       shape: BoxShape.circle,
+                                //       border: Border.all(
+                                //           color: Colors.black12, width: 1)),
+                                //   child: Center(
+                                //     child: IconButton(
+                                //         splashColor: Colors.transparent,
+                                //         highlightColor: Colors.transparent,
+                                //         hoverColor: Colors.transparent,
+                                //         icon: FaIcon(isFavourite
+                                //             ? FontAwesomeIcons.solidHeart
+                                //             : FontAwesomeIcons.heart),
+                                //         onPressed: () async {
+                                //           setState(
+                                //               () => isFavourite = !isFavourite);
+                                //           await _utils.saveValueWithKey<bool>(
+                                //               "${productProvider[widget.productIndex].name}-fav",
+                                //               isFavourite);
+                                //         }),
+                                //   ),
+                                // ),
                                 GestureDetector(
                                   onTap: () {
                                     provider.addProductToCart(
@@ -232,7 +234,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                     opacity: opacity,
                                     child: Container(
                                       height: response.setHeight(55),
-                                      width: response.setWidth(235),
+                                      // width: response.setWidth(235),
+                                      width: response
+                                          .setWidth(response.screenWidth * 0.8),
                                       decoration: BoxDecoration(
                                           color: AppTheme.mainOrangeColor,
                                           borderRadius: BorderRadius.circular(
@@ -266,6 +270,56 @@ class _ProductDetailsState extends State<ProductDetails>
       ),
     );
   }
+
+  Widget productImages(List<String> imagePaths, String productName) {
+    Widget productImage;
+
+    if (imagePaths.length <= 1) {
+       productImage = buildImage(productName, imagePaths.first);
+     
+    } else {
+      productImage = CarouselSlider.builder(
+          carouselController: _carouselController,
+          itemCount: imagePaths.length,
+          itemBuilder: (context, index, realIndex) {
+            final imagePath = imagePaths[index];
+            return buildImage(productName, imagePath);
+          },
+          options: CarouselOptions(
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _activeIndex = index;
+                });
+              },
+              autoPlay: true,
+              autoPlayInterval: Duration(seconds: 6),
+              viewportFraction: 1));
+    }
+
+    return productImage;
+  }
+
+  Widget buildImage(String name, String path) {
+    return Hero(
+      tag: isToPreview ? '$name-name' : '$path-path',
+      child: Image.asset(path, scale: 0.8),
+    );
+  }
+
+  Widget buildIndicator(List<String> imagePaths) {
+    return AnimatedSmoothIndicator(
+      activeIndex: _activeIndex,
+      count: imagePaths.length,
+      // onDotClicked: jumpToPage,
+      effect: JumpingDotEffect(
+          dotWidth: 20,
+          dotHeight: 20,
+          activeDotColor: AppTheme.mainOrangeColor,
+          dotColor: AppTheme.mainCardBackgroundColor),
+    );
+  }
+
+  void jumpToPage(int index) => _carouselController.animateToPage(index);
 
   @override
   void afterFirstLayout(BuildContext context) async {

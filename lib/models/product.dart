@@ -1,7 +1,7 @@
 class Product {
   Product({
     this.name = 'null',
-    this.picPath = 'null',
+    this.picPath,
     // this.weight = 'null',
     this.foodCategory = "null",
     this.description =
@@ -10,7 +10,7 @@ class Product {
     this.orderedQuantity = 1,
   });
   final String name;
-  final String picPath;
+  final List<String> picPath;
   // final String weight;
   final String description;
   final String foodCategory;

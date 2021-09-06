@@ -153,7 +153,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
         ),
         Spacer(flex: 5),
         Text(
-          "Pasta & Noodles",
+          "Products",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: response.setFontSize(18),
@@ -242,7 +242,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Icon(Icons.sort,
-                                color: AppTheme.mainOrangeyColor),
+                                color: AppTheme.mainOrangeColor),
                           ),
                         ],
                       ),

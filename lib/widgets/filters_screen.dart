@@ -23,7 +23,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   int collectionsCount = 0;
 
-  RangeValues _values = const RangeValues(10, 60);
+  RangeValues _values = const RangeValues(100, 930);
   double distValue = 50.0;
 
   @override
@@ -57,7 +57,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
               child: Container(
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppTheme.mainOrangeyColor,
+                  color: AppTheme.mainOrangeColor,
                   borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                   boxShadow: <BoxShadow>[
                     BoxShadow(
@@ -69,7 +69,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                 ),
                 child: Material(
                   color: Colors.transparent,
-                  child: InkWell(
+                  child: InkWell(                  
                     borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                     highlightColor: Colors.transparent,
                     onTap: () async {
@@ -130,7 +130,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 18,
-                            color: Colors.white),
+                            color: Colors.black),
                       ),
                     ),
                   ),
@@ -199,7 +199,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                   ),
                   CupertinoSwitch(
                     activeColor: date.isSelected
-                        ? AppTheme.mainOrangeyColor
+                        ? AppTheme.mainOrangeColor
                         : Colors.grey.withOpacity(0.6),
                     onChanged: (bool value) {
                       setState(() {
@@ -352,7 +352,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                                 ? Icons.check_box
                                 : Icons.check_box_outline_blank,
                             color: date.isSelected
-                                ? AppTheme.mainOrangeyColor
+                                ? AppTheme.mainOrangeColor
                                 : Colors.grey.withOpacity(0.6),
                           ),
                           const SizedBox(

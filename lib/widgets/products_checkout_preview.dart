@@ -72,7 +72,7 @@ class CartPreview extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.all(5),
                 child: CircleAvatar(
-                  backgroundColor: AppTheme.mainOrangeColor,
+                  backgroundColor: AppTheme.mainRedColor,
                   radius: response.setHeight(20),
                   child: Text(
                     cartProductsProvider.length.toString(),
@@ -114,7 +114,7 @@ class CartPreviewCard extends StatelessWidget {
               backgroundColor: Colors.white,
               radius: response.setWidth(21),
               child: Image.asset(
-                cartProductsProvider[index].picPath,
+                cartProductsProvider[index].picPath.first,
                 scale: 7,
               ),
             ),

@@ -136,7 +136,7 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: AppTheme.mainOrangeyColor,
+                  color: AppTheme.mainOrangeColor,
                 ),
               ),
               hintText: "Enter your location here",
@@ -201,7 +201,7 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: AppTheme.mainOrangeyColor,
+                    color: AppTheme.mainOrangeColor,
                   ),
                 ),
                 hintText: "Enter your Apartment Name",
@@ -255,7 +255,7 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: AppTheme.mainOrangeyColor,
+                    color: AppTheme.mainOrangeColor,
                   ),
                 ),
                 hintText: "Enter your House Number",
@@ -311,7 +311,7 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: AppTheme.mainOrangeyColor,
+              color: AppTheme.mainOrangeColor,
             ),
           ),
           hintText: "Enter Mobile Number ",
@@ -341,7 +341,7 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
           }
         },
         style: ElevatedButton.styleFrom(
-          primary: AppTheme.mainOrangeColor,
+          primary: AppTheme.mainRedColor,
           textStyle: TextStyle(color: Colors.black),
         ),
         child: Text(

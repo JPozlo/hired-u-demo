@@ -121,7 +121,7 @@ class _CreditCardDetailsPageState extends State<CreditCardDetailsPage> {
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: AppTheme.mainOrangeColor,
+                        primary: AppTheme.mainRedColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
