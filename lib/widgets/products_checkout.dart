@@ -101,7 +101,7 @@ class ProductsCheckout extends StatelessWidget {
                       ),
                       Spacer(),
                       Text(
-                        "\$${finalTotalCost..toStringAsExponential(3)}",
+                        "KSh ${finalTotalCost..toStringAsExponential(3)}",
                         style: TextStyle(
                           color: Colors.white.withAlpha(240),
                           fontWeight: FontWeight.bold,
@@ -136,7 +136,7 @@ class ProductsCheckout extends StatelessWidget {
       child: Container(
         height: response.setHeight(55),
         decoration: BoxDecoration(
-            color: AppTheme.mainRedColor,
+            color: AppTheme.mainBlueColor,
             borderRadius: BorderRadius.circular(response.setHeight(50))),
         child: Center(
           child: Row(
@@ -147,7 +147,7 @@ class ProductsCheckout extends StatelessWidget {
                 style: TextStyle(
                   fontSize: response.setFontSize(16),
                   fontWeight: FontWeight.w700,
-                  color: Colors.black87,
+                  color: Colors.white,
                 ),
               ),
               // SizedBox(

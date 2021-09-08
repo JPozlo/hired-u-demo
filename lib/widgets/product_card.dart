@@ -56,7 +56,8 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    getFormattedCurrency(producInfoProvider[index].price),
+                    // getFormattedCurrency(producInfoProvider[index].price),
+                    "KSh ${producInfoProvider[index].price}",
                     style: TextStyle(
                       fontSize: response.setFontSize(24),
                       fontWeight: FontWeight.w900,

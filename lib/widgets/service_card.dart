@@ -42,9 +42,9 @@ class ServiceCard extends StatelessWidget {
             widgetTitle: "Carpenter",
             serviceCategories: _carpenterServiceCategories);
         break;
-      case 'Mechanic':
+      case 'Technician':
         serviceDetails = ServiceWidget(
-            widgetTitle: "Mechanic",
+            widgetTitle: "Technician",
             serviceCategories: _mechanicServiceCategories);
         break;
       case 'Maids':
@@ -75,7 +75,7 @@ class ServiceCard extends StatelessWidget {
           height: response.setHeight(105),
           width: response.setWidth(100),
           decoration: BoxDecoration(
-              color: AppTheme.mainCardBackgroundColor,
+              color: AppTheme.mainBlueColor,
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
@@ -118,7 +118,7 @@ class ServiceCard extends StatelessWidget {
                       child: Text(
                         servicesOffered[index].name,
                         style: TextStyle(
-                          color: AppTheme.mainScaffoldBackgroundColor,
+                          color: Colors.white,
                           fontSize: response.setFontSize(15),
                           fontWeight: FontWeight.w800,
                         ),

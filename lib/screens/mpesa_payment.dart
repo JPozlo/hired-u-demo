@@ -152,13 +152,13 @@ class _MpesaPaymentState extends State<MpesaPayment> {
           }
         },
         style: ElevatedButton.styleFrom(
-          primary: AppTheme.mainRedColor,
+          primary: AppTheme.mainBlueColor,
           textStyle: TextStyle(color: Colors.black),
         ),
         child: Text(
           "Pay",
           style: CustomTextStyle.textFormFieldMedium.copyWith(
-              color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
+              color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
         ),
       ),
     );

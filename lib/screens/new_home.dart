@@ -23,7 +23,7 @@ class _NewHomeState extends State<NewHome> {
   Widget build(BuildContext context) {
     var listInfo = Provider.of<ServiceProvider>(context).servicesOffered;
     return Scaffold(
-        backgroundColor: AppTheme.mainDarkBackgroundColor,
+        backgroundColor: AppTheme.secondaryScaffoldColor,
         body: SafeArea(
           child: Stack(
             alignment: Alignment.topLeft,
@@ -47,14 +47,14 @@ class _NewHomeState extends State<NewHome> {
                               text: "Welcome, ",
                               style:
                                   Theme.of(context).textTheme.headline6.copyWith(
-                                        color: Colors.white,
+                                        color: Colors.black,
                                       ),
                             ),
                             TextSpan(
                               text: "Osolo",
                               style:
                                   Theme.of(context).textTheme.headline6.copyWith(
-                                        color: Colors.white,
+                                        color: Colors.black,
                                         fontWeight: FontWeight.w600,
                                       ),
                             )
@@ -98,7 +98,7 @@ class _NewHomeState extends State<NewHome> {
               left: 0,
               width: response.screenWidth,
               child: Container(
-                // color: AppTheme.mainDarkBackgroundColor,
+                color: AppTheme.secondaryScaffoldColor,
                   height: response.screenHeight * 0.6,
                   width: response.screenWidth,
                   child: GridView.builder(

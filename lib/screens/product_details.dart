@@ -163,9 +163,10 @@ class _ProductDetailsState extends State<ProductDetails>
                                       setState(() => orderQuantity++),
                                 ),
                                 Text(
-                                  getFormattedCurrency(
-                                      productProvider[widget.productIndex]
-                                          .price),
+                                  // getFormattedCurrency(
+                                  //     productProvider[widget.productIndex]
+                                  //         .price),
+                                  "KSh ${productProvider[widget.productIndex].price}",
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                       fontSize: response.setFontSize(40),
@@ -236,9 +237,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                       height: response.setHeight(55),
                                       // width: response.setWidth(235),
                                       width: response
-                                          .setWidth(response.screenWidth * 0.8),
+                                          .setWidth(response.screenWidth * 0.6),
                                       decoration: BoxDecoration(
-                                          color: AppTheme.mainOrangeColor,
+                                          color: AppTheme.mainBlueColor,
                                           borderRadius: BorderRadius.circular(
                                               response.setHeight(50))),
                                       child: Center(
@@ -247,7 +248,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                           style: TextStyle(
                                             fontSize: response.setFontSize(18),
                                             fontWeight: FontWeight.w700,
-                                            color: Colors.black87,
+                                            color: Colors.white,
                                           ),
                                         ),
                                       ),

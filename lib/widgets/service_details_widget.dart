@@ -63,7 +63,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                   ServiceSubCategory item = this.itemsMap.keys.elementAt(index);
                   return CheckboxListTile(
                       title: Text(item.name),
-                      subtitle: Text(getFormattedCurrency(item.price)),
+                      subtitle: Text("KSh ${item.price}"),
                       value: item.value,
                       onChanged: (bool value) {
                         print("Value $value");
@@ -81,7 +81,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                 }),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: AppTheme.mainRedColor,
+                primary: AppTheme.mainBlueColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -91,14 +91,14 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                 child: const Text(
                   'Make Order',
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.white,
                     fontSize: 18,
                   ),
                 ),
               ),
               onPressed: () {
-                showSnackBar(context,
-                    "Your order has been received! Ordered items are\n${this._selectedItem.toString()}}");
+                // showSnackBar(context,
+                //     "Your order has been received! Ordered items are\n${this._selectedItem.toString()}}");
               },
             )
           ],

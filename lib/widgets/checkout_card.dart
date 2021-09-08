@@ -48,7 +48,7 @@ class Checkout extends StatelessWidget {
               ),
             ),
             Container(
-              width: response.screenWidth * 0.5,
+              width: response.screenWidth * 0.4,
               // color: Colors.red,
               child: Text(
                 cartProductsProvider[index].name.toString(),
@@ -59,16 +59,16 @@ class Checkout extends StatelessWidget {
                 ),
               ),
             ),
-            Spacer(),
+            // Spacer(),
             Text(
-              "\$" + _cost(),
+              "KSh " + _cost(),
               textAlign: TextAlign.start,
               style: TextStyle(
                 color: Colors.white70,
                 fontSize: response.setFontSize(15),
               ),
             ),
-                Spacer(flex: 8),
+                Spacer(),
                 GestureDetector(
                   onTap: (){
                          Provider.of<ProductsOperationsController>(context,

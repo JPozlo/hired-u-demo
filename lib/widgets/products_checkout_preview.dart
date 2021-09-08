@@ -72,7 +72,7 @@ class CartPreview extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.all(5),
                 child: CircleAvatar(
-                  backgroundColor: AppTheme.mainRedColor,
+                  backgroundColor: AppTheme.mainOrangeColor,
                   radius: response.setHeight(20),
                   child: Text(
                     cartProductsProvider.length.toString(),

@@ -401,7 +401,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
             style: TextStyle(
                 color: Colors.grey,
                 fontSize: MediaQuery.of(context).size.width > 360 ? 18 : 16,
-                fontWeight: FontWeight.normal),
+                fontWeight: FontWeight.normal
+                ),
           ),
         ),
         RangeSliderView(

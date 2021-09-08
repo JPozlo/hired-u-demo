@@ -341,7 +341,7 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
           }
         },
         style: ElevatedButton.styleFrom(
-          primary: AppTheme.mainRedColor,
+          primary: AppTheme.mainOrangeColor,
           textStyle: TextStyle(color: Colors.black),
         ),
         child: Text(

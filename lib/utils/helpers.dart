@@ -3,7 +3,7 @@ import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 
 String getFormattedCurrency(double amount) {
     FlutterMoneyFormatter fmf = new FlutterMoneyFormatter(amount: amount);
-    fmf.settings.symbol = "\$";
+    fmf.settings.symbol = "KSh";
     fmf.settings.thousandSeparator = ",";
     fmf.settings.decimalSeparator = ".";
     return fmf.output.symbolOnLeft;
@@ -20,4 +20,15 @@ String getFormattedCurrency(double amount) {
         }),
   );
   ScaffoldMessenger.of(context).showSnackBar(_snackBar);
+}
+
+String validateEmail(String value) {
+  String _msg;
+  RegExp regex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  if (value.isEmpty) {
+    _msg = "Your email is required";
+  } else if (!regex.hasMatch(value)) {
+    _msg = "Please provide a valid email address";
+  }
+  return _msg;
 }

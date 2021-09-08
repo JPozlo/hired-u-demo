@@ -106,7 +106,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     child: ListView(
                       children: <Widget>[
                         selectedAddressSection(),
-                        showMpesaOrCardOption(),
+                        // showMpesaOrCardOption(),
                         priceSection(
                             totalPrice: _totalPrice,
                             taxPrice: _taxPrice,
@@ -123,16 +123,26 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     child: ElevatedButton(
                       onPressed: () {
-                        showPaymentModalSheet(context);
+                        //      Widget selectedPaymentOption = MpesaPayment();
+                        // if (val == PaymentMethodOptions.MPESA) {
+                        //   selectedPaymentOption = MpesaPayment();
+                        // } else if (val == PaymentMethodOptions.CARD) {
+                        //   selectedPaymentOption = PayWithCreditCardPage();
+                        // }
+                        Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        MpesaPayment()));
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: AppTheme.mainRedColor,
+                        primary: AppTheme.mainBlueColor,
                         textStyle: TextStyle(color: Colors.black),
                       ),
                       child: Text(
                         "Confirm Order",
                         style: CustomTextStyle.textFormFieldMedium.copyWith(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontSize: 14,
                             fontWeight: FontWeight.bold),
                       ),
@@ -166,7 +176,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   margin: EdgeInsets.only(left: 16, right: 16),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: AppTheme.mainRedColor,
+                      primary: AppTheme.mainBlueColor,
                       padding: EdgeInsets.only(left: 48, right: 48),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(13))),
@@ -196,7 +206,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   margin: EdgeInsets.only(left: 16, right: 16, bottom: 10),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: AppTheme.mainRedColor,
+                      primary: AppTheme.mainOrangeColor,
                       padding: EdgeInsets.only(left: 48, right: 48),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(13))),
@@ -265,7 +275,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: AppTheme.mainRedColor,
+                        primary: AppTheme.mainOrangeColor,
                         padding: EdgeInsets.only(left: 48, right: 48),
                         shape: RoundedRectangleBorder(
                             borderRadius:
@@ -698,16 +708,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
               SizedBox(
                 height: 8,
               ),
-              createPriceItem("Total Price", getFormattedCurrency(totalPrice),
+              createPriceItem("Total Price", "KSh $totalPrice",
                   Colors.grey.shade700),
               // createPriceItem("Bag discount", getFormattedCurrency(3280),
               //     Colors.teal.shade300),
               createPriceItem(
-                  "Tax", getFormattedCurrency(taxPrice), Colors.grey.shade700),
+                  "Tax", "KSh $taxPrice", Colors.grey.shade700),
               // createPriceItem("Order Total", getFormattedCurrency(orderTotal),
               //     Colors.grey.shade700),
               createPriceItem("Delivery Charges",
-                  getFormattedCurrency(deliveryCharge), Colors.teal.shade300),
+                  "KSh $deliveryCharge", Colors.teal.shade300),
               SizedBox(
                 height: 8,
               ),
@@ -730,7 +740,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         .copyWith(color: Colors.black, fontSize: 12),
                   ),
                   Text(
-                    getFormattedCurrency(totalOverall),
+                    "KSh $totalOverall",
                     style: CustomTextStyle.textFormFieldMedium
                         .copyWith(color: Colors.black, fontSize: 12),
                   )
