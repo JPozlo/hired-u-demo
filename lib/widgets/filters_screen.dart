@@ -27,6 +27,11 @@ class _FiltersScreenState extends State<FiltersScreen> {
   double distValue = 50.0;
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: AppTheme.mainScaffoldBackgroundColor,
@@ -43,7 +48,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                     const Divider(
                       height: 1,
                     ),
-                    allAccommodationUI()
+                    allAccommodationUI(context)
                   ],
                 ),
               ),
@@ -69,49 +74,83 @@ class _FiltersScreenState extends State<FiltersScreen> {
                 ),
                 child: Material(
                   color: Colors.transparent,
-                  child: InkWell(                  
+                  child: InkWell(
                     borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                     highlightColor: Colors.transparent,
                     onTap: () async {
-                      List<Product> categoryList = [];
+                      var listOfSelectedCategories =
+                          Provider.of<ProductsOperationsController>(context,
+                                  listen: false)
+                              .selectedCategories;
+                      print(
+                          "On tap selcted categories: $listOfSelectedCategories");
+                      // List<Product> categoryList = [];
 
-                      if (_selectedCategories.isNotEmpty) {
+                      if (listOfSelectedCategories.isNotEmpty) {
                         var value;
-                        print(
-                            "Selected categories: ${_selectedCategories.map((e) => e.titleTxt)}");
-                        for (int i = 0; i < _selectedCategories.length; i++) {
-                          var category = _selectedCategories[i];
+                        for (int i = 0;
+                            i < listOfSelectedCategories.length;
+                            i++) {
+                          var category = listOfSelectedCategories[i];
                           value = Provider.of<ProductsOperationsController>(
                                   context,
                                   listen: false)
                               .productsFilteredByCategoryInStock(
                                   category.titleTxt);
+                        }             
 
-                          print("Value is $value");
-                        }
+                        print("Value: $value");
 
                         var products =
-                             Provider.of<ProductsOperationsController>(
-                                    context,
+                            Provider.of<ProductsOperationsController>(context,
                                     listen: false)
                                 .productsParamsFilteredByPriceInStock(
                                     value, _values.start, _values.end);
 
+                        print("Products: $products");
+
                         Provider.of<ProductsOperationsController>(context,
                                 listen: false)
                             .updateProductsList = products;
-                        // await _selectedCategories.map((e) {
-                        //   categoryList.addAll(
-                        //       Provider.of<ProductsOperationsController>(context,
-                        //               listen: false)
-                        //           .productsFilteredByCategoryInStock(
-                        //               e.titleTxt));
-                        //   print(
-                        //       "The category list value: ${categoryList.length}");
-                        // });
-                        print(
-                            "The product categories selected is: ${categoryList.map((e) => e.toString())}");
-                      } else {
+                      }
+
+                      // if (_selectedCategories.isNotEmpty) {
+                      //   var value;
+                      //   print(
+                      //       "Selected categories: ${_selectedCategories.map((e) => e.titleTxt)}");
+                      //   for (int i = 0; i < _selectedCategories.length; i++) {
+                      //     var category = _selectedCategories[i];
+                      //     value = Provider.of<ProductsOperationsController>(
+                      //             context,
+                      //             listen: false)
+                      //         .productsFilteredByCategoryInStock(
+                      //             category.titleTxt);
+
+                      //     print("Value is $value");
+                      //   }
+
+                      //   var products =
+                      //       Provider.of<ProductsOperationsController>(context,
+                      //               listen: false)
+                      //           .productsParamsFilteredByPriceInStock(
+                      //               value, _values.start, _values.end);
+
+                      //   Provider.of<ProductsOperationsController>(context,
+                      //           listen: false)
+                      //       .updateProductsList = products;
+                      //   // await _selectedCategories.map((e) {
+                      //   //   categoryList.addAll(
+                      //   //       Provider.of<ProductsOperationsController>(context,
+                      //   //               listen: false)
+                      //   //           .productsFilteredByCategoryInStock(
+                      //   //               e.titleTxt));
+                      //   //   print(
+                      //   //       "The category list value: ${categoryList.length}");
+                      //   // });
+                      //   print(
+                      //       "The product categories selected is: ${categoryList.map((e) => e.toString())}");
+                      // }
+                      else {
                         var products =
                             await Provider.of<ProductsOperationsController>(
                                     context,
@@ -143,7 +182,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
     );
   }
 
-  Widget allAccommodationUI() {
+  Widget allAccommodationUI(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,7 +202,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
         Padding(
           padding: const EdgeInsets.only(right: 16, left: 16),
           child: Column(
-            children: getAccomodationListUI(),
+            children: getAccomodationListUI(context),
           ),
         ),
         const SizedBox(
@@ -173,7 +212,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
     );
   }
 
-  List<Widget> getAccomodationListUI() {
+  List<Widget> getAccomodationListUI(BuildContext context) {
     final List<Widget> noList = <Widget>[];
     for (int i = 0; i < accomodationListData.length; i++) {
       final PopularFilterListData date = accomodationListData[i];
@@ -184,7 +223,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
             borderRadius: const BorderRadius.all(Radius.circular(4.0)),
             onTap: () {
               setState(() {
-                checkAppPosition(i);
+                checkAppPosition(i, context);
               });
             },
             child: Padding(
@@ -203,7 +242,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                         : Colors.grey.withOpacity(0.6),
                     onChanged: (bool value) {
                       setState(() {
-                        checkAppPosition(i);
+                        checkAppPosition(i, context);
                       });
                     },
                     value: date.isSelected,
@@ -223,7 +262,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
     return noList;
   }
 
-  void checkAppPosition(int index) {
+  void checkAppPosition(int index, BuildContext context) {
     if (index == 0) {
       if (accomodationListData[0].isSelected) {
         accomodationListData.forEach((d) {
@@ -247,9 +286,6 @@ class _FiltersScreenState extends State<FiltersScreen> {
           final PopularFilterListData data = accomodationListData[i];
           if (data.isSelected) {
             count += 1;
-            setState(() {
-              _selectedCategories.add(data);
-            });
           }
         }
       }
@@ -259,6 +295,25 @@ class _FiltersScreenState extends State<FiltersScreen> {
       } else {
         accomodationListData[0].isSelected = false;
       }
+    }
+    if (accomodationListData[index].isSelected) {
+      // _selectedCategories.add(accomodationListData[index]);
+      Provider.of<ProductsOperationsController>(context, listen: false)
+          .updateSelectedCategories(accomodationListData[index]);
+      var listOfSelectedCategories =
+          Provider.of<ProductsOperationsController>(context, listen: false)
+              .selectedCategories;
+      print(
+          "Selcted categories selcted: ${listOfSelectedCategories.toString()}");
+    } else if (!accomodationListData[index].isSelected) {
+      // _selectedCategories.remove(accomodationListData[index]);
+      Provider.of<ProductsOperationsController>(context, listen: false)
+          .removeItemFromSelectedCategories(accomodationListData[index]);
+      var listOfSelectedCategories =
+          Provider.of<ProductsOperationsController>(context, listen: false)
+              .selectedCategories;
+      print(
+          "Selcted categories unselcted: ${listOfSelectedCategories.toString()}");
     }
   }
 
@@ -401,8 +456,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
             style: TextStyle(
                 color: Colors.grey,
                 fontSize: MediaQuery.of(context).size.width > 360 ? 18 : 16,
-                fontWeight: FontWeight.normal
-                ),
+                fontWeight: FontWeight.normal),
           ),
         ),
         RangeSliderView(

@@ -6,6 +6,8 @@ import 'package:groceries_shopping_app/utils/utils.dart';
 class ProductsOperationsController extends ChangeNotifier {
   List<Product> allList;
 
+  List _selectedCategories = [];
+
   List<Product> _productsInStock = [
     Product(
         name: 'Fusilo ketchup Toglile',
@@ -16,18 +18,21 @@ class ProductsOperationsController extends ChangeNotifier {
         ),
     Product(
         name: 'Togliatelle Rice Organic',
-        picPath: ['assets/rice.png', 'assets/flour.png', ],
+        picPath: [
+          'assets/rice.png',
+          'assets/flour.png',
+        ],
         price: 130.99,
         foodCategory: Constants.wheatFoodCategory
         // weight: '500g'
         ),
     Product(
-      name: 'Organic Potatos',
-      picPath: ['assets/potatoes.png'],
-      price: 104.99,
-      foodCategory: Constants.wholeFoodCategory
-      // weight: '1000g'
-    ),
+        name: 'Organic Potatos',
+        picPath: ['assets/potatoes.png'],
+        price: 104.99,
+        foodCategory: Constants.wholeFoodCategory
+        // weight: '1000g'
+        ),
     Product(
         name: 'Desolve Milk',
         picPath: ['assets/milk.png'],
@@ -62,6 +67,10 @@ class ProductsOperationsController extends ChangeNotifier {
     return UnmodifiableListView(_productsInStock);
   }
 
+  UnmodifiableListView get selectedCategories {
+    return UnmodifiableListView(_selectedCategories);
+  }
+
   UnmodifiableListView<Product> productsFilteredByPriceInStock(
       double lowPrice, double highPrice) {
     var products = _productsInStock
@@ -71,8 +80,8 @@ class ProductsOperationsController extends ChangeNotifier {
     return UnmodifiableListView(products);
   }
 
-    UnmodifiableListView<Product> productsParamsFilteredByPriceInStock(List<Product> productsList,
-      double lowPrice, double highPrice) {
+  UnmodifiableListView<Product> productsParamsFilteredByPriceInStock(
+      List<Product> productsList, double lowPrice, double highPrice) {
     var products = productsList
         .where((element) =>
             (lowPrice <= element.price) && (element.price <= highPrice))
@@ -90,11 +99,29 @@ class ProductsOperationsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearSelectedCategories() {
+    _selectedCategories.clear();
+    notifyListeners();
+  }
+
+  void removeItemFromSelectedCategories(item) {
+    _selectedCategories.remove(item);
+    notifyListeners();
+  }
+
+  void updateSelectedCategories(newItem) {
+    _selectedCategories.add(newItem);
+    notifyListeners();
+  }
+
   UnmodifiableListView<Product> productsFilteredByCategoryInStock(
       String category) {
-    var products = _productsInStock
+     var products = _productsInStock
         .where((element) => element.foodCategory == category)
         .toList();
+
+    print("Products: $products");
+
     return UnmodifiableListView(products);
   }
 
@@ -126,8 +153,11 @@ class ProductsOperationsController extends ChangeNotifier {
               _productsInStock[index].orderedQuantity + (bulkOrder - 1),
         ),
       );
-      _shoppingCart.map((e) => {_totalCost += e.price * e.orderedQuantity});
-      notifyListeners();
+      for (int i = 0; i < _shoppingCart.length; i++) {
+        _totalCost += _shoppingCart[i].price * _shoppingCart[i].orderedQuantity;
+        notifyListeners();
+      }
+      // _shoppingCart.map((e) => {_totalCost += e.price * e.orderedQuantity});
     } else {
       _shoppingCart[indexInCard].makeOrder(bulkOrder: bulkOrder);
       notifyListeners();
@@ -139,14 +169,14 @@ class ProductsOperationsController extends ChangeNotifier {
     if (_totalCost == 0) {
       for (int i = 0; i < _shoppingCart.length; i++) {
         _totalCost += _shoppingCart[i].price * _shoppingCart[i].orderedQuantity;
+        notifyListeners();
       }
-      notifyListeners();
     } else {
       _totalCost = 0.0;
       for (int i = 0; i < _shoppingCart.length; i++) {
         _totalCost += _shoppingCart[i].price * _shoppingCart[i].orderedQuantity;
+        notifyListeners();
       }
-      notifyListeners();
     }
   }
 

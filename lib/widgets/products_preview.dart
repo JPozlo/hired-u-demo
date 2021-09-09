@@ -35,34 +35,43 @@ class _ProductsPreviewState extends State<ProductsPreview> {
             height: response.screenHeight * 0.79,
             width: response.screenWidth,
             child: Padding(
-              padding: EdgeInsets.only(bottom: response.setHeight(6.5)),
+              padding: EdgeInsets.only(bottom: response.setHeight(12.5)),
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 35),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          for (var index = 0;
-                              index < (listInfo.length / 2).floor();
-                              index++)
-                            ProductCard(index: index)
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: response.setHeight(10)),
-                        child: Column(
-                          children: <Widget>[
-                            for (var i = (listInfo.length / 2).floor();
-                                i < listInfo.length;
-                                i++)
-                              ProductCard(index: i)
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, childAspectRatio: MediaQuery.of(context).size.width /
+                              (MediaQuery.of(context).size.height / 1.4),
+                              crossAxisSpacing: 6),
+                    itemCount: listInfo.length,
+                     itemBuilder: (context, index) => ProductCard(index: index)),
+                  // child: Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //   children: <Widget>[
+                  //     Column(
+                  //       children: <Widget>[
+                  //         for (var index = 0;
+                  //             index < (listInfo.length / 2).floor();
+                  //             index++)
+                  //           ProductCard(index: index)
+                  //       ],
+                  //     ),
+                  //     Padding(
+                  //       padding: EdgeInsets.only(top: response.setHeight(10)),
+                  //       child: Column(
+                  //         children: <Widget>[
+                  //           for (var i = (listInfo.length / 2).floor();
+                  //               i < listInfo.length;
+                  //               i++)
+                  //             ProductCard(index: i)
+                  //         ],
+                  //       ),
+                  //     )
+                  //   ],
+                  // ),
                 ),
               ),
             ),
@@ -104,7 +113,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
           left: 0,
           width: response.screenWidth,
           child: Container(
-            height: response.setHeight(70),
+            height: response.setHeight(50),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
