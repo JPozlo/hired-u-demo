@@ -42,9 +42,9 @@ class ServiceCard extends StatelessWidget {
             widgetTitle: "Carpenter",
             serviceCategories: _carpenterServiceCategories);
         break;
-      case 'Technician':
+      case 'Plumbing':
         serviceDetails = ServiceWidget(
-            widgetTitle: "Technician",
+            widgetTitle: "Plumbing",
             serviceCategories: _mechanicServiceCategories);
         break;
       case 'Maids':

@@ -11,8 +11,8 @@ class ServiceProvider extends ChangeNotifier{
         picPath: 'assets/grocery.png',),
     Service(
       id: 5 ,
-        name: 'Technician',
-        picPath: 'assets/phone-repair-symbol.png',),
+        name: 'Plumbing',
+        picPath: 'assets/plumbing.png',),
     Service(
       id: 2,
         name: 'Electrician',
