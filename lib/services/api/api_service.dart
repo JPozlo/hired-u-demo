@@ -1,11 +1,12 @@
 class ApiService {
   /// URLs
   static const String appBaseURL =
-      "https://talantaspackle.com/api/v1.0.1/user/";
+      "https://uhired.herokuapp.com/api/v1.0.1/user/";
+  static const String resetBaseURL = "http://uhired.herokuapp.com/";
   // User
   static const String createNewUser = appBaseURL + "register";
   static const String loginUser = appBaseURL + "login";
-  static const String resetPassword = appBaseURL + "password/reset";
+  static const String resetPassword = resetBaseURL + "password/reset";
   static const String logoutUser = appBaseURL + "logout";
   static const String fetchUser = appBaseURL + "get";
   static const String fetchIP = appBaseURL + "getip";
@@ -15,4 +16,10 @@ class ApiService {
   static const String viewOrder = baseOrdersURL + "view";
   static const String payOrder = baseOrdersURL + "pay";
   static const String createOrder = appBaseURL + "create/order";
+
+  // Products
+  static const String fetchProducts = appBaseURL + "products";
+
+  // Services
+  static const String fetchServices = appBaseURL + "services";
 }

@@ -1,34 +1,43 @@
 import 'dart:io';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
+import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/providers.dart';
 import 'package:groceries_shopping_app/screens/auth/forgot_password.dart';
 import 'package:groceries_shopping_app/screens/main_home.dart';
+import 'package:groceries_shopping_app/services/api/google_auth.dart';
+import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:groceries_shopping_app/widgets/app_button.dart';
 import 'package:groceries_shopping_app/widgets/input_decoration_widget.dart';
+import 'package:groceries_shopping_app/widgets/social_sign_in.dart';
 import 'package:provider/provider.dart';
 
+class Login extends StatefulWidget {
+  const Login({Key key}) : super(key: key);
 
-class Login extends StatelessWidget {
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
   final _formKey = new GlobalKey<FormState>();
   String _email, _password;
 
   @override
   Widget build(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
-    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
     final emailInput = TextFormField(
-        // validator: validateEmail,
+        validator: validateEmail,
         onSaved: (value) => _email = value,
-        // decoration: inputFieldDecoration("Enter your email address")
-    );
+        decoration: inputFieldDecoration("Enter your email address"));
     final passwordInput = TextFormField(
         obscureText: true,
         validator: (value) => value.isEmpty ? "Please enter password" : null,
         onSaved: (value) => _password = value,
-        // decoration: inputFieldDecoration("Enter your password")
-    );
+        decoration: inputFieldDecoration("Enter your password"));
 
     var loading = Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -38,33 +47,33 @@ class Login extends StatelessWidget {
       ],
     );
 
-    // var doLogin = () {
-    //   final form = _formKey.currentState;
-    //   if (form.validate()) {
-    //     form.save();
+    var doLogin = () {
+      final form = _formKey.currentState;
+      if (form.validate()) {
+        form.save();
 
-    //     final Future<Result> loginResponse =
-    //     auth.login(_email, _password);
+        final Future<Result> loginResponse = auth.login(_email, _password);
 
-    //     loginResponse.then((response) {
-    //       if (response.status) {
-    //         nextFirstScreen(context, Dashboard());
-    //       } else {
-    //         Flushbar(
-    //           title: "Failed Login",
-    //           message: response.message.toString(),
-    //           duration: Duration(seconds: 3),
-    //         ).show(context);
-    //       }
-    //     });
-    //   } else {
-    //     Flushbar(
-    //       title: "Invalid form",
-    //       message: "Please Complete the form properly",
-    //       duration: Duration(seconds: 10),
-    //     ).show(context);
-    //   }
-    // };
+        loginResponse.then((response) {
+          if (response.status) {
+            userProvider.user = response.user;
+            nextScreen(context, MainHome());
+          } else {
+            Flushbar(
+              title: "Failed Login",
+              message: response.message.toString(),
+              duration: Duration(seconds: 3),
+            ).show(context);
+          }
+        });
+      } else {
+        Flushbar(
+          title: "Invalid form",
+          message: "Please Complete the form properly",
+          duration: Duration(seconds: 10),
+        ).show(context);
+      }
+    };
 
     return Scaffold(
       backgroundColor: AppTheme.mainOrangeColor,
@@ -72,18 +81,8 @@ class Login extends StatelessWidget {
         bottom: false,
         child: Container(
           child: Stack(
-            overflow: Overflow.visible,
+            clipBehavior: Clip.none,
             children: [
-              // Positioned(
-              //   right: 0.0,
-              //   top: -20.0,
-              //   child: Opacity(
-              //     opacity: 0.3,
-              //     child: Image.asset(
-              //       "assets/images/washing_machine_illustration.png",
-              //     ),
-              //   ),
-              // ),
               SingleChildScrollView(
                 child: Container(
                   child: Column(
@@ -148,18 +147,26 @@ class Login extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 label("Email"),
-                                SizedBox(height: 7.0,),
+                                SizedBox(
+                                  height: 7.0,
+                                ),
                                 emailInput,
                                 SizedBox(
                                   height: 25.0,
                                 ),
                                 label("Password"),
-                                SizedBox(height: 7.0,),
+                                SizedBox(
+                                  height: 7.0,
+                                ),
                                 passwordInput,
                                 GestureDetector(
                                   onTap: () {
                                     // nextScreen(context, "/password-reset");
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPassword()));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ForgotPassword()));
                                   },
                                   child: Text(
                                     "Forgot Password?",
@@ -173,14 +180,17 @@ class Login extends StatelessWidget {
                                 SizedBox(
                                   height: 20.0,
                                 ),
-                                auth.loggedInStatus == Status.Authenticating ? loading :
-                                AppButton(
-                                  type: ButtonType.PRIMARY,
-                                  text: "Log In",
-                                  onPressed: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => MainHome() ));
-                                  }
-                                )
+                                auth.loggedInStatus == Status.Authenticating
+                                    ? loading
+                                    : AppButton(
+                                        type: ButtonType.PRIMARY,
+                                        text: "Log In",
+                                        onPressed: doLogin
+                                        // Navigator.push(context, MaterialPageRoute(builder: (context) => MainHome() ));
+                                        ),
+                                SizedBox(
+                                  height: 40.0,
+                                ),
                               ],
                             ),
                           ),

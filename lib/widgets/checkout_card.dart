@@ -16,7 +16,7 @@ class Checkout extends StatelessWidget {
   final UnmodifiableListView<Product> cartProductsProvider;
   final int index;
   String _cost() {
-    double totalCost =
+    int totalCost =
         cartProductsProvider[index].price *
             cartProductsProvider[index].orderedQuantity;
     return totalCost.toStringAsFixed(2);

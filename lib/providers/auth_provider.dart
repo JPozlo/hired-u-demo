@@ -3,10 +3,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:groceries_shopping_app/models/result.dart';
 import 'package:groceries_shopping_app/models/user.dart';
 import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:http/http.dart';
+
+import '../local_database.dart';
+import 'package:groceries_shopping_app/utils/utils.dart';
 
 enum Status {
   NotLoggedIn,
@@ -31,13 +35,18 @@ class AuthProvider with ChangeNotifier {
 
   Status get resettingPassStatus => _resetPassStatus;
 
+  PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
+
   Future<Result> login(String email, String password) async {
     Result result;
+
+    String deviceName = await _sharedPreferences
+        .getValueWithKey(Constants.userDeviceModelPrefKey);
 
     final Map<String, dynamic> loginData = {
       'email': email,
       'password': password,
-      'device_name': "Samsung"
+      'device_name': deviceName
     };
 
     _loggedInStatus = Status.Authenticating;
@@ -53,18 +62,20 @@ class AuthProvider with ChangeNotifier {
 
     var status = responseData['status_code'];
 
+    print("Status code: $status");
+
     if (status == 200) {
       var userData = responseData['user'];
-      var userId = responseData['uid'];
       var token = responseData['token'];
 
-      var user = User.fromJsonData(userData);
-      // var user = await getUser(token);
+      var user = User.fromJsonUserData(userData);
 
       String message = responseData['message'];
 
-      // UserPreferences().saveUserToken(token);
-      // UserPreferences().saveUser(user);
+      _sharedPreferences.saveValueWithKey(Constants.userNamePrefKey, user.name);
+      _sharedPreferences.saveValueWithKey(Constants.userTokenPrefKey, token);
+      _sharedPreferences.saveValueWithKey(
+          Constants.userEmailPrefKey, user.email);
 
       _loggedInStatus = Status.LoggedIn;
       notifyListeners();
@@ -85,16 +96,14 @@ class AuthProvider with ChangeNotifier {
     return result;
   }
 
-  Future<Result> register(
-      String email, String password, String phoneNumber) async {
+  Future<Result> register(String email, String password, String name) async {
     Result result;
 
+    String deviceName = await _sharedPreferences
+        .getValueWithKey(Constants.userDeviceModelPrefKey);
+
     User user = User(
-        name: email.split("@")[0],
-        email: email,
-        phone: phoneNumber,
-        password: password,
-        deviceName: "Samsung");
+        name: name, email: email, password: password, deviceName: deviceName);
 
     final Map<String, dynamic> registrationData = user.toJson();
 
@@ -111,17 +120,17 @@ class AuthProvider with ChangeNotifier {
 
     if (status == 200) {
       var userData = responseData['user'];
-      var uid = responseData['uid'];
+      // var uid = responseData['uid'];
       var token = responseData['token'];
 
       var user = User.fromJsonUserData(userData);
 
-      // var user = await getUser(token);
-
       String message = responseData['message'];
 
-      // UserPreferences().saveUserToken(token);
-      // UserPreferences().saveUser(user);
+      _sharedPreferences.saveValueWithKey(Constants.userNamePrefKey, user.name);
+      _sharedPreferences.saveValueWithKey(Constants.userTokenPrefKey, token);
+      _sharedPreferences.saveValueWithKey(
+          Constants.userEmailPrefKey, user.email);
 
       _registeredInStatus = Status.Registered;
       notifyListeners();

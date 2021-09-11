@@ -1,18 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:groceries_shopping_app/models/create_order_dto.dart';
-import 'package:groceries_shopping_app/models/order.dart';
-import 'package:groceries_shopping_app/models/user.dart';
+import 'package:groceries_shopping_app/models/models.dart';
 
 class Result{
   final bool status;
   final String message;
-  final List orders;
+  final List<Order> orders;
+  final List<Product> products;
   final CreateOrderDTO createOrderDto;
   final Order order;
   final User user;
   final List errors;
 
-  Result(this.status, this.message, {this.createOrderDto, this.order, this.orders, this.user, this.errors});
+  Result(this.status, this.message, {this.products, this.createOrderDto, this.order, this.orders, this.user, this.errors});
 
   Map<String, dynamic> toJson() => {
     'status': status,
@@ -20,7 +19,8 @@ class Result{
     'orders': orders ?? null,
     'order': createOrderDto ?? null,
     'user': user ?? null,
-    "errors": errors ?? null
+    "errors": errors ?? null,
+    "products": products ?? null
   };
 
   @override

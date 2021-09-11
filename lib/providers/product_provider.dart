@@ -1,9 +1,26 @@
 import 'dart:collection';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:groceries_shopping_app/local_database.dart';
+import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/models/product.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:groceries_shopping_app/utils/utils.dart';
+import 'package:http/http.dart';
+
+enum ProductStatus {
+  NotCreating,
+  CreatingProduct,
+  CreateProductSuccess,
+  CreateProductFailure,
+}
 
 class ProductsOperationsController extends ChangeNotifier {
+  PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
+
+  ProductStatus _createProductStatus = ProductStatus.NotCreating;
+  ProductStatus get createOrderStatus => _createProductStatus;
+
   List<Product> allList;
 
   List _selectedCategories = [];
@@ -12,7 +29,7 @@ class ProductsOperationsController extends ChangeNotifier {
     Product(
         name: 'Fusilo ketchup Toglile',
         picPath: ['assets/ketchup.png'],
-        price: 10.95,
+        price: 109,
         foodCategory: Constants.pastaFoodCategory
         // weight: '550g'
         ),
@@ -22,21 +39,21 @@ class ProductsOperationsController extends ChangeNotifier {
           'assets/rice.png',
           'assets/flour.png',
         ],
-        price: 130.99,
+        price: 132,
         foodCategory: Constants.wheatFoodCategory
         // weight: '500g'
         ),
     Product(
         name: 'Organic Potatos',
         picPath: ['assets/potatoes.png'],
-        price: 104.99,
+        price: 1099,
         foodCategory: Constants.wholeFoodCategory
         // weight: '1000g'
         ),
     Product(
         name: 'Desolve Milk',
         picPath: ['assets/milk.png'],
-        price: 908.99,
+        price: 9099,
         foodCategory: Constants.drinkFoodCategory
         // weight: '550g'
         ),
@@ -44,13 +61,13 @@ class ProductsOperationsController extends ChangeNotifier {
       name: 'Fusilo Pasta Toglile',
       picPath: ['assets/pasta.png', 'assets/flour.png'],
       foodCategory: Constants.wheatFoodCategory,
-      price: 679.32,
+      price: 679,
       // weight: '500g'
     ),
     Product(
         name: 'Organic Flour',
         picPath: ['assets/flour.png', 'assets/pasta.png'],
-        price: 610.95,
+        price: 610,
         foodCategory: Constants.wheatFoodCategory
         // weight: '250g'
         ),
@@ -116,7 +133,7 @@ class ProductsOperationsController extends ChangeNotifier {
 
   UnmodifiableListView<Product> productsFilteredByCategoryInStock(
       String category) {
-     var products = _productsInStock
+    var products = _productsInStock
         .where((element) => element.foodCategory == category)
         .toList();
 
@@ -193,5 +210,55 @@ class ProductsOperationsController extends ChangeNotifier {
     _shoppingCart.clear();
     onCheckOutCallback();
     notifyListeners();
+  }
+
+  Future<Result> fetchProducts() async {
+    Result result;
+
+    String token =
+        await _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
+
+    Product fetchProductsToken = Product(token: token);
+
+    final Map<String, dynamic> fetchProductsData = fetchProductsToken.toJson();
+
+    _createProductStatus = ProductStatus.CreatingProduct;
+    notifyListeners();
+
+    Response response = await post(Uri.parse(ApiService.fetchProducts),
+        body: json.encode(fetchProductsData),
+        headers: {'Content-Type': 'application/json'});
+
+    final Map<String, dynamic> responseData = json.decode(response.body);
+
+    var status = responseData['status_code'];
+
+    if (status == 200) {
+      var productsData = responseData['products'];
+      // var uid = responseData['uid'];
+      // var token = responseData['token'];
+
+      var products = productsData.map((e) => Product.fromJson(e));
+
+      String message = responseData['message'];
+
+      _createProductStatus = ProductStatus.CreateProductSuccess;
+      notifyListeners();
+
+      result = Result(true, message, products: products);
+    } else {
+      _createProductStatus = ProductStatus.CreateProductFailure;
+      notifyListeners();
+
+      var errors = responseData['errors'];
+
+      print("The ERRORS: ${responseData['errors']}");
+
+      result = Result(false, "Error registering");
+    }
+
+    print("Result value: $result");
+
+    return result;
   }
 }

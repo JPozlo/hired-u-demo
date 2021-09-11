@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
+import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/providers.dart';
 import 'package:groceries_shopping_app/screens/main_home.dart';
+import 'package:groceries_shopping_app/services/api/google_auth.dart';
 import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:groceries_shopping_app/widgets/app_button.dart';
 import 'package:groceries_shopping_app/widgets/input_decoration_widget.dart';
@@ -15,25 +18,37 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  final TextEditingController _emailController = new TextEditingController();
+  final TextEditingController _nameController = new TextEditingController();
   final _formKey = new GlobalKey<FormState>();
   File _imageFile;
   String _email, _phone, _password, _confirmPassword;
+
+  Future signIn() async {
+    var googleUser = await GoogleAuthentication.googleLogin();
+    setState(() {
+      _emailController.text = googleUser.email;
+      _nameController.text = googleUser.displayName;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
 
     final emailInput = TextFormField(
+        controller: _emailController,
         validator: validateEmail,
         onSaved: (value) => _email = value,
         decoration: inputFieldDecoration(
             "Enter your email address eg: example@gmail.com"));
 
-    final phoneInput = TextFormField(
-        validator: (value) =>
-            value.isEmpty ? "Please enter phone number" : null,
+    final nameInput = TextFormField(
+        controller: _nameController,
+        validator: (value) => value.isEmpty ? "Please enter your name" : null,
         onSaved: (value) => _phone = value,
-        decoration: inputFieldDecoration(
-            "Enter your mobile number with eg: +254734567890"));
+        decoration: inputFieldDecoration("Enter your name"));
 
     final passwordInput = TextFormField(
         obscureText: true,
@@ -48,7 +63,7 @@ class _RegisterState extends State<Register> {
         decoration: inputFieldDecoration("Enter your password again"));
 
     bool _verifyPasswordsMatch() {
-      if(_confirmPassword.trim() != _password.trim()){
+      if (_confirmPassword.trim() != _password.trim()) {
         print("Pass NOT MATCH HIT");
         return false;
       }
@@ -64,37 +79,38 @@ class _RegisterState extends State<Register> {
       ],
     );
 
-    // var doRegister = () {
-    //   final form = _formKey.currentState;
-    //   if (form.validate()) {
-    //     form.save();
-    //     if(_verifyPasswordsMatch()){
-    //       auth.register(_email, _password, _phone).then((response) {
-    //         if (response.status) {
-    //           nextFirstScreen(context, Dashboard());
-    //         } else {
-    //           Flushbar(
-    //             title: "Registration Failed",
-    //             message: response.message.toString(),
-    //             duration: Duration(seconds: 10),
-    //           ).show(context);
-    //         }
-    //       });
-    //     } else{
-    //       Flushbar(
-    //         title: "Error",
-    //         message: "THe passwords don't match",
-    //         duration: Duration(seconds:7),
-    //       ).show(context);
-    //     }
-    //   } else {
-    //     Flushbar(
-    //       title: "Invalid form",
-    //       message: "Please Complete the form properly",
-    //       duration: Duration(seconds: 10),
-    //     ).show(context);
-    //   }
-    // };
+    var doRegister = () {
+      final form = _formKey.currentState;
+      if (form.validate()) {
+        form.save();
+        if (_verifyPasswordsMatch()) {
+          auth.register(_email, _password, _phone).then((response) {
+            if (response.status) {
+              userProvider.user = response.user;
+              nextFirstScreen(context, MainHome());
+            } else {
+              Flushbar(
+                title: "Registration Failed",
+                message: response.message.toString(),
+                duration: Duration(seconds: 10),
+              ).show(context);
+            }
+          });
+        } else {
+          Flushbar(
+            title: "Error",
+            message: "THe passwords don't match",
+            duration: Duration(seconds: 7),
+          ).show(context);
+        }
+      } else {
+        Flushbar(
+          title: "Invalid form",
+          message: "Please Complete the form properly",
+          duration: Duration(seconds: 10),
+        ).show(context);
+      }
+    };
 
     return Scaffold(
       backgroundColor: AppTheme.mainOrangeColor,
@@ -102,19 +118,8 @@ class _RegisterState extends State<Register> {
         bottom: false,
         child: Container(
           child: Stack(
-            clipBehavior: Clip.hardEdge,
-            // overflow: Overflow.visible,
+            clipBehavior: Clip.none,
             children: [
-              // Positioned(
-              //   right: 0.0,
-              //   top: -20.0,
-              //   child: Opacity(
-              //     opacity: 0.3,
-              //     child: Image.asset(
-              //       "assets/images/washing_machine_illustration.png",
-              //     ),
-              //   ),
-              // ),
               SingleChildScrollView(
                 child: Container(
                   child: Column(
@@ -186,11 +191,11 @@ class _RegisterState extends State<Register> {
                                 SizedBox(
                                   height: 25.0,
                                 ),
-                                label("Phone"),
+                                label("Name"),
                                 SizedBox(
                                   height: 7.0,
                                 ),
-                                phoneInput,
+                                nameInput,
                                 SizedBox(
                                   height: 25.0,
                                 ),
@@ -210,34 +215,36 @@ class _RegisterState extends State<Register> {
                                 SizedBox(
                                   height: 20.0,
                                 ),
-                                AppButton(
-                                  type: ButtonType.PLAIN,
-                                  text: "Pick Profile Picture",
-                                  onPressed: () async {
-                                    // _imageFile = await nextScreen(
-                                    //     context, "/select-image");
-                                    // if (_imageFile != null) {
-                                    //   setState(() {
-                                    //     _imageFile = _imageFile;
-                                    //   });
-                                    //   print(
-                                    //       "The image file path is: ${_imageFile.path}");
-                                    // }
-                                  },
-                                ),
-                                SizedBox(
-                                  height: 18.0,
-                                ),
+                                // AppButton(
+                                //   type: ButtonType.PLAIN,
+                                //   text: "Pick Profile Picture",
+                                //   onPressed: () async {
+                                //     // _imageFile = await nextScreen(
+                                //     //     context, "/select-image");
+                                //     // if (_imageFile != null) {
+                                //     //   setState(() {
+                                //     //     _imageFile = _imageFile;
+                                //     //   });
+                                //     //   print(
+                                //     //       "The image file path is: ${_imageFile.path}");
+                                //     // }
+                                //   },
+                                // ),
+                                // SizedBox(
+                                //   height: 18.0,
+                                // ),
 
                                 auth.registeredInStatus == Status.Registering
                                     ? loading
                                     : AppButton(
                                         type: ButtonType.PRIMARY,
                                         text: "Sign Up",
-                                        onPressed: (){
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => MainHome() ));
-                                        },
-                                      )
+                                        onPressed: doRegister,
+                                        // onPressed: (){
+                                        //   Navigator.push(context, MaterialPageRoute(builder: (context) => MainHome() ));
+                                        // },
+                                      ),
+                                buildSocialButtons()
                               ],
                             ),
                           ),
@@ -250,6 +257,73 @@ class _RegisterState extends State<Register> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget buildSocialButtons() {
+    return Container(
+      // height: response.setHeight(230.8),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text("Or Sign In with a Social Account")],
+          ),
+          SizedBox(
+            height: 23.8,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: signIn,
+                child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      // borderRadius: BorderRadius.circular(21.0),
+                      // border: Border.all(color: AppTheme.mainBlueColor)
+                    ),
+                    child: Image(
+                        width: 55, image: AssetImage('assets/facebook.png'))),
+              ),
+              SizedBox(
+                width: 12.7,
+              ),
+              GestureDetector(
+                onTap: signIn,
+                child: Container(
+                    decoration: BoxDecoration(
+                      // shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(21.0),
+                      // border: Border.all(color: AppTheme.mainBlueColor)
+                    ),
+                    child: Image(
+                        width: 55, image: AssetImage('assets/google.png'))),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 12.4,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: signIn,
+                child: Container(
+                    // width: response.setWidth(response.screenWidth * 0.8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      // borderRadius: BorderRadius.circular(21.0),
+                      // border: Border.all(color: AppTheme.mainBlueColor)
+                    ),
+                    child: Image(
+                        width: 55, image: AssetImage('assets/apple.png'))),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

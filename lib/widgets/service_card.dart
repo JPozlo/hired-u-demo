@@ -51,6 +51,10 @@ class ServiceCard extends StatelessWidget {
         serviceDetails = ServiceWidget(
             widgetTitle: "Maids", serviceCategories: _maidServiceCategories);
         break;
+              case 'Technician':
+        serviceDetails = ServiceWidget(
+            widgetTitle: "Mobile Technician", serviceCategories: _mechanicServiceCategories);
+        break;
       default:
         serviceDetails = HomeScreen();
     }
