@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
+import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/screens/main_home.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
@@ -21,10 +22,45 @@ class ProductsPreview extends StatefulWidget {
 class _ProductsPreviewState extends State<ProductsPreview> {
   int productsFilterCount = 6;
 
+  var doLoading = Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      CircularProgressIndicator(),
+      Text(" Fetching Products ... Please wait")
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
     var listInfo =
         Provider.of<ProductsOperationsController>(context).productsInStock;
+    var productsService = Provider.of<ProductsOperationsController>(context);
+    return FutureBuilder(
+      future: productsService.fetchProducts(),
+      builder: (context, AsyncSnapshot<Result> snapshot) {
+        Widget defaultWidget;
+        if (snapshot.hasError) {
+          defaultWidget = Text("Error ");
+        } else {           
+          List<Product> listProducts = snapshot.data.products.isEmpty ? listInfo : snapshot.data.products; 
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              defaultWidget = doLoading;
+              break;
+            case ConnectionState.done:
+              defaultWidget = productsMainDisplay(listProducts);
+              break;
+            default:
+              defaultWidget = doLoading;
+              break;
+          }
+        }
+        return defaultWidget;
+      },
+    );
+  }
+
+  Widget productsMainDisplay(List<Product> listInfo){
     return Stack(
       children: <Widget>[
         Positioned(
@@ -40,14 +76,133 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 35),
                   child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: MediaQuery.of(context).size.width /
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: MediaQuery.of(context).size.width /
                               (MediaQuery.of(context).size.height / 1.4),
-                              crossAxisSpacing: 6),
-                    itemCount: listInfo.length,
-                     itemBuilder: (context, index) => ProductCard(index: index)),
+                          crossAxisSpacing: 6),
+                      itemCount: listInfo.length,
+                      itemBuilder: (context, index) =>
+                          ProductCard(index: index)),
+                  // child: Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //   children: <Widget>[
+                  //     Column(
+                  //       children: <Widget>[
+                  //         for (var index = 0;
+                  //             index < (listInfo.length / 2).floor();
+                  //             index++)
+                  //           ProductCard(index: index)
+                  //       ],
+                  //     ),
+                  //     Padding(
+                  //       padding: EdgeInsets.only(top: response.setHeight(10)),
+                  //       child: Column(
+                  //         children: <Widget>[
+                  //           for (var i = (listInfo.length / 2).floor();
+                  //               i < listInfo.length;
+                  //               i++)
+                  //             ProductCard(index: i)
+                  //         ],
+                  //       ),
+                  //     )
+                  //   ],
+                  // ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          width: response.screenWidth,
+          child: Container(
+            height: response.setHeight(70),
+            margin: EdgeInsets.only(top: 6.0),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.5, 1],
+                colors: [
+                  AppTheme.mainScaffoldBackgroundColor,
+                  AppTheme.mainScaffoldBackgroundColor.withAlpha(150)
+                ],
+              ),
+            ),
+            child: Opacity(
+              opacity: 1,
+              child: Align(
+                alignment: Alignment(0, 0.4),
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: response.setWidth(20)),
+                  child: getTopBar(context),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 70,
+          left: 0,
+          width: response.screenWidth,
+          child: Container(
+            height: response.setHeight(50),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.5, 1],
+                colors: [
+                  AppTheme.mainScaffoldBackgroundColor,
+                  AppTheme.mainScaffoldBackgroundColor.withAlpha(150)
+                ],
+              ),
+            ),
+            child: Align(
+              alignment: Alignment(0, 0.4),
+              child: Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: response.setWidth(20)),
+                child: getFilterBarUI(productsCount: listInfo.length),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget mainDisplay(List<Product> listInfo) {
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          top: 90,
+          left: 0,
+          right: 0,
+          child: Container(
+            height: response.screenHeight * 0.79,
+            width: response.screenWidth,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: response.setHeight(12.5)),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 35),
+                  child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: MediaQuery.of(context).size.width /
+                              (MediaQuery.of(context).size.height / 1.4),
+                          crossAxisSpacing: 6),
+                      itemCount: listInfo.length,
+                      itemBuilder: (context, index) =>
+                          ProductCard(index: index)),
                   // child: Row(
                   //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   //   children: <Widget>[
@@ -235,7 +390,6 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                             builder: (BuildContext context) => FiltersScreen(),
                             fullscreenDialog: true),
                       );
-          
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8),

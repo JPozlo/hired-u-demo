@@ -3,6 +3,7 @@ import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/models/service_category.dart';
 import 'package:groceries_shopping_app/screens/home.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/screens/profile_screen.dart';
 import 'package:groceries_shopping_app/widgets/drawer_widget.dart';
 
 class MainHome extends StatefulWidget {
@@ -19,7 +20,7 @@ class _MainHomeState extends State<MainHome> {
     NewHome(),
     NewHome(),
     NewHome(),
-    NewHome()
+    ProfileScreen()
   ];
   @override
   Widget build(BuildContext context) {
