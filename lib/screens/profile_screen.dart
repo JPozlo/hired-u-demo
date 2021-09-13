@@ -1,6 +1,11 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/screens/pages.dart';
+import 'package:groceries_shopping_app/utils/helpers.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key key}) : super(key: key);
@@ -35,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Text("Profile"),
-           RichText(
+            RichText(
               text: TextSpan(
                 children: [
                   TextSpan(
@@ -44,7 +49,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: Colors.white,
                         ),
                   ),
-
                 ],
               ),
             )
@@ -90,6 +94,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 height: 13.0,
               ),
               Text("email@gmail.com"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      nextScreen(context, EditProfilePage());
+                    },
+                    child: Container(
+                      child: SvgPicture.asset(
+                        'assets/edit.svg',
+                        color: AppTheme.mainBlueColor,
+                      ),
+                    ),
+                  )
+                ],
+              )
             ],
           ),
         ),
@@ -115,20 +135,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               physics: BouncingScrollPhysics(),
               children: [
                 ListTile(
-                  leading: Icon(Icons.logout),
-                  title: Text("Logout"),
+                  leading: Icon(Icons.location_on_outlined),
+                  title: Text("Residential Addresses"),
                 ),
-                ListTile(
-                  leading: Icon(Icons.logout),
-                  title: Text("Logout"),
+                       ListTile(
+                  leading: Icon(Icons.credit_card_outlined),
+                  title: Text("Payment"),
                 ),
-                ListTile(
-                  leading: Icon(Icons.logout),
-                  title: Text("Logout"),
-                ),
-                ListTile(
-                  leading: Icon(Icons.logout),
-                  title: Text("Logout"),
+                            ListTile(
+                  leading: Icon(Icons.support_agent),
+                  title: Text("Support"),
                 ),
                 ListTile(
                   leading: Icon(Icons.logout),
