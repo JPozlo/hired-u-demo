@@ -28,24 +28,34 @@ class _MainHomeState extends State<MainHome> {
   String userToken;
   String userDevice;
 
-  final screens = [
-    NewHome(),
-    OrdersScreen(),
-    ProfileScreen()
-  ];
+  final screens = [NewHome(), OrdersScreen(), ProfileScreen()];
 
   @override
   void initState() {
     super.initState();
-    userName = _sharedPreferences.getValueWithKey(Constants.userNamePrefKey);
-    userEmail = _sharedPreferences.getValueWithKey(Constants.userEmailPrefKey);
-    userToken = _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
-    userDevice = _sharedPreferences.getValueWithKey(Constants.userDeviceModelPrefKey);
+    if (this.widget.user == null) {
+      userName = _sharedPreferences.getValueWithKey(Constants.userNamePrefKey);
+      userEmail =
+          _sharedPreferences.getValueWithKey(Constants.userEmailPrefKey);
+      userToken =
+          _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
+      userDevice =
+          _sharedPreferences.getValueWithKey(Constants.userDeviceModelPrefKey);
+    } else {
+      userName = this.widget.user.name;
+      userEmail = this.widget.user.email;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<UserProvider>(context).user =  User(name: userName, email: userEmail, deviceName: userDevice, token: userToken);
+    Future.delayed(
+        Duration.zero,
+        () => Provider.of<UserProvider>(context, listen: false).user = User(
+            name: userName,
+            email: userEmail,
+            deviceName: userDevice,
+            token: userToken));
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,

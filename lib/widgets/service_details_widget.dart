@@ -1,7 +1,9 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
-import 'package:groceries_shopping_app/models/service_category.dart';
+import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:groceries_shopping_app/utils/helpers.dart';
 
 class ServiceDetails extends StatefulWidget {
@@ -9,7 +11,7 @@ class ServiceDetails extends StatefulWidget {
       {Key key, @required this.widgetTitle, @required this.subServices})
       : super(key: key);
   final String widgetTitle;
-  final List<ServiceSubCategory> subServices;
+  final List<MiniService> subServices;
 
   @override
   _ServiceDetailsState createState() => _ServiceDetailsState();
@@ -18,8 +20,8 @@ class ServiceDetails extends StatefulWidget {
 class _ServiceDetailsState extends State<ServiceDetails> {
   bool selected = false;
   String _location;
-  Map<ServiceSubCategory, bool> itemsMap;
-  List<ServiceSubCategory> _selectedItem = [];
+  Map<MiniService, bool> itemsMap;
+  List<int> _selectedItem = [];
 
   @override
   void initState() {
@@ -61,19 +63,19 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                 shrinkWrap: true,
                 itemCount: this.itemsMap.length,
                 itemBuilder: (context, index) {
-                  ServiceSubCategory item = this.itemsMap.keys.elementAt(index);
+                  MiniService item = this.itemsMap.keys.elementAt(index);
                   return CheckboxListTile(
                       title: Text(item.name),
                       subtitle: Text("KSh ${item.price}"),
-                      value: item.value,
+                      value: item.isChecked,
                       onChanged: (bool value) {
                         print("Value $value");
                         setState(() {
-                          item.value = value;
-                          if (item.value == true) {
-                            _selectedItem.add(item);
+                          item.isChecked = value;
+                          if (item.isChecked == true) {
+                            _selectedItem.add(item.id);
                           } else {
-                            _selectedItem.remove(item);
+                            _selectedItem.remove(item.id);
                           }
                         });
                         print("The selected items: $_selectedItem");
@@ -97,15 +99,35 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                   ),
                 ),
               ),
-              onPressed: () {
-                // showSnackBar(context,
-                //     "Your order has been received! Ordered items are\n${this._selectedItem.toString()}}");
+              onPressed: () async {
+                var result = await createService();
+                if (result.status) {
+                  Flushbar(
+                    message: result.message,
+                    title: "Success",
+                    duration: Duration(seconds: 4),
+                  ).show(context);
+                } else{
+                   Flushbar(
+                    message: result.errors.first.toString(),
+                    title: "Error",
+                    duration: Duration(seconds: 4),
+                  ).show(context);
+                }
               },
             )
           ],
         ),
       ),
     );
+  }
+
+  Future<Result> createService() async {
+    Result result;
+    CreateServiceDTO createdService =
+        CreateServiceDTO(ids: _selectedItem, location: _location);
+    result = await ApiService().createServiceOrderList(createdService);
+    return result;
   }
 
   Widget locationWidget() {

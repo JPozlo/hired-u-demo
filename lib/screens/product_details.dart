@@ -60,7 +60,7 @@ class _ProductDetailsState extends State<ProductDetails>
   Widget build(BuildContext context) {
     var provider = Provider.of<ProductsOperationsController>(context);
     var productProvider =
-        Provider.of<ProductsOperationsController>(context).productsInStock;
+        Provider.of<ProductsOperationsController>(context).viewProductsInStock();
     return Scaffold(
       backgroundColor: AppTheme.mainScaffoldBackgroundColor,
       appBar: AppBar(
@@ -327,7 +327,7 @@ class _ProductDetailsState extends State<ProductDetails>
   void afterFirstLayout(BuildContext context) async {
     animationController.forward();
     var value = _utils.getValueWithKey(
-        "${Provider.of<ProductsOperationsController>(context, listen: false).productsInStock[widget.productIndex].name}-fav");
+        "${Provider.of<ProductsOperationsController>(context, listen: false).viewProductsInStock()[widget.productIndex].name}-fav");
     if (value != null) {
       setState(() => isFavourite = value);
     }

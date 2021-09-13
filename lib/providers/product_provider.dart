@@ -26,59 +26,61 @@ class ProductsOperationsController extends ChangeNotifier {
 
   List _selectedCategories = [];
 
-  List<Product> _productsInStock = [
-    Product(
-        name: 'Fusilo ketchup Toglile',
-        picPath: [ProductImage(image: 'assets/ketchup.png')],
-        price: 109,
-        foodCategory: ProductCategory(name: Constants.pastaFoodCategory)
-        // weight: '550g'
-        ),
-    Product(
-        name: 'Togliatelle Rice Organic',
-        picPath: [
-          ProductImage(image: 'assets/rice.png'),
-          ProductImage(image: 'assets/flour.png')
-        ],
-        price: 132,
-        foodCategory: ProductCategory(name: Constants.wheatFoodCategory)
-        // weight: '500g'
-        ),
-    Product(
-        name: 'Organic Potatos',
-        picPath: [ProductImage(image: 'assets/potatoes.png')],
-        price: 1099,
-        foodCategory: ProductCategory(name: Constants.wholeFoodCategory)
-        // weight: '1000g'
-        ),
-    Product(
-        name: 'Desolve Milk',
-        picPath: [ProductImage(image: 'assets/milk.png')],
-        price: 9099,
-        foodCategory: ProductCategory(name: Constants.drinkFoodCategory)
-        // weight: '550g'
-        ),
-    Product(
-      name: 'Fusilo Pasta Toglile',
-      picPath: [
-        ProductImage(image: 'assets/pasta.png'),
-        ProductImage(image: 'assets/flour.png')
-      ],
-      foodCategory: ProductCategory(name: Constants.wheatFoodCategory),
-      price: 679,
-      // weight: '500g'
-    ),
-    Product(
-        name: 'Organic Flour',
-        picPath: [
-          ProductImage(image: 'assets/flour.png'),
-          ProductImage(image: 'assets/pasta.png')
-        ],
-        price: 610,
-        foodCategory: ProductCategory(name: Constants.wheatFoodCategory)
-        // weight: '250g'
-        ),
-  ];
+  List<Product> _productsInStock = [];
+
+  // List<Product> _productsInStock = [
+  //   Product(
+  //       name: 'Fusilo ketchup Toglile',
+  //       picPath: [ProductImage(image: 'assets/ketchup.png')],
+  //       price: 109,
+  //       foodCategory: ProductCategory(name: Constants.pastaFoodCategory)
+  //       // weight: '550g'
+  //       ),
+  //   Product(
+  //       name: 'Togliatelle Rice Organic',
+  //       picPath: [
+  //         ProductImage(image: 'assets/rice.png'),
+  //         ProductImage(image: 'assets/flour.png')
+  //       ],
+  //       price: 132,
+  //       foodCategory: ProductCategory(name: Constants.wheatFoodCategory)
+  //       // weight: '500g'
+  //       ),
+  //   Product(
+  //       name: 'Organic Potatos',
+  //       picPath: [ProductImage(image: 'assets/potatoes.png')],
+  //       price: 1099,
+  //       foodCategory: ProductCategory(name: Constants.wholeFoodCategory)
+  //       // weight: '1000g'
+  //       ),
+  //   Product(
+  //       name: 'Desolve Milk',
+  //       picPath: [ProductImage(image: 'assets/milk.png')],
+  //       price: 9099,
+  //       foodCategory: ProductCategory(name: Constants.drinkFoodCategory)
+  //       // weight: '550g'
+  //       ),
+  //   Product(
+  //     name: 'Fusilo Pasta Toglile',
+  //     picPath: [
+  //       ProductImage(image: 'assets/pasta.png'),
+  //       ProductImage(image: 'assets/flour.png')
+  //     ],
+  //     foodCategory: ProductCategory(name: Constants.wheatFoodCategory),
+  //     price: 679,
+  //     // weight: '500g'
+  //   ),
+  //   Product(
+  //       name: 'Organic Flour',
+  //       picPath: [
+  //         ProductImage(image: 'assets/flour.png'),
+  //         ProductImage(image: 'assets/pasta.png')
+  //       ],
+  //       price: 610,
+  //       foodCategory: ProductCategory(name: Constants.wheatFoodCategory)
+  //       // weight: '250g'
+  //       ),
+  // ];
 
   List<Product> _shoppingCart = [];
   VoidCallback onCheckOutCallback;
@@ -87,12 +89,19 @@ class ProductsOperationsController extends ChangeNotifier {
     this.onCheckOutCallback = onCheckOutCallback;
   }
 
-  UnmodifiableListView<Product> get productsInStock {
-    return UnmodifiableListView(_productsInStock);
+  Future<Result> get productsInStock async {
+    Result result;
+    result = await Result(true, "Success", products: _productsInStock);
+    return result;
+    // return UnmodifiableListView(_productsInStock);
   }
 
   UnmodifiableListView get selectedCategories {
     return UnmodifiableListView(_selectedCategories);
+  }
+
+  UnmodifiableListView<Product> viewProductsInStock() {
+    return UnmodifiableListView(_productsInStock);
   }
 
   UnmodifiableListView<Product> productsFilteredByPriceInStock(
@@ -219,14 +228,11 @@ class ProductsOperationsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Result> fetchProducts() async {
+      Future<Result> fetchProductsList() async {
     Result result;
 
     String token =
         await _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
-
-    _createProductStatus = ProductStatus.CreatingProduct;
-    notifyListeners();
 
     Response response = await get(Uri.parse(ApiService.fetchProducts),
         headers: {
@@ -238,7 +244,7 @@ class ProductsOperationsController extends ChangeNotifier {
 
     var status = responseData['status_code'];
 
-    if (response.statusCode == 200) {
+    if (status == 200) {
       var fetchData = responseData['products'];
       var productsData = responseData['products']['data'];
       var paginationData = responseData['products']['pagination'];
@@ -250,33 +256,40 @@ class ProductsOperationsController extends ChangeNotifier {
 
       if (productsData == null) {
         productsDataStatus = false;
-        result  = Result(true, "No products", productStatus: false );
-      
+        result = Result(true, "No products", productStatus: productsDataStatus);
       } else {
         productsDataStatus = true;
-          var products = productsData.map((e) => Product.fromJson(e)).toList();
+        List<Product> products =
+            productsData.map<Product>((e) => Product.fromJson(e)).toList();
         PaginationData pagination = PaginationData.fromJson(paginationData);
 
         String message = responseData['message'];
 
-        _createProductStatus = ProductStatus.CreateProductSuccess;
-        notifyListeners();
-        result =
-            Result(true, message == null ? "Success" : message, products: products, pagination: pagination, productStatus: true);
+        result = Result(true, message == null ? "Success" : message,
+            products: products,
+            pagination: pagination,
+            productStatus: productsDataStatus);
       }
     } else {
-      _createProductStatus = ProductStatus.CreateProductFailure;
-      notifyListeners();
+      String errorMessage;
 
       var errors = responseData['errors'];
 
       print("The ERRORS: ${responseData['errors']}");
 
-      result = Result(false, "Error registering");
+      if (status == 403) {
+        errorMessage = "Access Forbidden";
+      }
+
+      result = Result(false,
+          errorMessage == null ? "An unexpected error occurred" : errorMessage);
     }
 
     print("Result value: $result");
 
     return result;
   }
+
+
+
 }

@@ -6,6 +6,8 @@ class Result {
   final String message;
   final List<Order> orders;
   final List<Product> products;
+  final Service service;
+  final Payment payment;
   final CreateOrderDTO createOrderDto;
   final PaginationData pagination;
   final bool productStatus;
@@ -15,6 +17,8 @@ class Result {
 
   Result(this.status, this.message,
       {this.products,
+      this.payment,
+      this.service,
       this.productStatus,
       this.createOrderDto,
       this.order,

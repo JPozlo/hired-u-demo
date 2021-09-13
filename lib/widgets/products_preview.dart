@@ -6,6 +6,7 @@ import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/screens/main_home.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:groceries_shopping_app/widgets/filters_screen.dart';
 import 'package:groceries_shopping_app/widgets/product_card.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ class ProductsPreview extends StatefulWidget {
 
 class _ProductsPreviewState extends State<ProductsPreview> {
   int productsFilterCount = 6;
+  Future<Result> _productsFuture;
 
   var doLoading = Row(
     mainAxisAlignment: MainAxisAlignment.center,
@@ -31,36 +33,39 @@ class _ProductsPreviewState extends State<ProductsPreview> {
   );
 
   @override
+  void initState() {
+    super.initState();
+     _productsFuture = ApiService().fetchProductsList();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var productsService = Provider.of<ProductsOperationsController>(context);
+    // var productsService = Provider.of<ProductsOperationsController>(context);
     return FutureBuilder(
-      future: productsService.fetchProducts(),
+      future: _productsFuture,
       builder: (context, AsyncSnapshot<Result> snapshot) {
         Widget defaultWidget;
         if (snapshot.hasError) {
           defaultWidget = errorWidget(error: snapshot.error.toString());
         } else {
           if (snapshot.hasData) {
-            if (snapshot.data.productStatus) {
-              List<Product> listProducts = snapshot.data.products;
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                  defaultWidget = doLoading;
-                  break;
-                case ConnectionState.done:
-                  Provider.of<ProductsOperationsController>(context)
-                      .updateProductsList = listProducts;
-                  defaultWidget = productsMainDisplay(listProducts);
-                  break;
-                default:
-                  defaultWidget = doLoading;
-                  break;
-              }
-            } else {
-              defaultWidget = errorWidget();
+            List<Product> listProducts = snapshot.data.products;
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                defaultWidget = doLoading;
+                break;
+              case ConnectionState.none:
+                defaultWidget = doLoading;
+                break;
+              case ConnectionState.done:
+                defaultWidget = productsMainDisplay(listProducts, context);
+                break;
+              default:
+                defaultWidget = doLoading;
+                break;
             }
           } else {
-            defaultWidget = errorWidget();
+            defaultWidget = doLoading;
           }
         }
         return defaultWidget;
@@ -92,7 +97,12 @@ class _ProductsPreviewState extends State<ProductsPreview> {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text( error == null ? "Sorry! No products available yet" : error, style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),)],
+              children: [
+                Text(
+                  error == null ? "Sorry! No products available yet" : error,
+                  style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                )
+              ],
             ),
           ),
         ),
@@ -100,7 +110,11 @@ class _ProductsPreviewState extends State<ProductsPreview> {
     );
   }
 
-  Widget productsMainDisplay(List<Product> listInfo) {
+  Widget productsMainDisplay(List<Product> listInfo, BuildContext context) {
+    Future.delayed(Duration.zero, () {
+      Provider.of<ProductsOperationsController>(context, listen: false)
+          .updateProductsList = listInfo;
+    });
     return Stack(
       children: <Widget>[
         Positioned(
@@ -121,152 +135,11 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: MediaQuery.of(context).size.width /
-                              (MediaQuery.of(context).size.height / 1.4),
+                              (MediaQuery.of(context).size.height / 1.2),
                           crossAxisSpacing: 6),
                       itemCount: listInfo.length,
                       itemBuilder: (context, index) =>
                           ProductCard(index: index)),
-                  // child: Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //   children: <Widget>[
-                  //     Column(
-                  //       children: <Widget>[
-                  //         for (var index = 0;
-                  //             index < (listInfo.length / 2).floor();
-                  //             index++)
-                  //           ProductCard(index: index)
-                  //       ],
-                  //     ),
-                  //     Padding(
-                  //       padding: EdgeInsets.only(top: response.setHeight(10)),
-                  //       child: Column(
-                  //         children: <Widget>[
-                  //           for (var i = (listInfo.length / 2).floor();
-                  //               i < listInfo.length;
-                  //               i++)
-                  //             ProductCard(index: i)
-                  //         ],
-                  //       ),
-                  //     )
-                  //   ],
-                  // ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          top: 0,
-          left: 0,
-          width: response.screenWidth,
-          child: Container(
-            height: response.setHeight(70),
-            margin: EdgeInsets.only(top: 6.0),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0.5, 1],
-                colors: [
-                  AppTheme.mainScaffoldBackgroundColor,
-                  AppTheme.mainScaffoldBackgroundColor.withAlpha(150)
-                ],
-              ),
-            ),
-            child: Opacity(
-              opacity: 1,
-              child: Align(
-                alignment: Alignment(0, 0.4),
-                child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: response.setWidth(20)),
-                  child: getTopBar(context),
-                ),
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          top: 70,
-          left: 0,
-          width: response.screenWidth,
-          child: Container(
-            height: response.setHeight(50),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0.5, 1],
-                colors: [
-                  AppTheme.mainScaffoldBackgroundColor,
-                  AppTheme.mainScaffoldBackgroundColor.withAlpha(150)
-                ],
-              ),
-            ),
-            child: Align(
-              alignment: Alignment(0, 0.4),
-              child: Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: response.setWidth(20)),
-                child: getFilterBarUI(productsCount: listInfo.length),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget mainDisplay(List<Product> listInfo) {
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          top: 90,
-          left: 0,
-          right: 0,
-          child: Container(
-            height: response.screenHeight * 0.79,
-            width: response.screenWidth,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: response.setHeight(12.5)),
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 35),
-                  child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: MediaQuery.of(context).size.width /
-                              (MediaQuery.of(context).size.height / 1.4),
-                          crossAxisSpacing: 6),
-                      itemCount: listInfo.length,
-                      itemBuilder: (context, index) =>
-                          ProductCard(index: index)),
-                  // child: Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //   children: <Widget>[
-                  //     Column(
-                  //       children: <Widget>[
-                  //         for (var index = 0;
-                  //             index < (listInfo.length / 2).floor();
-                  //             index++)
-                  //           ProductCard(index: index)
-                  //       ],
-                  //     ),
-                  //     Padding(
-                  //       padding: EdgeInsets.only(top: response.setHeight(10)),
-                  //       child: Column(
-                  //         children: <Widget>[
-                  //           for (var i = (listInfo.length / 2).floor();
-                  //               i < listInfo.length;
-                  //               i++)
-                  //             ProductCard(index: i)
-                  //         ],
-                  //       ),
-                  //     )
-                  //   ],
-                  // ),
                 ),
               ),
             ),

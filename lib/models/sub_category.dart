@@ -10,7 +10,7 @@ class SubCategory {
     return SubCategory(
         id: json['id'] as int,
         name: json['name'] as String,
-        miniServices: json['mini_services'] as List<MiniService>,
+        miniServices: (json['subs'].map<MiniService>((e) => MiniService.fromJson(e)).toList()) as List<MiniService>,
         );
   }
 

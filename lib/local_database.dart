@@ -46,7 +46,7 @@ class PreferenceUtils {
   //   return _preferences.setBool(key, value);
   // }
 
-  ///not a Future method
+  ///Not a Future method
   getValueWithKey(String key,
       {bool bypassValueChecking = true, bool hideDebugPrint = false}) {
     assert(_preferences != null);

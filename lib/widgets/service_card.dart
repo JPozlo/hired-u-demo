@@ -11,9 +11,10 @@ import 'package:groceries_shopping_app/widgets/service_widget.dart';
 import 'package:provider/provider.dart';
 
 class ServiceCard extends StatelessWidget {
-  ServiceCard({@required this.index, @required this.serviceName});
+  ServiceCard({@required this.index, @required this.serviceName, @required this.serviceId});
   final int index;
   final String serviceName;
+  final int serviceId;
 
   @override
   Widget build(BuildContext context) {
@@ -34,26 +35,28 @@ class ServiceCard extends StatelessWidget {
         break;
       case 'Electrician':
         serviceDetails = ServiceWidget(
-            widgetTitle: "Elecrician",
-            serviceCategories: _electricianServiceCategories);
+          id: 2,
+            widgetTitle: "Electrician",);
         break;
       case 'Carpenter':
         serviceDetails = ServiceWidget(
-            widgetTitle: "Carpenter",
-            serviceCategories: _carpenterServiceCategories);
+          id: 4,
+            widgetTitle: "Carpenter",);
         break;
       case 'Plumbing':
         serviceDetails = ServiceWidget(
-            widgetTitle: "Plumbing",
-            serviceCategories: _mechanicServiceCategories);
+          id: 5,
+            widgetTitle: "Plumbing",);
         break;
       case 'Maids':
         serviceDetails = ServiceWidget(
-            widgetTitle: "Maids", serviceCategories: _maidServiceCategories);
+          id: 3,
+            widgetTitle: "Maids", );
         break;
               case 'Technician':
         serviceDetails = ServiceWidget(
-            widgetTitle: "Mobile Technician", serviceCategories: _mechanicServiceCategories);
+          id: 1,
+            widgetTitle: "Mobile Technician");
         break;
       default:
         serviceDetails = HomeScreen();

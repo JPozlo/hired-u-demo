@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
+import 'package:groceries_shopping_app/providers/providers.dart';
 import 'package:groceries_shopping_app/providers/service_provider.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
+import 'package:groceries_shopping_app/utils/constants.dart';
 import 'package:groceries_shopping_app/widgets/service_card.dart';
 import 'package:provider/provider.dart';
 import 'package:response/response.dart';
@@ -22,6 +25,7 @@ class _NewHomeState extends State<NewHome> {
   @override
   Widget build(BuildContext context) {
     var listInfo = Provider.of<ServiceProvider>(context).servicesOffered;
+    var user = Provider.of<UserProvider>(context).user;
     return Scaffold(
         backgroundColor: AppTheme.secondaryScaffoldColor,
         body: SafeArea(
@@ -51,7 +55,7 @@ class _NewHomeState extends State<NewHome> {
                                       ),
                             ),
                             TextSpan(
-                              text: "Osolo",
+                              text: user == null ? "Osolo" : user.name,
                               style:
                                   Theme.of(context).textTheme.headline6.copyWith(
                                         color: Colors.black,
@@ -64,8 +68,12 @@ class _NewHomeState extends State<NewHome> {
                       ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
+                            child: user.profile == null ? Image.asset(
                               "assets/avatar.png",
+                              height: 70,
+                              width: 70,
+                            ) : Image.network(
+                               ApiService.imageBaseURL + user.profile,
                               height: 70,
                               width: 70,
                             ),

@@ -41,13 +41,13 @@ class Product {
     return Product(
       name: json['name'] as String,
       description: json['desc'] as String,
-      foodCategory: json['category'] as ProductCategory,
-      picPath: json['images'] as List<ProductImage>,
+      foodCategory: ProductCategory.fromJson(json['category']),
+      picPath: (json['images'].map<ProductImage>((e) => ProductImage.fromJson(e)).toList()),
       price: json['price'] as int,
       discount: json['discount'] as int,
       quantity: json['quantity'] as int,
       tags: json['tags'] as String,
-      supplier: json['supplier'] as Supplier,
+      supplier: Supplier.fromJson(json['supplier']),
     );
   }
 

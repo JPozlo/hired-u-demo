@@ -1,8 +1,10 @@
 import 'dart:collection';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
+import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/models/product.dart';
 import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/screens/checkout_screen.dart';
@@ -12,6 +14,7 @@ import 'package:groceries_shopping_app/screens/credit_cards.dart';
 import 'package:groceries_shopping_app/screens/home.dart';
 import 'package:groceries_shopping_app/screens/mpesa_payment.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:groceries_shopping_app/utils/custom_text_style.dart';
 import 'package:groceries_shopping_app/utils/helpers.dart';
 import 'package:groceries_shopping_app/utils/payment_method_options.dart';
@@ -30,6 +33,9 @@ class CheckoutPage extends StatefulWidget {
 class _CheckoutPageState extends State<CheckoutPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
+  String defaultAddress = "Commerce House, Masai Lodge, Rongai";
+  int _userAddressId = 1;
+
   bool _value = false;
   // int val = -1;
   PaymentMethodOptions val = PaymentMethodOptions.MPESA;
@@ -38,15 +44,28 @@ class _CheckoutPageState extends State<CheckoutPage> {
   double _taxPrice = 30.0;
   double _orderTotal = 0.0;
   double _totalOverallCharge = 0.0;
+  List<Product> _orderProducts;
+  List<OrderItem> _orderItems = [];
 
   @override
   void initState() {
     super.initState();
+    _orderProducts =
+        Provider.of<ProductsOperationsController>(context, listen: false).cart;
     _totalPrice =
         Provider.of<ProductsOperationsController>(context, listen: false)
             .totalCost;
     _orderTotal = _totalPrice + _taxPrice;
     _totalOverallCharge = _orderTotal + _deliveryPrice;
+    for (int i = 0; i < _orderProducts.length; i++) {
+      var current = _orderProducts[i];
+      OrderItem orderItem = OrderItem(id: current.id, quantity: current.orderedQuantity);
+      _orderItems.add(orderItem);
+    }
+    // _orderProducts.map((e) {
+    //   OrderItem orderItem = OrderItem(id: e.id, quantity: e.orderedQuantity);
+    //   _orderItems.add(orderItem);
+    // });
     print("The Total Price is $_totalPrice");
     print("The Tax is $_taxPrice");
     print("The Order Total is $_orderTotal");
@@ -122,18 +141,31 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     width: double.infinity,
                     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        var result = await confirmOrder();
+                        if (result.status) {
+                          Flushbar(
+                            message: result.message,
+                            title: "Success",
+                            duration: Duration(seconds: 4),
+                          ).show(context);
+                        } else {
+                          Flushbar(
+                            message: result.errors.first.toString(),
+                            title: "Error",
+                            duration: Duration(seconds: 4),
+                          ).show(context);
+                        }
                         //      Widget selectedPaymentOption = MpesaPayment();
                         // if (val == PaymentMethodOptions.MPESA) {
                         //   selectedPaymentOption = MpesaPayment();
                         // } else if (val == PaymentMethodOptions.CARD) {
                         //   selectedPaymentOption = PayWithCreditCardPage();
                         // }
-                        Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        MpesaPayment()));
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => MpesaPayment()));
                       },
                       style: ElevatedButton.styleFrom(
                         primary: AppTheme.mainBlueColor,
@@ -156,6 +188,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
         ),
       ),
     );
+  }
+
+  confirmOrder() async {
+    print("Orderitems length: ${_orderItems.length}");
+    Result result;
+    CreateProductOrderDTO createdService = CreateProductOrderDTO(
+        userAddressesId: _userAddressId, items: _orderItems);
+    result = await ApiService().createProductOrderList(createdService);
+    return result;
   }
 
   showPaymentModalSheet(BuildContext context) {
@@ -453,7 +494,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   // )
                 ],
               ),
-              createAddressText("Commerce House, Masai Lodge, Rongai", 16),
+              createAddressText(defaultAddress, 16),
               createAddressText("Room 123", 6),
               SizedBox(
                 height: 6,
@@ -708,16 +749,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
               SizedBox(
                 height: 8,
               ),
-              createPriceItem("Total Price", "KSh $totalPrice",
-                  Colors.grey.shade700),
+              createPriceItem(
+                  "Total Price", "KSh $totalPrice", Colors.grey.shade700),
               // createPriceItem("Bag discount", getFormattedCurrency(3280),
               //     Colors.teal.shade300),
-              createPriceItem(
-                  "Tax", "KSh $taxPrice", Colors.grey.shade700),
+              createPriceItem("Tax", "KSh $taxPrice", Colors.grey.shade700),
               // createPriceItem("Order Total", getFormattedCurrency(orderTotal),
               //     Colors.grey.shade700),
-              createPriceItem("Delivery Charges",
-                  "KSh $deliveryCharge", Colors.teal.shade300),
+              createPriceItem("Delivery Charges", "KSh $deliveryCharge",
+                  Colors.teal.shade300),
               SizedBox(
                 height: 8,
               ),

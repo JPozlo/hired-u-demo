@@ -56,8 +56,8 @@ class _LoginState extends State<Login> {
 
         loginResponse.then((response) {
           if (response.status) {
-            userProvider.user = response.user;
-            nextScreen(context, MainHome());
+            userProvider.user = response.user;            
+            nextScreen(context, MainHome(user: userProvider.user,));
           } else {
             Flushbar(
               title: "Failed Login",

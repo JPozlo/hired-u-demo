@@ -87,7 +87,7 @@ class _RegisterState extends State<Register> {
           auth.register(_email, _password, _phone).then((response) {
             if (response.status) {
               userProvider.user = response.user;
-              nextFirstScreen(context, MainHome());
+              nextFirstScreen(context, MainHome(user: userProvider.user,));
             } else {
               Flushbar(
                 title: "Registration Failed",

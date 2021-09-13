@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
 import 'package:groceries_shopping_app/screens/product_details.dart';
@@ -7,21 +8,37 @@ import 'package:groceries_shopping_app/widgets/details_page_transition.dart';
 import 'package:provider/provider.dart';
 import '../appTheme.dart';
 
-class ProductCard extends StatelessWidget {
-  ProductCard({@required this.index});
+class ProductCard extends StatefulWidget {
+  const ProductCard({Key key, @required this.index}) : super(key: key);
   final int index;
+
+  @override
+  _ProductCardState createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  ProductsOperationsController _productsProvider;
+  List<Product> producInfoProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      _productsProvider = Provider.of<ProductsOperationsController>(context, listen: false);
+      producInfoProvider = _productsProvider.viewProductsInStock();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var producInfoProvider =
-        Provider.of<ProductsOperationsController>(context).productsInStock;
     return GestureDetector(
       onTap: () {
         Navigator.push(context,
-            DetailsPageRoute(route: ProductDetails(productIndex: index)));
+            DetailsPageRoute(route: ProductDetails(productIndex: this.widget.index)));
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
-        height: response.setHeight(240),
+        height: response.setHeight(350),
         width: response.setWidth(170),
         decoration: BoxDecoration(
             color: AppTheme.secondaryScaffoldColor,
@@ -43,11 +60,11 @@ class ProductCard extends StatelessWidget {
             children: <Widget>[
               //2.4
               Hero(
-                tag: '${producInfoProvider[index].picPath}-path',
+                tag: '${producInfoProvider[this.widget.index].picPath}-path',
                 child: Align(
                   alignment: Alignment.center,
                   child: Image.network(
-                    producInfoProvider[index].picPath.first.image,
+                    producInfoProvider[this.widget.index].picPath.first.image,
                     scale: 2.4,
                   ),
                 ),
@@ -57,15 +74,15 @@ class ProductCard extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     // getFormattedCurrency(producInfoProvider[index].price),
-                    "KSh ${producInfoProvider[index].price}",
+                    "KSh ${producInfoProvider[this.widget.index].price}",
                     style: TextStyle(
                       fontSize: response.setFontSize(24),
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  SizedBox(height: response.setHeight(10)),
+                  SizedBox(height: response.setHeight(8)),
                   Text(
-                    producInfoProvider[index].name,
+                    producInfoProvider[this.widget.index].name,
                     style: TextStyle(
                       fontSize: response.setFontSize(15),
                       fontWeight: FontWeight.w800,
@@ -73,7 +90,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   SizedBox(height: response.setHeight(4)),
                   Text(
-                    producInfoProvider[index].foodCategory.name,
+                    producInfoProvider[this.widget.index].foodCategory.name,
                     style: TextStyle(
                       fontSize: response.setFontSize(14),
                       color: Colors.black54,

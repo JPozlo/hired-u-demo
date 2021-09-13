@@ -1,7 +1,7 @@
 import 'package:groceries_shopping_app/models/models.dart';
 
 class Service {
-  Service({this.id, this.name = "null", this.picPath = "null", this.subCategories});
+  Service({this.id, this.name = "null", this.subCategories, this.picPath});
   final int id;
   final String name;
   final String picPath;
@@ -9,14 +9,18 @@ class Service {
 
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
-        id: json['id'] as int,
-        name: json['name'] as String,
-        picPath: json['pic_path'] as String,
-        subCategories: json['sub_categories'] as List<SubCategory>,
-        );
+      id: json['id'] as int,
+      name: json['name'] as String,
+      subCategories: (json['minis']
+          .map<SubCategory>((e) => SubCategory.fromJson(e))
+          .toList()) as List<SubCategory>,
+    );
   }
 
-  Map<String, dynamic> toJson() => {
-    'id': id
-    };
+  Map<String, dynamic> toJson() => {'id': id};
+
+  @override
+  String toString() {
+    return "The name is: $name, subCategories: ${subCategories.toString()}";
+  }
 }
