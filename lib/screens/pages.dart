@@ -14,3 +14,4 @@ export 'create_location.dart';
 export 'choose_cards_from_list.dart';
 export 'checkout_screen.dart';
 export 'checkout_page.dart';
+export 'auth/auth.dart';

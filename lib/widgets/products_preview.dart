@@ -32,27 +32,35 @@ class _ProductsPreviewState extends State<ProductsPreview> {
 
   @override
   Widget build(BuildContext context) {
-    var listInfo =
-        Provider.of<ProductsOperationsController>(context).productsInStock;
     var productsService = Provider.of<ProductsOperationsController>(context);
     return FutureBuilder(
       future: productsService.fetchProducts(),
       builder: (context, AsyncSnapshot<Result> snapshot) {
         Widget defaultWidget;
         if (snapshot.hasError) {
-          defaultWidget = Text("Error ");
-        } else {           
-          List<Product> listProducts = snapshot.data.products.isEmpty ? listInfo : snapshot.data.products; 
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              defaultWidget = doLoading;
-              break;
-            case ConnectionState.done:
-              defaultWidget = productsMainDisplay(listProducts);
-              break;
-            default:
-              defaultWidget = doLoading;
-              break;
+          defaultWidget = errorWidget(error: snapshot.error.toString());
+        } else {
+          if (snapshot.hasData) {
+            if (snapshot.data.productStatus) {
+              List<Product> listProducts = snapshot.data.products;
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  defaultWidget = doLoading;
+                  break;
+                case ConnectionState.done:
+                  Provider.of<ProductsOperationsController>(context)
+                      .updateProductsList = listProducts;
+                  defaultWidget = productsMainDisplay(listProducts);
+                  break;
+                default:
+                  defaultWidget = doLoading;
+                  break;
+              }
+            } else {
+              defaultWidget = errorWidget();
+            }
+          } else {
+            defaultWidget = errorWidget();
           }
         }
         return defaultWidget;
@@ -60,7 +68,39 @@ class _ProductsPreviewState extends State<ProductsPreview> {
     );
   }
 
-  Widget productsMainDisplay(List<Product> listInfo){
+  Widget errorWidget({String error}) {
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        Positioned(
+          top: 230,
+          left: 10,
+          width: response.screenWidth,
+          child: Container(
+            height: response.setHeight(70),
+            margin: EdgeInsets.only(top: 6.0),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.5, 1],
+                colors: [
+                  AppTheme.mainScaffoldBackgroundColor,
+                  AppTheme.mainScaffoldBackgroundColor.withAlpha(150)
+                ],
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Text( error == null ? "Sorry! No products available yet" : error, style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),)],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget productsMainDisplay(List<Product> listInfo) {
     return Stack(
       children: <Widget>[
         Positioned(

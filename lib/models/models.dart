@@ -10,3 +10,7 @@ export 'user.dart';
 export 'service.dart';
 export 'sub_category.dart';
 export 'mini_service.dart';
+export 'orders_history.dart';
+export 'product_image.dart';
+export 'supplier.dart';
+export 'pagination_data.dart';

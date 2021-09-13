@@ -113,8 +113,8 @@ class CartPreviewCard extends StatelessWidget {
             child: CircleAvatar(
               backgroundColor: Colors.white,
               radius: response.setWidth(21),
-              child: Image.asset(
-                cartProductsProvider[index].picPath.first,
+              child: Image.network(
+                cartProductsProvider[index].picPath.first.image,
                 scale: 7,
               ),
             ),

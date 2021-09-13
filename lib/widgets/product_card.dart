@@ -46,8 +46,8 @@ class ProductCard extends StatelessWidget {
                 tag: '${producInfoProvider[index].picPath}-path',
                 child: Align(
                   alignment: Alignment.center,
-                  child: Image.asset(
-                    producInfoProvider[index].picPath.first,
+                  child: Image.network(
+                    producInfoProvider[index].picPath.first.image,
                     scale: 2.4,
                   ),
                 ),
@@ -73,7 +73,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   SizedBox(height: response.setHeight(4)),
                   Text(
-                    producInfoProvider[index].foodCategory,
+                    producInfoProvider[index].foodCategory.name,
                     style: TextStyle(
                       fontSize: response.setFontSize(14),
                       color: Colors.black54,

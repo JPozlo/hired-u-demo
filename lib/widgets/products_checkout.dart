@@ -169,7 +169,7 @@ class ProductsCheckout extends StatelessWidget {
       itemCount: cartProductsProvider.length,
       itemBuilder: (BuildContext context, int index) {
         return Dismissible(
-          key: Key(cartProductsProvider[index].picPath.first),
+          key: Key(cartProductsProvider[index].picPath.first.image),
           direction: DismissDirection.endToStart,
           onDismissed: (direction) {
             Provider.of<ProductsOperationsController>(context, listen: false)

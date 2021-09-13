@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:groceries_shopping_app/local_database.dart';
+import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/screens/home.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
@@ -145,7 +146,7 @@ class _ProductDetailsState extends State<ProductDetails>
                             ),
                             SizedBox(height: response.setHeight(5)),
                             Text(
-                              productProvider[widget.productIndex].foodCategory,
+                              productProvider[widget.productIndex].foodCategory.name,
                               style: TextStyle(
                                   fontSize: response.setFontSize(15),
                                   fontWeight: FontWeight.w500,
@@ -272,7 +273,7 @@ class _ProductDetailsState extends State<ProductDetails>
     );
   }
 
-  Widget productImages(List<String> imagePaths, String productName) {
+  Widget productImages(List<ProductImage> imagePaths, String productName) {
     Widget productImage;
 
     if (imagePaths.length <= 1) {
@@ -300,14 +301,14 @@ class _ProductDetailsState extends State<ProductDetails>
     return productImage;
   }
 
-  Widget buildImage(String name, String path) {
+  Widget buildImage(String name, ProductImage path) {
     return Hero(
       tag: isToPreview ? '$name-name' : '$path-path',
-      child: Image.asset(path, scale: 0.8),
+      child: Image.network(path.image, scale: 0.8),
     );
   }
 
-  Widget buildIndicator(List<String> imagePaths) {
+  Widget buildIndicator(List<ProductImage> imagePaths) {
     return AnimatedSmoothIndicator(
       activeIndex: _activeIndex,
       count: imagePaths.length,

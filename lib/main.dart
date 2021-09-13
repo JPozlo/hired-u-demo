@@ -32,11 +32,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
+  String token;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
+    token = _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
   }
 
   Future<void> initPlatformState() async {
@@ -54,9 +56,9 @@ class _MyAppState extends State<MyApp> {
         AndroidDeviceInfo androidDeviceInfo =
             await deviceInfoPlugin.androidInfo;
         deviceModel = androidDeviceInfo.model;
-        
+
         print("Device Model IOS: $deviceModel");
-    
+
         _sharedPreferences.saveValueWithKey(
             Constants.userDeviceModelPrefKey, deviceModel);
       }
@@ -77,7 +79,7 @@ class _MyAppState extends State<MyApp> {
       child: Response(
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: Home(),
+          home: token == null ? Home() : MainHome(),
         ),
       ),
     );

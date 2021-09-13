@@ -39,8 +39,7 @@ nextScreenNamed(BuildContext context, String route) {
 }
 
 void nextFirstScreen(BuildContext context, Widget route) {
-  Navigator.pushReplacement(
-      context, MaterialPageRoute(builder: (BuildContext context) => route));
+   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => route), (route) => false);
 }
 
 void nextScreen(BuildContext context, Widget routeWithArg) {

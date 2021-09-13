@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/local_database.dart';
 import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/models/product.dart';
+import 'package:groceries_shopping_app/models/product_category.dart';
 import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:http/http.dart';
@@ -28,47 +29,53 @@ class ProductsOperationsController extends ChangeNotifier {
   List<Product> _productsInStock = [
     Product(
         name: 'Fusilo ketchup Toglile',
-        picPath: ['assets/ketchup.png'],
+        picPath: [ProductImage(image: 'assets/ketchup.png')],
         price: 109,
-        foodCategory: Constants.pastaFoodCategory
+        foodCategory: ProductCategory(name: Constants.pastaFoodCategory)
         // weight: '550g'
         ),
     Product(
         name: 'Togliatelle Rice Organic',
         picPath: [
-          'assets/rice.png',
-          'assets/flour.png',
+          ProductImage(image: 'assets/rice.png'),
+          ProductImage(image: 'assets/flour.png')
         ],
         price: 132,
-        foodCategory: Constants.wheatFoodCategory
+        foodCategory: ProductCategory(name: Constants.wheatFoodCategory)
         // weight: '500g'
         ),
     Product(
         name: 'Organic Potatos',
-        picPath: ['assets/potatoes.png'],
+        picPath: [ProductImage(image: 'assets/potatoes.png')],
         price: 1099,
-        foodCategory: Constants.wholeFoodCategory
+        foodCategory: ProductCategory(name: Constants.wholeFoodCategory)
         // weight: '1000g'
         ),
     Product(
         name: 'Desolve Milk',
-        picPath: ['assets/milk.png'],
+        picPath: [ProductImage(image: 'assets/milk.png')],
         price: 9099,
-        foodCategory: Constants.drinkFoodCategory
+        foodCategory: ProductCategory(name: Constants.drinkFoodCategory)
         // weight: '550g'
         ),
     Product(
       name: 'Fusilo Pasta Toglile',
-      picPath: ['assets/pasta.png', 'assets/flour.png'],
-      foodCategory: Constants.wheatFoodCategory,
+      picPath: [
+        ProductImage(image: 'assets/pasta.png'),
+        ProductImage(image: 'assets/flour.png')
+      ],
+      foodCategory: ProductCategory(name: Constants.wheatFoodCategory),
       price: 679,
       // weight: '500g'
     ),
     Product(
         name: 'Organic Flour',
-        picPath: ['assets/flour.png', 'assets/pasta.png'],
+        picPath: [
+          ProductImage(image: 'assets/flour.png'),
+          ProductImage(image: 'assets/pasta.png')
+        ],
         price: 610,
-        foodCategory: Constants.wheatFoodCategory
+        foodCategory: ProductCategory(name: Constants.wheatFoodCategory)
         // weight: '250g'
         ),
   ];
@@ -218,34 +225,45 @@ class ProductsOperationsController extends ChangeNotifier {
     String token =
         await _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
 
-    Product fetchProductsToken = Product(token: token);
-
-    final Map<String, dynamic> fetchProductsData = fetchProductsToken.toJson();
-
     _createProductStatus = ProductStatus.CreatingProduct;
     notifyListeners();
 
-    Response response = await post(Uri.parse(ApiService.fetchProducts),
-        body: json.encode(fetchProductsData),
-        headers: {'Content-Type': 'application/json'});
+    Response response = await get(Uri.parse(ApiService.fetchProducts),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        });
 
     final Map<String, dynamic> responseData = json.decode(response.body);
 
     var status = responseData['status_code'];
 
-    if (status == 200) {
-      var productsData = responseData['products'];
+    if (response.statusCode == 200) {
+      var fetchData = responseData['products'];
+      var productsData = responseData['products']['data'];
+      var paginationData = responseData['products']['pagination'];
+      bool productsDataStatus;
       // var uid = responseData['uid'];
       // var token = responseData['token'];
+      print("fetchData: ${fetchData.toString()}");
+      print("productsData: ${productsData.toString()}");
 
-      var products = productsData.map((e) => Product.fromJson(e));
+      if (productsData == null) {
+        productsDataStatus = false;
+        result  = Result(true, "No products", productStatus: false );
+      
+      } else {
+        productsDataStatus = true;
+          var products = productsData.map((e) => Product.fromJson(e)).toList();
+        PaginationData pagination = PaginationData.fromJson(paginationData);
 
-      String message = responseData['message'];
+        String message = responseData['message'];
 
-      _createProductStatus = ProductStatus.CreateProductSuccess;
-      notifyListeners();
-
-      result = Result(true, message, products: products);
+        _createProductStatus = ProductStatus.CreateProductSuccess;
+        notifyListeners();
+        result =
+            Result(true, message == null ? "Success" : message, products: products, pagination: pagination, productStatus: true);
+      }
     } else {
       _createProductStatus = ProductStatus.CreateProductFailure;
       notifyListeners();
