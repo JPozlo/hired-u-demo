@@ -8,20 +8,22 @@ import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/screens/home.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../appTheme.dart';
 
 class ProductDetails extends StatefulWidget {
-  ProductDetails({this.productIndex});
-  final int productIndex;
+  ProductDetails({@required this.product, this.index});
+  final int index;
+  final Product product;
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
 
 class _ProductDetailsState extends State<ProductDetails>
-    with SingleTickerProviderStateMixin, AfterLayoutMixin<ProductDetails> {
+    with SingleTickerProviderStateMixin, AfterLayoutMixin {
   bool isFavourite = false;
   PreferenceUtils _utils;
   AnimationController animationController;
@@ -33,11 +35,23 @@ class _ProductDetailsState extends State<ProductDetails>
   bool temp = false;
   int _activeIndex = 0;
   final _carouselController = CarouselController();
+  List<ProductImage> productImage = [];
 
   @override
   void initState() {
     super.initState();
     isToPreview = false;
+    print("The product: ${this.widget.product.toString()}");
+    if (this.widget.product.picPath.length > 0) {
+      productImage = this.widget.product.picPath;
+    } else {
+      productImage = [
+        ProductImage(
+            image: 'https://uhired.herokuapp.com/profile-images/profile.png'),
+        ProductImage(
+            image: 'https://uhired.herokuapp.com/profile-images/profile.png')
+      ];
+    }
     _utils = PreferenceUtils.getInstance();
     animationController = AnimationController(
         vsync: this, duration: Duration(milliseconds: 1000));
@@ -59,8 +73,9 @@ class _ProductDetailsState extends State<ProductDetails>
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<ProductsOperationsController>(context);
-    var productProvider =
-        Provider.of<ProductsOperationsController>(context).viewProductsInStock();
+    var productProvider = Provider.of<ProductsOperationsController>(context)
+        .viewProductsInStock();
+    print("The productsprovider length: ${productProvider.length}");
     return Scaffold(
       backgroundColor: AppTheme.mainScaffoldBackgroundColor,
       appBar: AppBar(
@@ -119,10 +134,9 @@ class _ProductDetailsState extends State<ProductDetails>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  productImages(productProvider[widget.productIndex].picPath,
-                      productProvider[widget.productIndex].name),
+                  productImages(this.productImage, this.widget.product.name),
                   SizedBox(height: 13),
-                  buildIndicator(productProvider[widget.productIndex].picPath),
+                  buildIndicator(this.productImage),
                   Transform(
                     //0 < animation.value < 1
                     transform: Matrix4.translationValues(
@@ -137,7 +151,7 @@ class _ProductDetailsState extends State<ProductDetails>
                           children: <Widget>[
                             SizedBox(height: response.setHeight(20)),
                             Text(
-                              productProvider[widget.productIndex].name,
+                              this.widget.product.name,
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   fontSize: response.setFontSize(40),
@@ -146,7 +160,7 @@ class _ProductDetailsState extends State<ProductDetails>
                             ),
                             SizedBox(height: response.setHeight(5)),
                             Text(
-                              productProvider[widget.productIndex].foodCategory.name,
+                              this.widget.product.foodCategory.name,
                               style: TextStyle(
                                   fontSize: response.setFontSize(15),
                                   fontWeight: FontWeight.w500,
@@ -167,7 +181,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                   // getFormattedCurrency(
                                   //     productProvider[widget.productIndex]
                                   //         .price),
-                                  "KSh ${productProvider[widget.productIndex].price}",
+                                  "KSh ${this.widget.product.price}",
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                       fontSize: response.setFontSize(40),
@@ -186,7 +200,7 @@ class _ProductDetailsState extends State<ProductDetails>
                             ),
                             SizedBox(height: response.setHeight(5)),
                             Text(
-                              productProvider[widget.productIndex].description,
+                              this.widget.product.description,
                               style: TextStyle(
                                   fontSize: response.setFontSize(15),
                                   color: Colors.black87),
@@ -195,35 +209,10 @@ class _ProductDetailsState extends State<ProductDetails>
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                // Container(
-                                //   height: response.setHeight(55),
-                                //   width: response.setWidth(55),
-                                //   decoration: BoxDecoration(
-                                //       color: Colors.transparent,
-                                //       shape: BoxShape.circle,
-                                //       border: Border.all(
-                                //           color: Colors.black12, width: 1)),
-                                //   child: Center(
-                                //     child: IconButton(
-                                //         splashColor: Colors.transparent,
-                                //         highlightColor: Colors.transparent,
-                                //         hoverColor: Colors.transparent,
-                                //         icon: FaIcon(isFavourite
-                                //             ? FontAwesomeIcons.solidHeart
-                                //             : FontAwesomeIcons.heart),
-                                //         onPressed: () async {
-                                //           setState(
-                                //               () => isFavourite = !isFavourite);
-                                //           await _utils.saveValueWithKey<bool>(
-                                //               "${productProvider[widget.productIndex].name}-fav",
-                                //               isFavourite);
-                                //         }),
-                                //   ),
-                                // ),
                                 GestureDetector(
                                   onTap: () {
                                     provider.addProductToCart(
-                                      widget.productIndex,
+                                      this.widget.index,
                                       bulkOrder: orderQuantity,
                                     );
                                     setState(() {
@@ -277,8 +266,7 @@ class _ProductDetailsState extends State<ProductDetails>
     Widget productImage;
 
     if (imagePaths.length <= 1) {
-       productImage = buildImage(productName, imagePaths.first);
-     
+      productImage = buildImage(productName, imagePaths.first);
     } else {
       productImage = CarouselSlider.builder(
           carouselController: _carouselController,
@@ -304,7 +292,7 @@ class _ProductDetailsState extends State<ProductDetails>
   Widget buildImage(String name, ProductImage path) {
     return Hero(
       tag: isToPreview ? '$name-name' : '$path-path',
-      child: Image.network(path.image, scale: 0.8),
+      child: Image.network(ApiService.imageBaseURL + path.image, scale: 0.8),
     );
   }
 
@@ -327,7 +315,7 @@ class _ProductDetailsState extends State<ProductDetails>
   void afterFirstLayout(BuildContext context) async {
     animationController.forward();
     var value = _utils.getValueWithKey(
-        "${Provider.of<ProductsOperationsController>(context, listen: false).viewProductsInStock()[widget.productIndex].name}-fav");
+        "${Provider.of<ProductsOperationsController>(context, listen: false).viewProductsInStock()[widget.index].name}-fav");
     if (value != null) {
       setState(() => isFavourite = value);
     }

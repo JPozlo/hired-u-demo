@@ -2,17 +2,20 @@ import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/providers.dart';
 import 'package:groceries_shopping_app/screens/auth/forgot_password.dart';
 import 'package:groceries_shopping_app/screens/main_home.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:groceries_shopping_app/services/api/google_auth.dart';
 import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:groceries_shopping_app/widgets/app_button.dart';
 import 'package:groceries_shopping_app/widgets/input_decoration_widget.dart';
 import 'package:groceries_shopping_app/widgets/social_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Login extends StatefulWidget {
   const Login({Key key}) : super(key: key);
@@ -56,8 +59,12 @@ class _LoginState extends State<Login> {
 
         loginResponse.then((response) {
           if (response.status) {
-            userProvider.user = response.user;            
-            nextScreen(context, MainHome(user: userProvider.user,));
+            userProvider.user = response.user;
+            nextScreen(
+                context,
+                MainHome(
+                  user: userProvider.user,
+                ));
           } else {
             Flushbar(
               title: "Failed Login",
@@ -160,13 +167,15 @@ class _LoginState extends State<Login> {
                                 ),
                                 passwordInput,
                                 GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
+                                    await launchPasswordResetURl();
+
                                     // nextScreen(context, "/password-reset");
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ForgotPassword()));
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) =>
+                                    //             ForgotPassword()));
                                   },
                                   child: Text(
                                     "Forgot Password?",
@@ -205,5 +214,17 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  Future<bool> launchPasswordResetURl() async {
+    Future<bool> success;
+    String url = ApiService.resetPassword;
+    bool canWait = await canLaunch(url);
+    if (canWait) {
+      success = launch(url);
+    } else {
+      success = Future.delayed(Duration.zero, () => false);
+    }
+    return success;
   }
 }

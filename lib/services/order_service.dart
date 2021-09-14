@@ -14,29 +14,19 @@ enum OrderStatus {
   CreateOrderFailure,
 }
 
-class OrderService extends ChangeNotifier {
+class OrderService {
   PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
 
-  OrderStatus _createOrderStatus = OrderStatus.NotCreating;
-  OrderStatus get createOrderStatus => _createOrderStatus;
-
-  Future<Result> createOrder(Order order) async {
+  Future<Result> fetchOrdersHistory() async {
     Result result;
 
     String token =
         await _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
 
-    Order createOrder = Order(
-        token: token, addressId: order.addressId, orderItems: order.orderItems);
-
-    final Map<String, dynamic> orderCreationData = createOrder.toJson();
-
-    _createOrderStatus = OrderStatus.CreatingOrder;
-    notifyListeners();
-
-    Response response = await post(Uri.parse(ApiService.createOrder),
-        body: json.encode(orderCreationData),
-        headers: {'Content-Type': 'application/json'});
+    Response response = await get(Uri.parse(ApiService.ordersHistory),
+        headers: {'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+        });
 
     final Map<String, dynamic> responseData = json.decode(response.body);
 
@@ -44,20 +34,13 @@ class OrderService extends ChangeNotifier {
 
     if (status == 200) {
       var orderData = responseData['order'];
-      // var uid = responseData['uid'];
-      // var token = responseData['token'];
-
+      
       var order = Order.fromJson(orderData);
 
       String message = responseData['message'];
 
-      _createOrderStatus = OrderStatus.CreateOrderSuccess;
-      notifyListeners();
-
       result = Result(true, message, order: order);
     } else {
-      _createOrderStatus = OrderStatus.CreateOrderFailure;
-      notifyListeners();
 
       var errors = responseData['errors'];
 

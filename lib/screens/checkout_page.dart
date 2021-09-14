@@ -7,6 +7,7 @@ import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/models/product.dart';
 import 'package:groceries_shopping_app/providers/product_provider.dart';
+import 'package:groceries_shopping_app/providers/providers.dart';
 import 'package:groceries_shopping_app/screens/checkout_screen.dart';
 import 'package:groceries_shopping_app/screens/create_location.dart';
 import 'package:groceries_shopping_app/screens/credit_card_payment.dart';
@@ -14,6 +15,7 @@ import 'package:groceries_shopping_app/screens/credit_cards.dart';
 import 'package:groceries_shopping_app/screens/home.dart';
 import 'package:groceries_shopping_app/screens/mpesa_payment.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/screens/pages.dart';
 import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:groceries_shopping_app/utils/custom_text_style.dart';
 import 'package:groceries_shopping_app/utils/helpers.dart';
@@ -34,6 +36,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
   String defaultAddress = "Commerce House, Masai Lodge, Rongai";
+  UserAddress _selectedAddress;
+
   int _userAddressId = 1;
 
   bool _value = false;
@@ -46,10 +50,20 @@ class _CheckoutPageState extends State<CheckoutPage> {
   double _totalOverallCharge = 0.0;
   List<Product> _orderProducts;
   List<OrderItem> _orderItems = [];
+  UserAddress defaultValueAddress;
 
   @override
   void initState() {
     super.initState();
+    defaultValueAddress = UserAddress(
+        id: 0,
+        country: "Kenya",
+        county: "Nairobi",
+        homeTown: "Nairobi",
+        streetAddress: "Masai Lodge",
+        building: "Viewtower",
+        suite: "7j33j3n");
+    print("Default value address: ${defaultValueAddress.toString()}");
     _orderProducts =
         Provider.of<ProductsOperationsController>(context, listen: false).cart;
     _totalPrice =
@@ -59,22 +73,23 @@ class _CheckoutPageState extends State<CheckoutPage> {
     _totalOverallCharge = _orderTotal + _deliveryPrice;
     for (int i = 0; i < _orderProducts.length; i++) {
       var current = _orderProducts[i];
-      OrderItem orderItem = OrderItem(id: current.id, quantity: current.orderedQuantity);
+      OrderItem orderItem =
+          OrderItem(id: current.id, quantity: current.orderedQuantity);
       _orderItems.add(orderItem);
     }
-    // _orderProducts.map((e) {
-    //   OrderItem orderItem = OrderItem(id: e.id, quantity: e.orderedQuantity);
-    //   _orderItems.add(orderItem);
-    // });
     print("The Total Price is $_totalPrice");
     print("The Tax is $_taxPrice");
     print("The Order Total is $_orderTotal");
     print("The Delivery Charges is $_deliveryPrice");
     print("The Total is $_totalOverallCharge");
+    // Future.delayed(Duration.zero, () {
+    //    Provider.of<AddressProvider>(context, listen: false).userAddress =
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
+    var addressProvider = Provider.of<AddressProvider>(context);
     return MaterialApp(
       home: Scaffold(
         key: _scaffoldKey,
@@ -124,8 +139,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   child: Container(
                     child: ListView(
                       children: <Widget>[
-                        selectedAddressSection(),
-                        // showMpesaOrCardOption(),
+                        selectedAddressSection(
+                            addressProvider.userAddress == null ||
+                                    addressProvider.userAddress.suite == null
+                                ? defaultValueAddress
+                                : addressProvider.userAddress),
                         priceSection(
                             totalPrice: _totalPrice,
                             taxPrice: _taxPrice,
@@ -450,7 +468,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     );
   }
 
-  selectedAddressSection() {
+  selectedAddressSection(UserAddress userAddress) {
     return Container(
       margin: EdgeInsets.all(4),
       decoration: BoxDecoration(
@@ -474,11 +492,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    "Default Delivery Address",
-                    style: CustomTextStyle.textFormFieldSemiBold
-                        .copyWith(fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
                   // Container(
                   //   padding:
                   //       EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
@@ -494,21 +507,32 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   // )
                 ],
               ),
-              createAddressText(defaultAddress, 16),
-              createAddressText("Room 123", 6),
+              createAddressText(userAddress.country, 16, 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  createAddressText("County: " + userAddress.county, 16, 15),
+                  // SizedBox(width: 20),
+                  Spacer(),
+                  createAddressText("Town: " + userAddress.homeTown, 16, 15),
+                ],
+              ),
+              createAddressText(userAddress.streetAddress, 6, 15),
+              createAddressText(userAddress.building, 6, 15),
+              // createAddressText(userAddress.suite, 6),
               SizedBox(
                 height: 6,
               ),
               RichText(
                 text: TextSpan(children: [
                   TextSpan(
-                      text: "Mobile: ",
+                      text: "Suite: ",
                       style: CustomTextStyle.textFormFieldMedium
-                          .copyWith(fontSize: 12, color: Colors.grey.shade800)),
+                          .copyWith(fontSize: 15, color: Colors.grey.shade800)),
                   TextSpan(
-                      text: "0722673745",
+                      text: userAddress.suite,
                       style: CustomTextStyle.textFormFieldBold
-                          .copyWith(color: Colors.black, fontSize: 12)),
+                          .copyWith(color: Colors.black, fontSize: 15)),
                 ]),
               ),
               SizedBox(
@@ -527,13 +551,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
     );
   }
 
-  createAddressText(String strAddress, double topMargin) {
+  createAddressText(String strAddress, double topMargin, double fontsize) {
     return Container(
       margin: EdgeInsets.only(top: topMargin),
       child: Text(
         strAddress,
         style: CustomTextStyle.textFormFieldMedium
-            .copyWith(fontSize: 12, color: Colors.grey.shade800),
+            .copyWith(fontSize: fontsize, color: Colors.grey.shade800),
       ),
     );
   }
@@ -548,11 +572,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
           // ),
           Center(
             child: TextButton(
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+                UserAddress selectedAddress = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CreateLocationPage()));
+                        builder: (context) => ChooseAddressPage()));
+                setState(() {
+                  _selectedAddress = selectedAddress;
+                  defaultValueAddress = selectedAddress;
+                });
+                print("Orderitems: ${_orderItems.toString()}");
+                print("selctedaddress: ${_selectedAddress.toString()}");
               },
               child: Text(
                 "Change",

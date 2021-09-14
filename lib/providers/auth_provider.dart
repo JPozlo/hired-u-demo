@@ -76,6 +76,13 @@ class AuthProvider with ChangeNotifier {
       _sharedPreferences.saveValueWithKey(Constants.userTokenPrefKey, token);
       _sharedPreferences.saveValueWithKey(
           Constants.userEmailPrefKey, user.email);
+        _sharedPreferences.saveValueWithKey(
+            Constants.userProfilePrefKey, user.profile ?? "");
+          if(user.phone != null){
+   _sharedPreferences.saveValueWithKey(
+            Constants.userPhonePrefKey, user.phone ?? "");
+          }
+   
 
       _loggedInStatus = Status.LoggedIn;
       notifyListeners();
@@ -102,7 +109,7 @@ class AuthProvider with ChangeNotifier {
     String deviceName = await _sharedPreferences
         .getValueWithKey(Constants.userDeviceModelPrefKey);
 
-    User user = User(
+    User user = User("",
         name: name, email: email, password: password, deviceName: deviceName);
 
     final Map<String, dynamic> registrationData = user.toJson();
@@ -131,6 +138,12 @@ class AuthProvider with ChangeNotifier {
       _sharedPreferences.saveValueWithKey(Constants.userTokenPrefKey, token);
       _sharedPreferences.saveValueWithKey(
           Constants.userEmailPrefKey, user.email);
+        _sharedPreferences.saveValueWithKey(
+            Constants.userProfilePrefKey, user.profile ?? "");
+                 if (       user.phone != null) {
+        _sharedPreferences.saveValueWithKey(
+            Constants.userPhonePrefKey, user.phone ?? "");
+      }
 
       _registeredInStatus = Status.Registered;
       notifyListeners();
@@ -229,7 +242,7 @@ class AuthProvider with ChangeNotifier {
       user = User.fromJsonUserData(myuser);
     } else {
       var errors = responseData['errors'];
-      user = User();
+      user = User("");
     }
     return user;
   }

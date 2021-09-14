@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/models/product.dart';
 import 'dart:collection';
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
 import '../appTheme.dart';
 
 class CartPreview extends StatelessWidget {
@@ -114,7 +115,7 @@ class CartPreviewCard extends StatelessWidget {
               backgroundColor: Colors.white,
               radius: response.setWidth(21),
               child: Image.network(
-                cartProductsProvider[index].picPath.first.image,
+                ApiService.imageBaseURL + cartProductsProvider[index].picPath.first.image,
                 scale: 7,
               ),
             ),

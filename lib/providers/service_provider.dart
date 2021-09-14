@@ -26,11 +26,11 @@ class ServiceProvider extends ChangeNotifier {
 
   List<Service> _servicesOffered = [
     Service(id: 0, name: 'Grocery', picPath: 'assets/grocery.png'),
-    Service(id: 5, name: 'Plumbing', picPath: 'assets/plumbing.png'),
+    Service(id: 1, name: 'Plumbing', picPath: 'assets/plumbing.png'),
     Service(id: 2, name: 'Electrician', picPath: 'assets/electrician.png'),
     Service(id: 4, name: 'Carpenter', picPath: 'assets/carpenter.png'),
     Service(
-        id: 1, name: 'Technician', picPath: 'assets/phone-repair-symbol.png'),
+        id: 5, name: 'Technician', picPath: 'assets/phone-repair-symbol.png'),
     Service(id: 3, name: 'Maids', picPath: 'assets/maid.png')
   ];
 

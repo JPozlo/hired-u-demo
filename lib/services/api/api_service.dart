@@ -11,7 +11,7 @@ class ApiService {
   /// URLs
   static const String appBaseURL =
       "https://uhired.herokuapp.com/api/v1.0.1/user/";
-  static const String imageBaseURL = "https://uhired.herokuapp.com/";
+  static const String imageBaseURL = "https://uhired.herokuapp.com";
   static const String resetBaseURL = "http://uhired.herokuapp.com/";
   // User
   static const String createNewUser = appBaseURL + "register";
@@ -20,20 +20,27 @@ class ApiService {
   static const String logoutUser = appBaseURL + "logout";
   static const String fetchUser = appBaseURL + "get";
   static const String fetchIP = appBaseURL + "getip";
+  //Profile
+  static const String changeProfile = appBaseURL + "profile/changeprofile";
+  static const String changePassword = appBaseURL + "profile/changepassword";
   // Order
   static const String baseOrdersURL = appBaseURL + "orders/";
   static const String fetchAllOrders = baseOrdersURL + "";
   static const String viewOrder = baseOrdersURL + "view";
   static const String payOrder = baseOrdersURL + "pay";
   static const String createOrder = appBaseURL + "create/order";
-
+  static const String ordersHistory = appBaseURL + "orderhistory";
+  // Address
+  static const String createAddress = appBaseURL + "createaddress";
+  static const String allAddresses = appBaseURL + "addresses";
   // Products
   static const String fetchProducts = appBaseURL + "products";
   static const String createProductOrder = appBaseURL + "products/order";
-
   // Services
   static const String fetchServices = appBaseURL + "services/main/";
   static const String createServiceOrder = appBaseURL + "services/orders";
+  // Payments
+  static const String paymentsList = appBaseURL + "payments";
 
   Future<Result> fetchServicesList(int id) async {
     Result result;
@@ -142,6 +149,8 @@ class ApiService {
 
         String message = responseData['message'];
 
+        print("Service products list: ${products.first.picPath.first.image}");
+
         result = Result(true, message == null ? "Success" : message,
             products: products,
             pagination: pagination,
@@ -204,6 +213,68 @@ class ApiService {
       String message = responseData['message'];
       result =
           Result(true, message == null ? "Success" : message, payment: payment);
+    } else {
+      result = Result(false, "An unexpected error occurred");
+    }
+    return result;
+  }
+
+  Future<Result> fetchAddressesList() async {
+    Result result;
+
+    String token =
+        await _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
+
+    Response response = await get(Uri.parse(ApiService.allAddresses), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    });
+
+    final Map<String, dynamic> responseData = json.decode(response.body);
+
+    var status = responseData['status_code'];
+
+    if (status == 200) {
+      var addressData = responseData['addresses'];
+      List<UserAddress> addresses =
+          addressData.map<UserAddress>((e) => UserAddress.fromJson(e)).toList();
+
+      String message = responseData['message'];
+
+      result = Result(true, message == null ? "Success" : message,
+          addresses: addresses);
+    } else {
+
+      result = Result(false, "An unexpected error occurred");
+    }
+    return result;
+  }
+
+  
+  Future<Result> fetchPaymentsList() async {
+    Result result;
+
+    String token =
+        await _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
+
+    Response response = await get(Uri.parse(ApiService.paymentsList), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    });
+
+    final Map<String, dynamic> responseData = json.decode(response.body);
+
+    var status = responseData['status_code'];
+
+    if (status == 200) {
+      var addressData = responseData['payments'];
+      List<Payment> payments =
+          addressData.map<Payment>((e) => Payment.fromJson(e)).toList();
+
+      String message = responseData['message'];
+
+      result = Result(true, message == null ? "Success" : message,
+          payments: payments);
     } else {
       result = Result(false, "An unexpected error occurred");
     }

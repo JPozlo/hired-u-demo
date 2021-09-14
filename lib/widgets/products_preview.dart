@@ -23,6 +23,7 @@ class ProductsPreview extends StatefulWidget {
 class _ProductsPreviewState extends State<ProductsPreview> {
   int productsFilterCount = 6;
   Future<Result> _productsFuture;
+  ProductsOperationsController _productsProvider;
 
   var doLoading = Row(
     mainAxisAlignment: MainAxisAlignment.center,
@@ -35,7 +36,18 @@ class _ProductsPreviewState extends State<ProductsPreview> {
   @override
   void initState() {
     super.initState();
-     _productsFuture = ApiService().fetchProductsList();
+    _productsFuture = ApiService().fetchProductsList();
+    Future.delayed(Duration.zero, () {
+      _productsProvider =
+          Provider.of<ProductsOperationsController>(context, listen: false);
+      _productsFuture.then((value) {
+        if (value.status) {
+          _productsProvider.updateProductsList = value.products;
+        } else {
+          _productsProvider.updateProductsList = [];
+        }
+      });
+    });
   }
 
   @override
@@ -43,30 +55,28 @@ class _ProductsPreviewState extends State<ProductsPreview> {
     // var productsService = Provider.of<ProductsOperationsController>(context);
     return FutureBuilder(
       future: _productsFuture,
+      initialData: Result(false, "Success", products: []),
       builder: (context, AsyncSnapshot<Result> snapshot) {
         Widget defaultWidget;
-        if (snapshot.hasError) {
-          defaultWidget = errorWidget(error: snapshot.error.toString());
-        } else {
-          if (snapshot.hasData) {
-            List<Product> listProducts = snapshot.data.products;
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                defaultWidget = doLoading;
-                break;
-              case ConnectionState.none:
-                defaultWidget = doLoading;
-                break;
-              case ConnectionState.done:
-                defaultWidget = productsMainDisplay(listProducts, context);
-                break;
-              default:
-                defaultWidget = doLoading;
-                break;
-            }
-          } else {
+           switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
             defaultWidget = doLoading;
-          }
+            break;
+          case ConnectionState.none:
+            defaultWidget = doLoading;
+            break;
+          case ConnectionState.done:
+              if (snapshot.hasData && snapshot.data.products != null) {
+              print("Snapshot data: ${snapshot.data.toString()}");
+            defaultWidget = productsMainDisplay(snapshot.data.products, context);
+              print("listProducts: ${snapshot.data.products}");
+            } else if(snapshot.hasError ){
+              defaultWidget = errorWidget(error: snapshot.error.toString());
+            }
+            break;
+          default:
+            defaultWidget = doLoading;
+            break;
         }
         return defaultWidget;
       },
@@ -111,10 +121,6 @@ class _ProductsPreviewState extends State<ProductsPreview> {
   }
 
   Widget productsMainDisplay(List<Product> listInfo, BuildContext context) {
-    Future.delayed(Duration.zero, () {
-      Provider.of<ProductsOperationsController>(context, listen: false)
-          .updateProductsList = listInfo;
-    });
     return Stack(
       children: <Widget>[
         Positioned(
@@ -138,8 +144,11 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                               (MediaQuery.of(context).size.height / 1.2),
                           crossAxisSpacing: 6),
                       itemCount: listInfo.length,
-                      itemBuilder: (context, index) =>
-                          ProductCard(index: index)),
+                      itemBuilder: (context, index) {
+                        Product currentProduct = listInfo[index];
+                        print("Current product: ${currentProduct.tags}");
+                        return ProductCard(product: currentProduct, index: index);
+                      }),
                 ),
               ),
             ),

@@ -18,3 +18,7 @@ export 'payment.dart';
 export 'create_service_dto.dart';
 export 'create_product_order_dto.dart';
 export 'order_item.dart';
+export 'update_profile_user.dart';
+export 'order_history.dart';
+export 'update_profile_dto.dart';
+export 'user_address.dart';

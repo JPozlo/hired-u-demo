@@ -11,10 +11,9 @@ import 'package:groceries_shopping_app/widgets/service_widget.dart';
 import 'package:provider/provider.dart';
 
 class ServiceCard extends StatelessWidget {
-  ServiceCard({@required this.index, @required this.serviceName, @required this.serviceId});
+  ServiceCard({@required this.index, @required this.serviceName});
   final int index;
   final String serviceName;
-  final int serviceId;
 
   @override
   Widget build(BuildContext context) {
@@ -35,27 +34,32 @@ class ServiceCard extends StatelessWidget {
         break;
       case 'Electrician':
         serviceDetails = ServiceWidget(
+          servicePicture: 'assets/electrician.jpg',
           id: 2,
             widgetTitle: "Electrician",);
         break;
       case 'Carpenter':
         serviceDetails = ServiceWidget(
           id: 4,
+          servicePicture: 'assets/carpenter.jpg',
             widgetTitle: "Carpenter",);
         break;
       case 'Plumbing':
         serviceDetails = ServiceWidget(
           id: 5,
+          servicePicture: 'assets/plumbing.jpg',
             widgetTitle: "Plumbing",);
         break;
       case 'Maids':
         serviceDetails = ServiceWidget(
           id: 3,
+          servicePicture: 'assets/maid.jpg',
             widgetTitle: "Maids", );
         break;
               case 'Technician':
         serviceDetails = ServiceWidget(
           id: 1,
+          servicePicture: 'assets/technician.jpg',
             widgetTitle: "Mobile Technician");
         break;
       default:
@@ -79,7 +83,7 @@ class ServiceCard extends StatelessWidget {
         },
         child: Container(
           margin: EdgeInsets.symmetric(vertical: 10),
-          height: response.setHeight(105),
+          height: response.setHeight(120),
           width: response.setWidth(100),
           decoration: BoxDecoration(
               color: AppTheme.mainBlueColor,

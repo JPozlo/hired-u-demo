@@ -4,6 +4,7 @@ import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'dart:collection';
 
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:provider/provider.dart';
 
 class Checkout extends StatelessWidget {
@@ -34,7 +35,7 @@ class Checkout extends StatelessWidget {
               backgroundColor: Colors.white,
               radius: response.setWidth(22),
               child: Image.network(
-                cartProductsProvider[index].picPath.first.image,
+                ApiService.imageBaseURL + cartProductsProvider[index].picPath.first.image,
                 scale: 7,
               ),
             ),

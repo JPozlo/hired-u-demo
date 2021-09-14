@@ -9,23 +9,23 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
-  List<OrderHistory> ordersHistory = [
-    OrderHistory(
+  List<OrderHistoryTest> ordersHistory = [
+    OrderHistoryTest(
       id: "2683",
       total: 230,
       time: "2020/12/01",
     ),
-    OrderHistory(
+    OrderHistoryTest(
       id: "7393",
       total: 892,
       time: "2021/05/01",
     ),
-    OrderHistory(
+    OrderHistoryTest(
       id: "7832",
       total: 1672,
       time: "2021/01/01",
     ),
-    OrderHistory(
+    OrderHistoryTest(
       id: "8002",
       total: 9022,
       time: "2021/08/21",

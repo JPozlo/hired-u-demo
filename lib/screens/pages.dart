@@ -15,3 +15,8 @@ export 'choose_cards_from_list.dart';
 export 'checkout_screen.dart';
 export 'checkout_page.dart';
 export 'auth/auth.dart';
+export 'update_password.dart';
+export 'addresses_list.dart';
+export 'create_address_page.dart';
+export 'payment_list.dart';
+export 'choose_address.dart';

@@ -42,7 +42,7 @@ class Product {
       name: json['name'] as String,
       description: json['desc'] as String,
       foodCategory: ProductCategory.fromJson(json['category']),
-      picPath: (json['images'].map<ProductImage>((e) => ProductImage.fromJson(e)).toList()),
+      picPath: (json['images'].map<ProductImage>((e) => ProductImage.fromJson(e)).toList()) ?? null,
       price: json['price'] as int,
       discount: json['discount'] as int,
       quantity: json['quantity'] as int,
@@ -53,6 +53,6 @@ class Product {
 
   @override
   String toString() {
-    return "The product name: $name\n The product price is: $price";
+    return "The product name: $name\n The product price is: $price\n The product image 1 is: ${picPath.length}\n The product description is: $description";
   }
 }

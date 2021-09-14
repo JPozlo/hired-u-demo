@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
@@ -7,7 +8,10 @@ import 'package:groceries_shopping_app/local_database.dart';
 import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/providers.dart';
 import 'package:groceries_shopping_app/screens/pages.dart';
+import 'package:groceries_shopping_app/screens/payment_list.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:groceries_shopping_app/services/api/google_auth.dart';
+import 'package:groceries_shopping_app/services/user_service.dart';
 import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -20,10 +24,16 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
+  UserProvider userProvider;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
+    userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       backgroundColor: AppTheme.mainPinkColor,
       body: SafeArea(
@@ -31,7 +41,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         clipBehavior: Clip.antiAlias,
         overflow: Overflow.visible,
         // alignment: Alignment.topCenter,
-        children: [topBar(), listView(), personalInfoArea(userProvider.user)],
+        children: [
+          topBar(),
+          listView(context),
+          personalInfoArea(userProvider == null ? null : userProvider.user)
+        ],
       )),
     );
   }
@@ -90,18 +104,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircleAvatar(
-                backgroundImage: user.profile == null ? AssetImage("assets/avatar.png"): NetworkImage(user.profile),
+                backgroundImage: user.profile == null || user.profile.isEmpty
+                    ? AssetImage("assets/avatar.png")
+                    : NetworkImage(
+                        ApiService.imageBaseURL + user.profile,
+                        // errorBuilder: (context, exception, stacktrace) {
+                        //   print("Exception: ${exception.toString()}");
+                        //   print("Stacktrace: ${stacktrace.toString()}");
+                        //   return Text("Image can't be loaded");
+                        // },
+                      ),
                 radius: 50.0,
               ),
               SizedBox(
                 height: 13.0,
               ),
-              Text( user.name == null ? "Osolo" : user.name),
+              Text(user.name == null ? "Osolo" : user.name),
               SizedBox(
                 height: 9.0,
               ),
-              Text( user.email == null ? "email@gmail.com" : user.email),
-                SizedBox(
+              Text(user.email == null ? "email@gmail.com" : user.email),
+              SizedBox(
                 height: 13.0,
               ),
               Row(
@@ -109,7 +132,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      nextScreen(context, EditProfilePage(user: user,));
+                      nextScreen(
+                          context,
+                          EditProfilePage(
+                            user: user,
+                          ));
                     },
                     child: Container(
                       child: SvgPicture.asset(
@@ -129,7 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget listView() {
+  Widget listView(BuildContext context) {
     return Positioned(
       top: 230,
       left: 0,
@@ -146,20 +173,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
               shrinkWrap: true,
               physics: BouncingScrollPhysics(),
               children: [
-                ListTile(
-                  leading: Icon(Icons.location_on_outlined),
-                  title: Text("Residential Addresses"),
+                GestureDetector(
+                  onTap: () {
+                    nextScreen(context, AddressesList());
+                  },
+                  child: ListTile(
+                    leading: Icon(Icons.location_on_outlined),
+                    title: Text("Residential Addresses"),
+                  ),
                 ),
-                ListTile(
-                  leading: Icon(Icons.credit_card_outlined),
-                  title: Text("Payment"),
+                GestureDetector(
+                  onTap: () {
+                    nextScreen(context, PaymentList());
+                  },
+                  child: ListTile(
+                    leading: Icon(Icons.credit_card_outlined),
+                    title: Text("Payment"),
+                  ),
                 ),
                 ListTile(
                   leading: Icon(Icons.support_agent),
                   title: Text("Support"),
                 ),
                 GestureDetector(
-                  onTap: () async {},
+                  onTap: () async {
+                    logout(context);
+                  },
                   child: ListTile(
                     leading: Icon(Icons.logout),
                     title: Text("Logout"),
@@ -189,14 +228,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           TextButton(
             onPressed: () async {
-              var logoutStatus = await GoogleAuthentication.googleLogout();
-              _sharedPreferences.removeMultipleValuesWithKeys([
-                Constants.userTokenPrefKey,
-                Constants.userEmailPrefKey,
-                Constants.userNamePrefKey,
-                Constants.userDeviceModelPrefKey
-              ]);
-              nextFirstScreen(context, Home());
+              // _sharedPreferences.removeMultipleValuesWithKeys([
+              //   Constants.userTokenPrefKey,
+              //   Constants.userEmailPrefKey,
+              //   Constants.userNamePrefKey,
+              // ]);
+              // nextFirstScreen(context, Home());
+              // // var logoutStatus = await GoogleAuthentication.googleLogout();
+              var result = await UserService().logoutUser();
+              if (result.status) {
+                nextFirstScreen(context, Home());
+              } else {
+                Navigator.pop(context);
+                Flushbar(
+                        message:
+                            "An unexpected error occured! You can't logout.",
+                        title: "Sorry",
+                        duration: Duration(seconds: 4))
+                    .show(context);
+              }
             },
             child: const Text(
               'Confirm',

@@ -26,6 +26,8 @@ class _MainHomeState extends State<MainHome> {
   String userName;
   String userEmail;
   String userToken;
+  String userProfile;
+  String userPhone;
   String userDevice;
 
   final screens = [NewHome(), OrdersScreen(), ProfileScreen()];
@@ -33,29 +35,39 @@ class _MainHomeState extends State<MainHome> {
   @override
   void initState() {
     super.initState();
-    if (this.widget.user == null) {
-      userName = _sharedPreferences.getValueWithKey(Constants.userNamePrefKey);
-      userEmail =
-          _sharedPreferences.getValueWithKey(Constants.userEmailPrefKey);
-      userToken =
-          _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
-      userDevice =
-          _sharedPreferences.getValueWithKey(Constants.userDeviceModelPrefKey);
-    } else {
-      userName = this.widget.user.name;
-      userEmail = this.widget.user.email;
-    }
+    Future.delayed(Duration.zero, () {
+          print("User value: ${this.widget.user}");
+      if (this.widget.user == null) {
+        userName =
+            _sharedPreferences.getValueWithKey(Constants.userNamePrefKey);
+        userEmail =
+            _sharedPreferences.getValueWithKey(Constants.userEmailPrefKey);
+        userToken =
+            _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
+            userProfile = _sharedPreferences.getValueWithKey(Constants.userProfilePrefKey);
+            userPhone = _sharedPreferences.getValueWithKey(Constants.userPhonePrefKey);
+        userDevice = _sharedPreferences
+            .getValueWithKey(Constants.userDeviceModelPrefKey);
+        print("If place is HIT: $userName");
+      } else {
+        userName = this.widget.user.name;
+        userEmail = this.widget.user.email;
+        userPhone = this.widget.user.phone ?? "";
+        userProfile = this.widget.user.profile ?? "";
+      }
+      Provider.of<UserProvider>(context, listen: false).user = User(
+userProfile ?? "",
+          name: userName,
+          phone: userPhone ?? "",
+          email: userEmail,
+          deviceName: userDevice,
+          token: userToken);
+    });
+
   }
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(
-        Duration.zero,
-        () => Provider.of<UserProvider>(context, listen: false).user = User(
-            name: userName,
-            email: userEmail,
-            deviceName: userDevice,
-            token: userToken));
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,

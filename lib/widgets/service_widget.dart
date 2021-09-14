@@ -9,14 +9,16 @@ import 'package:groceries_shopping_app/widgets/service_details_widget.dart';
 import 'package:provider/provider.dart';
 
 class ServiceWidget extends StatefulWidget {
-  const ServiceWidget({
-    Key key,
-    @required this.widgetTitle,
-    @required this.id,
-  }) : super(key: key);
+  const ServiceWidget(
+      {Key key,
+      @required this.widgetTitle,
+      @required this.id,
+      @required this.servicePicture})
+      : super(key: key);
 
   final int id;
   final String widgetTitle;
+  final String servicePicture;
 
   @override
   _ServiceWidgetState createState() => _ServiceWidgetState();
@@ -34,7 +36,7 @@ class _ServiceWidgetState extends State<ServiceWidget> {
     //   _servicesListFuture = servicesProvider.fetchServices(5);
     //   print("This is hit");
     // });
-    _servicesListFuture = ApiService().fetchServicesList(5);
+    _servicesListFuture = ApiService().fetchServicesList(this.widget.id);
   }
 
   @override
@@ -68,30 +70,27 @@ class _ServiceWidgetState extends State<ServiceWidget> {
         builder: (context, AsyncSnapshot<Result> snapshot) {
           print("Snapshot values: $snapshot");
           Widget defaultWidget;
-          if (snapshot.hasData) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                defaultWidget = displayListItems(snapshot.data.service);
-                break;
-              case ConnectionState.none:
-                defaultWidget = loading();
-                break;
-              case ConnectionState.waiting:
-                defaultWidget = loading();
-                break;
-              default:
-                defaultWidget = loading();
-                break;
-            }
-          } else {
-            // defaultWidget = Center(
-            //   child: Container(
-            //     child: Text(snapshot.error == null
-            //         ? "An error occured"
-            //         : snapshot.error.toString()),
-            //   ),
-            // );
-            defaultWidget = loading();
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              if (snapshot.hasData && snapshot.data != null) {
+                if (snapshot.data.service.subCategories.length > 0) {
+                  defaultWidget = displayListItems(snapshot.data.service);
+                } else {
+                  defaultWidget = errorWidget();
+                }
+              } else {
+                defaultWidget = errorWidget();
+              }
+              break;
+            case ConnectionState.none:
+              defaultWidget = loading();
+              break;
+            case ConnectionState.waiting:
+              defaultWidget = loading();
+              break;
+            default:
+              defaultWidget = loading();
+              break;
           }
           return defaultWidget;
         },
@@ -99,24 +98,64 @@ class _ServiceWidgetState extends State<ServiceWidget> {
     );
   }
 
+  Widget errorWidget() {
+    return Center(
+      child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "No services found!",
+              style: TextStyle(fontSize: 23),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget displayListItems(Service service) {
-    return ListView.builder(
-        itemCount: service.subCategories.length,
-        itemBuilder: (context, index) {
-          var currentItem = service.subCategories[index];
-          return ListTile(
-              title: Text(currentItem.name),
-              trailing: Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ServiceDetails(
-                              widgetTitle: currentItem.name,
-                              subServices: currentItem.miniServices,
-                            )));
-              });
-        });
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Container(
+              decoration: BoxDecoration(shape: BoxShape.rectangle),
+              child: Image.asset(
+                this.widget.servicePicture,
+                scale: 1.2,
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            height: response.screenHeight * 0.6,
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: service.subCategories.length,
+                itemBuilder: (context, index) {
+                  var currentItem = service.subCategories[index];
+                  return ListTile(
+                      title: Text(currentItem.name),
+                      trailing: Icon(Icons.arrow_forward_ios),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ServiceDetails(
+                                      widgetTitle: currentItem.name,
+                                      subServices: currentItem.miniServices,
+                                    )));
+                      });
+                }),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget loading() {
@@ -132,4 +171,5 @@ class _ServiceWidgetState extends State<ServiceWidget> {
       ),
     );
   }
+
 }

@@ -6,5 +6,5 @@ class ProductImage {
   final String image;
 
   factory ProductImage.fromJson(Map<String, dynamic> json) =>
-      ProductImage(image: ApiService.imageBaseURL + json['image']);
+      ProductImage(image: json['image'] ?? null);
 }

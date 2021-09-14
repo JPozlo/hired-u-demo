@@ -68,7 +68,7 @@ class _NewHomeState extends State<NewHome> {
                       ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: user.profile == null ? Image.asset(
+                            child: user.profile == null || user.profile.isEmpty ? Image.asset(
                               "assets/avatar.png",
                               height: 70,
                               width: 70,
@@ -111,11 +111,14 @@ class _NewHomeState extends State<NewHome> {
                   width: response.screenWidth,
                   child: GridView.builder(
                     physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
+                    shrinkWrap: true,                  
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       crossAxisSpacing: 6.0,
                       mainAxisSpacing: 5.0,
+                      childAspectRatio: 1/1.2
+                      // childAspectRatio:  MediaQuery.of(context).size.width /
+                      //       (MediaQuery.of(context).size.height / 1.8)
                     ),
                     itemCount: listInfo.length,
                     itemBuilder: (context, index) {

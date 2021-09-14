@@ -127,6 +127,11 @@ class ProductsOperationsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  set updateSingleItem(Product newItem) {
+    _productsInStock.add(newItem);
+    notifyListeners();
+  }
+
   set updateDefaultProductsList(List<Product> newList) {
     _productsInStock = newList;
     notifyListeners();
@@ -228,7 +233,7 @@ class ProductsOperationsController extends ChangeNotifier {
     notifyListeners();
   }
 
-      Future<Result> fetchProductsList() async {
+  Future<Result> fetchProductsList() async {
     Result result;
 
     String token =
@@ -289,7 +294,4 @@ class ProductsOperationsController extends ChangeNotifier {
 
     return result;
   }
-
-
-
 }

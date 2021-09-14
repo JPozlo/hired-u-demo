@@ -5,6 +5,8 @@ class Constants {
   static const String wholeFoodCategory = "Whole Food";
   static const String userNamePrefKey = "user_name";
   static const String userEmailPrefKey = "user_email";
+  static const String userPhonePrefKey = "user_phone";
+  static const String userProfilePrefKey = "user_profile";
   static const String userTokenPrefKey = "user_token";
   static const String userDeviceModelPrefKey = "user_device_model";
 }

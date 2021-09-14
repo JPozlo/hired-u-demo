@@ -1,16 +1,16 @@
 import 'package:groceries_shopping_app/models/models.dart';
 
-class OrderHistory {
+class OrderHistoryTest {
   final String id;
   final int addressId;
   final List<Product> orderHistoryItems;
   final String time;
   final int total;
 
-  OrderHistory({this.id, this.addressId, this.time, this.orderHistoryItems, this.total});
+  OrderHistoryTest({this.id, this.addressId, this.time, this.orderHistoryItems, this.total});
 
-  factory OrderHistory.fromJson(Map<String, dynamic> json) {
-    return OrderHistory(
+  factory OrderHistoryTest.fromJson(Map<String, dynamic> json) {
+    return OrderHistoryTest(
       id: json['id'] as String,
       total: json['total'] as int,
     );

@@ -1,3 +1,5 @@
+import 'package:groceries_shopping_app/models/models.dart';
+
 class User {
   final int uid;
   final String email;
@@ -9,11 +11,12 @@ class User {
   final String deviceName;
   final String emailVerifiedAt;
   final String profile;
-  final List<String> addresses;
+  final List<UserAddress> addresses;
   final String createdAt;
   final String updatedAt;
 
-  const User({
+  const User(
+    this.profile, {
     this.email,
     this.name,
     this.phone,
@@ -26,43 +29,16 @@ class User {
     this.emailVerifiedAt,
     this.createdAt,
     this.updatedAt,
-    this.profile,
   });
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-        uid: json['id'] as int,
-        email: json['email'] as String,
-        name: json['name'] as String,
-        phone: json['phone'] as String,
-        password: json['password'] as String,
-        confirmPassword: json['password_confirmation'] as String,
-        token: json['token'] as String,
-        deviceName: json['device_name'] as String);
-  }
-
-  // factory User.fromJsonData(Map<String, dynamic> json) {
-  //   return User(
-  //     uid: json['id'] as int,
-  //     email: json['email'] as String,
-  //     name: json['name'] as String,
-  //     phone: json['phone'] as String,
-  //     profile: json['profile'] as String ?? "",
-  //     createdAt: json['created_at'] as String,
-  //     updatedAt: json['updated_at'] as String,
-  //   );
-  // }
 
   factory User.fromJsonUserData(Map<String, dynamic> json) {
     return User(
+       json['profile'] as String ?? "",
       uid: json['id'] as int,
       email: json['email'] as String,
       name: json['name'] as String,
       phone: json['phone'] as String,
-      profile: json['profile'] as String ?? "",
-      addresses: json['addresses'] as List<String> ?? List.empty(),
-      createdAt: json['created_at'] as String,
-      updatedAt: json['updated_at'] as String,
+      addresses: (json['addresses'].map<UserAddress>((e) => UserAddress.fromJson(e) ).toList()) as List<UserAddress> ?? List.empty()
     );
   }
 
