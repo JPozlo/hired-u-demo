@@ -1,4 +1,5 @@
 import 'package:after_layout/after_layout.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -292,7 +293,15 @@ class _ProductDetailsState extends State<ProductDetails>
   Widget buildImage(String name, ProductImage path) {
     return Hero(
       tag: isToPreview ? '$name-name' : '$path-path',
-      child: Image.network(ApiService.imageBaseURL + path.image, scale: 0.8),
+      child: CachedNetworkImage(
+         placeholder: (context, url) => const CircularProgressIndicator(),
+          imageUrl: path != null
+              ? ApiService.imageBaseURL +
+                  path.image
+              : 'https://uhired.herokuapp.com/profile-images/profile.png',
+          errorWidget: (context, url, error) => Text("Problem loading the image!"),
+       )
+      // child: Image.network(ApiService.imageBaseURL + path.image, scale: 0.8),
     );
   }
 

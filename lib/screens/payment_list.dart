@@ -20,54 +20,47 @@ class _PaymentListState extends State<PaymentList> {
 
   List<Payment> tempPaymentsList = [
     Payment(
-      id: 0,
-      amount: 9029,
-      serviceOrdersId: 3,
-      updatedAt: "2021/03/12",
-      createdAt: "2021/02/01"
-    ),
+        id: 0,
+        amount: 9029,
+        serviceOrdersId: 3,
+        updatedAt: "2021/03/12",
+        createdAt: "2021/02/01"),
     Payment(
-      id: 0,
-      amount: 9029,
-      serviceOrdersId: 3,
-      updatedAt: "2021/03/12",
-      createdAt: "2021/02/01"
-    ),
+        id: 0,
+        amount: 9029,
+        serviceOrdersId: 3,
+        updatedAt: "2021/03/12",
+        createdAt: "2021/02/01"),
     Payment(
-      id: 0,
-      amount: 9029,
-      serviceOrdersId: 3,
-      updatedAt: "2021/03/12",
-      createdAt: "2021/02/01"
-    ),
+        id: 0,
+        amount: 9029,
+        serviceOrdersId: 3,
+        updatedAt: "2021/03/12",
+        createdAt: "2021/02/01"),
     Payment(
-      id: 0,
-      amount: 9029,
-      serviceOrdersId: 3,
-      updatedAt: "2021/03/12",
-      createdAt: "2021/02/01"
-    ),
+        id: 0,
+        amount: 9029,
+        serviceOrdersId: 3,
+        updatedAt: "2021/03/12",
+        createdAt: "2021/02/01"),
     Payment(
-      id: 0,
-      amount: 9029,
-      serviceOrdersId: 3,
-      updatedAt: "2021/03/12",
-      createdAt: "2021/02/01"
-    ),
+        id: 0,
+        amount: 9029,
+        serviceOrdersId: 3,
+        updatedAt: "2021/03/12",
+        createdAt: "2021/02/01"),
     Payment(
-      id: 0,
-      amount: 9029,
-      serviceOrdersId: 3,
-      updatedAt: "2021/03/12",
-      createdAt: "2021/02/01"
-    ),
+        id: 0,
+        amount: 9029,
+        serviceOrdersId: 3,
+        updatedAt: "2021/03/12",
+        createdAt: "2021/02/01"),
     Payment(
-      id: 0,
-      amount: 9029,
-      serviceOrdersId: 3,
-      updatedAt: "2021/03/12",
-      createdAt: "2021/02/01"
-    ),
+        id: 0,
+        amount: 9029,
+        serviceOrdersId: 3,
+        updatedAt: "2021/03/12",
+        createdAt: "2021/02/01"),
   ];
 
   @override
@@ -78,78 +71,75 @@ class _PaymentListState extends State<PaymentList> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        key: _scaffoldKey,
-        body: SafeArea(
-          child: Builder(builder: (context) {
-            return Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Hero(
-                        tag: 'backarrow',
-                        child: GestureDetector(
-                          onTap: () {
-                            nextScreen(context, ProfileScreen());
-                          },
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            size: response.setHeight(23),
-                          ),
+    return Scaffold(
+      key: _scaffoldKey,
+      body: SafeArea(
+        child: Builder(builder: (context) {
+          return Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Hero(
+                      tag: 'backarrow',
+                      child: GestureDetector(
+                        onTap: () {
+                         Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.arrow_back,
+                          size: response.setHeight(23),
                         ),
                       ),
-                      Spacer(flex: 5),
-                      Text(
-                        "Your Payments",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: response.setFontSize(18),
-                        ),
+                    ),
+                    Spacer(flex: 5),
+                    Text(
+                      "Your Payments",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: response.setFontSize(18),
                       ),
-                      Spacer(flex: 5),
-                    ],
-                  ),
+                    ),
+                    Spacer(flex: 5),
+                  ],
                 ),
-                mainDisplayWidget(tempPaymentsList),
-                // FutureBuilder(
-                //   future: _addressesListFuture,
-                //   builder: (context, AsyncSnapshot<Result> snapshot) {
-                //     Widget defaultWidget;
-                //     switch (snapshot.connectionState) {
-                //       case ConnectionState.done:
-                //         if (snapshot.hasData && snapshot.data != null) {
-                //           if (snapshot.data.addresses.length > 0) {
-                //             defaultWidget =
-                //                 mainDisplayWidget(snapshot.data.addresses);
-                //           } else {
-                //             defaultWidget = errorWidget();
-                //           }
-                //         } else {
-                //           defaultWidget = errorWidget();
-                //         }
-                //         break;
-                //       case ConnectionState.none:
-                //         defaultWidget = loading();
-                //         break;
-                //       case ConnectionState.waiting:
-                //         defaultWidget = loading();
-                //         break;
-                //       default:
-                //         defaultWidget = loading();
-                //         break;
-                //     }
-                //     return defaultWidget;
-                //   },
-                // )
-              ],
-            );
-          }),
-        ),
-  
+              ),
+              mainDisplayWidget(tempPaymentsList),
+              // FutureBuilder(
+              //   future: _addressesListFuture,
+              //   builder: (context, AsyncSnapshot<Result> snapshot) {
+              //     Widget defaultWidget;
+              //     switch (snapshot.connectionState) {
+              //       case ConnectionState.done:
+              //         if (snapshot.hasData && snapshot.data != null) {
+              //           if (snapshot.data.addresses.length > 0) {
+              //             defaultWidget =
+              //                 mainDisplayWidget(snapshot.data.addresses);
+              //           } else {
+              //             defaultWidget = errorWidget();
+              //           }
+              //         } else {
+              //           defaultWidget = errorWidget();
+              //         }
+              //         break;
+              //       case ConnectionState.none:
+              //         defaultWidget = loading();
+              //         break;
+              //       case ConnectionState.waiting:
+              //         defaultWidget = loading();
+              //         break;
+              //       default:
+              //         defaultWidget = loading();
+              //         break;
+              //     }
+              //     return defaultWidget;
+              //   },
+              // )
+            ],
+          );
+        }),
       ),
     );
   }

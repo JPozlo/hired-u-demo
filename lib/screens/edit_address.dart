@@ -3,45 +3,57 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/providers.dart';
-import 'package:groceries_shopping_app/screens/main_home.dart';
-import 'package:groceries_shopping_app/utils/helpers.dart';
 import 'package:groceries_shopping_app/widgets/app_button.dart';
 import 'package:groceries_shopping_app/widgets/input_decoration_widget.dart';
 import 'package:provider/provider.dart';
 
-class CreateAddressPage extends StatefulWidget {
-  const CreateAddressPage({Key key}) : super(key: key);
+class EditAddressPage extends StatefulWidget {
+  const EditAddressPage({Key key, @required this.address}) : super(key: key);
+  final UserAddress address;
 
   @override
-  _CreateAddressPageState createState() => _CreateAddressPageState();
+  _EditAddressPageState createState() => _EditAddressPageState();
 }
 
-class _CreateAddressPageState extends State<CreateAddressPage> {
+class _EditAddressPageState extends State<EditAddressPage> {
   final _formKey = new GlobalKey<FormState>();
+  final TextEditingController _countryController = new TextEditingController();
+  final TextEditingController _countyController = new TextEditingController();
+  final TextEditingController _townController = new TextEditingController();
+  final TextEditingController _streetController = new TextEditingController();
+  final TextEditingController _buildingController = new TextEditingController();
+  final TextEditingController _suiteController = new TextEditingController();
   String _country, _county, _building, _hometown, _streetaddress, _suite;
 
   @override
   void initState() {
     super.initState();
+    _countryController.text = this.widget.address.country;
+    _countyController.text = this.widget.address.county;
+    _townController.text = this.widget.address.homeTown;
+    _streetController.text = this.widget.address.streetAddress;
+    _buildingController.text = this.widget.address.building;
+    _suiteController.text = this.widget.address.suite;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            topBar(),
-          SizedBox(height: 15,),
+            child: SingleChildScrollView(
+      child: Column(
+        children: [
+          topBar(),
+          SizedBox(
+            height: 15,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 13.0),
             child: detailsFormUpdate(context),
           )
-          ],
-          ),
-      )
-    ));
+        ],
+      ),
+    )));
   }
 
   Widget topBar() {
@@ -66,7 +78,7 @@ class _CreateAddressPageState extends State<CreateAddressPage> {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: "Create New Address",
+                  text: "Update Address",
                   style: Theme.of(context).textTheme.headline6.copyWith(
                         color: Colors.black,
                       ),
@@ -85,26 +97,32 @@ class _CreateAddressPageState extends State<CreateAddressPage> {
     UserProvider userProvider = Provider.of<UserProvider>(context);
 
     final countryInput = TextFormField(
+        controller: _countryController,
         validator: (value) => value.isEmpty ? "Please enter country" : null,
         onSaved: (value) => _country = value,
         decoration: inputFieldDecoration("Enter the country"));
     final countyInput = TextFormField(
+        controller: _countyController,
         validator: (value) => value.isEmpty ? "Please enter county" : null,
         onSaved: (value) => _county = value,
         decoration: inputFieldDecoration("Enter the county"));
     final townInput = TextFormField(
+        controller: _townController,
         validator: (value) => value.isEmpty ? "Please enter town" : null,
         onSaved: (value) => _hometown = value,
         decoration: inputFieldDecoration("Enter the town"));
     final streetInput = TextFormField(
+        controller: _streetController,
         validator: (value) => value.isEmpty ? "Please enter street" : null,
         onSaved: (value) => _streetaddress = value,
         decoration: inputFieldDecoration("Enter the street"));
     final buildingInput = TextFormField(
+        controller: _buildingController,
         validator: (value) => value.isEmpty ? "Please enter building" : null,
         onSaved: (value) => _building = value,
         decoration: inputFieldDecoration("Enter the building"));
     final suiteInput = TextFormField(
+        controller: _suiteController,
         validator: (value) => value.isEmpty ? "Please enter suite" : null,
         onSaved: (value) => _suite = value,
         decoration: inputFieldDecoration("Enter the suite"));
@@ -122,7 +140,7 @@ class _CreateAddressPageState extends State<CreateAddressPage> {
       if (form.validate()) {
         form.save();
 
-        UserAddress createAddressDTO = UserAddress(
+        UserAddress updateAddressDTO = UserAddress(
             country: _country,
             county: _county,
             streetAddress: _streetaddress,
@@ -131,17 +149,18 @@ class _CreateAddressPageState extends State<CreateAddressPage> {
             suite: _suite);
 
         final Future<Result> createAddressResponse =
-            addressProvider.createAddress(createAddressDTO);
+            addressProvider.updateAddress(updateAddressDTO);
 
         createAddressResponse.then((response) {
           if (response.status) {
-            if (response.user != null) {
+            if (response.user != null || response.address != null) {
               userProvider.user = response.user;
+              addressProvider.userAddress = response.address;
             }
             Fluttertoast.showToast(
-                msg: "Successfully created address",
+                msg: "Successfully updated address",
                 toastLength: Toast.LENGTH_LONG);
-            nextScreen(context, MainHome());
+            Navigator.pop(context);
           } else {
             Flushbar(
               title: "Failed Login",
@@ -163,7 +182,7 @@ class _CreateAddressPageState extends State<CreateAddressPage> {
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [                
+          children: [
             label("Country"),
             SizedBox(
               height: 7.0,
@@ -179,17 +198,17 @@ class _CreateAddressPageState extends State<CreateAddressPage> {
               height: 7.0,
             ),
             townInput,
-               label("Street"),
+            label("Street"),
             SizedBox(
               height: 7.0,
             ),
             streetInput,
-                     label("Building"),
+            label("Building"),
             SizedBox(
               height: 7.0,
             ),
             buildingInput,
-                     label("Suite"),
+            label("Suite"),
             SizedBox(
               height: 7.0,
             ),
@@ -221,6 +240,4 @@ class _CreateAddressPageState extends State<CreateAddressPage> {
       ),
     );
   }
-
-
 }

@@ -60,7 +60,7 @@ class ProductsCheckout extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.all(15.0),
                       child: Text(
-                        "You don't have any items in your Cart.\nStart shopping now, and checkout.",
+                        "You don't have any items in your Cart.\nStart shopping now and checkout.",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 15,
@@ -81,9 +81,9 @@ class ProductsCheckout extends StatelessWidget {
             // color: AppTheme.mainCartBackgroundColor,
             child: Visibility(
               visible: cartProductsProvider.isNotEmpty,
-              replacement: IllustrationContainer(
-                path: AppTheme.emptyCartSVG2,
-              ),
+              // replacement: IllustrationContainer(
+              //   path: AppTheme.emptyCartSVG2,
+              // ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[

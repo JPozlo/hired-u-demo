@@ -268,6 +268,14 @@ class ProductsOperationsController extends ChangeNotifier {
             productsData.map<Product>((e) => Product.fromJson(e)).toList();
         PaginationData pagination = PaginationData.fromJson(paginationData);
 
+        if (products.length > 0) {
+          var status = await _sharedPreferences.saveValueWithKey(
+              Constants.productsListPrefKey, products);
+          print("Save values status: $status");
+          _productsInStock = products;
+          notifyListeners();
+        }
+
         String message = responseData['message'];
 
         result = Result(true, message == null ? "Success" : message,

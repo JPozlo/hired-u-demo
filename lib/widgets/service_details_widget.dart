@@ -1,7 +1,9 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/models/models.dart';
+import 'package:groceries_shopping_app/screens/checkout_screen.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
 import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:groceries_shopping_app/utils/helpers.dart';
@@ -20,6 +22,7 @@ class ServiceDetails extends StatefulWidget {
 class _ServiceDetailsState extends State<ServiceDetails> {
   bool selected = false;
   String _location;
+  bool doLoading = false;
   Map<MiniService, bool> itemsMap;
   List<int> _selectedItem = [];
 
@@ -44,7 +47,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
             hoverColor: Colors.transparent,
             icon: Hero(
               tag: 'backarrow',
-              child: Icon(Icons.arrow_back_ios,
+              child: Icon(Icons.arrow_back,
                   color: Colors.black, size: response.setHeight(24)),
             ),
             onPressed: () {
@@ -82,40 +85,51 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                       });
                 }),
             locationWidget(),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: AppTheme.mainBlueColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              child: Container(
-                margin: const EdgeInsets.all(8),
-                child: const Text(
-                  'Make Order',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-              onPressed: () async {
-                var result = await createService();
-                if (result.status) {
-                  Flushbar(
-                    message: result.message,
-                    title: "Success",
-                    duration: Duration(seconds: 4),
-                  ).show(context);
-                } else{
-                   Flushbar(
-                    message: result.errors.first.toString(),
-                    title: "Error",
-                    duration: Duration(seconds: 4),
-                  ).show(context);
-                }
-              },
-            )
+            doLoading
+                ? loading
+                : ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: AppTheme.mainBlueColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child: Container(
+                      margin: const EdgeInsets.all(8),
+                      child: const Text(
+                        'Make Order',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    onPressed: () async {
+                      setState(() {
+                        doLoading = true;
+                      });
+                      var result = await createService();
+                      if (result.status) {
+                        setState(() {
+                          doLoading = false;
+                        });
+                        if(result.payment != null){
+                        nextScreen(context, CheckOut(id: result.payment.id));
+
+                        }
+                        // Fluttertoast.showToast(msg: "Successfully c")
+                      } else {
+                              setState(() {
+                          doLoading = false;
+                        });
+                        Flushbar(
+                          message: result.errors.first.toString(),
+                          title: "Error",
+                          duration: Duration(seconds: 4),
+                        ).show(context);
+                      }
+                    },
+                  )
           ],
         ),
       ),
@@ -129,6 +143,14 @@ class _ServiceDetailsState extends State<ServiceDetails> {
     result = await ApiService().createServiceOrderList(createdService);
     return result;
   }
+
+  Widget loading = Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      CircularProgressIndicator(),
+      Text(" Processing ... Please wait")
+    ],
+  );
 
   Widget locationWidget() {
     Widget child = Column(

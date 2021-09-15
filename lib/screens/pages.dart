@@ -20,3 +20,4 @@ export 'addresses_list.dart';
 export 'create_address_page.dart';
 export 'payment_list.dart';
 export 'choose_address.dart';
+export 'edit_address.dart';

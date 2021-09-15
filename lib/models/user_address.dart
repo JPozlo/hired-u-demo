@@ -1,5 +1,13 @@
 class UserAddress {
-  UserAddress({this.id, this.country, this.county, this.building, this.streetAddress, this.suite, this.homeTown});
+  UserAddress(
+      {this.id,
+      this.country,
+      this.county,
+      this.building,
+      this.streetAddress,
+      this.isFavorite,
+      this.suite,
+      this.homeTown});
   final String country;
   final int id;
   final String county;
@@ -7,6 +15,7 @@ class UserAddress {
   final String streetAddress;
   final String building;
   final String suite;
+  bool isFavorite;
 
   factory UserAddress.fromJson(Map<String, dynamic> json) {
     return UserAddress(
@@ -29,7 +38,7 @@ class UserAddress {
         'suite': suite
       };
 
-      @override
+  @override
   String toString() {
     return "Country: $country";
   }

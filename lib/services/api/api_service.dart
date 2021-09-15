@@ -32,6 +32,7 @@ class ApiService {
   static const String ordersHistory = appBaseURL + "orderhistory";
   // Address
   static const String createAddress = appBaseURL + "createaddress";
+  static const String updateAddress = appBaseURL + "updateaddress";
   static const String allAddresses = appBaseURL + "addresses";
   // Products
   static const String fetchProducts = appBaseURL + "products";
@@ -41,6 +42,8 @@ class ApiService {
   static const String createServiceOrder = appBaseURL + "services/orders";
   // Payments
   static const String paymentsList = appBaseURL + "payments";
+
+
 
   Future<Result> fetchServicesList(int id) async {
     Result result;
@@ -58,6 +61,7 @@ class ApiService {
     final Map<String, dynamic> responseData = json.decode(response.body);
 
     var status = responseData['status_code'];
+    print("Service status code $status");
 
     if (status == 200) {
       var serviceData = responseData['services'];
@@ -146,6 +150,13 @@ class ApiService {
         List<Product> products =
             productsData.map<Product>((e) => Product.fromJson(e)).toList();
         PaginationData pagination = PaginationData.fromJson(paginationData);
+
+        
+        // if (products.length > 0) {
+        //   var status = await _sharedPreferences.saveValueWithKey(
+        //       Constants.productsListPrefKey, products);
+        //   print("Save values status: $status");
+        // }
 
         String message = responseData['message'];
 
@@ -244,13 +255,11 @@ class ApiService {
       result = Result(true, message == null ? "Success" : message,
           addresses: addresses);
     } else {
-
       result = Result(false, "An unexpected error occurred");
     }
     return result;
   }
 
-  
   Future<Result> fetchPaymentsList() async {
     Result result;
 
@@ -280,4 +289,6 @@ class ApiService {
     }
     return result;
   }
+
+
 }

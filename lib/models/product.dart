@@ -51,6 +51,18 @@ class Product {
     );
   }
 
+    Map<String, dynamic> toJson() => {
+        'name': name,
+        'desc': description,
+        'category': foodCategory,
+        'images': picPath,
+        'price': price,
+        "discount": discount,
+        "quantity": quantity,
+        "tags": tags,
+        "supplier": supplier
+      };
+
   @override
   String toString() {
     return "The product name: $name\n The product price is: $price\n The product image 1 is: ${picPath.length}\n The product description is: $description";

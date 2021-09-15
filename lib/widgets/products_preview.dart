@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
+import 'package:groceries_shopping_app/local_database.dart';
 import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/screens/main_home.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
 import 'package:groceries_shopping_app/services/api/api_service.dart';
+import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:groceries_shopping_app/widgets/filters_screen.dart';
 import 'package:groceries_shopping_app/widgets/product_card.dart';
 import 'package:provider/provider.dart';
@@ -21,9 +23,11 @@ class ProductsPreview extends StatefulWidget {
 }
 
 class _ProductsPreviewState extends State<ProductsPreview> {
+  PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
   int productsFilterCount = 6;
   Future<Result> _productsFuture;
   ProductsOperationsController _productsProvider;
+  List<Product> _productsList;
 
   var doLoading = Row(
     mainAxisAlignment: MainAxisAlignment.center,
@@ -48,6 +52,9 @@ class _ProductsPreviewState extends State<ProductsPreview> {
         }
       });
     });
+    // _productsList = _sharedPreferences.getObjectListValuesWithKey(
+    //     Constants.productsListPrefKey, (v) => Product.fromJson(v));
+    // print("Products list pref values INITSTATE: $_productsList");
   }
 
   @override
@@ -58,7 +65,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
       initialData: Result(false, "Success", products: []),
       builder: (context, AsyncSnapshot<Result> snapshot) {
         Widget defaultWidget;
-           switch (snapshot.connectionState) {
+        switch (snapshot.connectionState) {
           case ConnectionState.waiting:
             defaultWidget = doLoading;
             break;
@@ -66,11 +73,12 @@ class _ProductsPreviewState extends State<ProductsPreview> {
             defaultWidget = doLoading;
             break;
           case ConnectionState.done:
-              if (snapshot.hasData && snapshot.data.products != null) {
+            if (snapshot.hasData && snapshot.data.products != null) {
               print("Snapshot data: ${snapshot.data.toString()}");
-            defaultWidget = productsMainDisplay(snapshot.data.products, context);
+              defaultWidget =
+                  productsMainDisplay(snapshot.data.products, context);
               print("listProducts: ${snapshot.data.products}");
-            } else if(snapshot.hasError ){
+            } else if (snapshot.hasError) {
               defaultWidget = errorWidget(error: snapshot.error.toString());
             }
             break;
@@ -147,7 +155,8 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                       itemBuilder: (context, index) {
                         Product currentProduct = listInfo[index];
                         print("Current product: ${currentProduct.tags}");
-                        return ProductCard(product: currentProduct, index: index);
+                        return ProductCard(
+                            product: currentProduct, index: index);
                       }),
                 ),
               ),
@@ -232,7 +241,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                   context, MaterialPageRoute(builder: (context) => MainHome()));
             },
             child: Icon(
-              Icons.arrow_back_ios,
+              Icons.arrow_back,
               size: response.setHeight(23),
             ),
           ),

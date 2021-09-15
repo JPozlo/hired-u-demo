@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/models/models.dart';
-import 'package:groceries_shopping_app/models/service_category.dart';
-import 'package:groceries_shopping_app/providers/providers.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
 import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:groceries_shopping_app/widgets/service_details_widget.dart';
-import 'package:provider/provider.dart';
 
 class ServiceWidget extends StatefulWidget {
   const ServiceWidget(
       {Key key,
-      @required this.widgetTitle,
-      @required this.id,
-      @required this.servicePicture})
+      // @required this.widgetTitle,
+      // @required this.id,
+      // @required this.servicePicture,
+      @required this.service,
+      })
       : super(key: key);
 
-  final int id;
-  final String widgetTitle;
-  final String servicePicture;
+  // final int id;
+  // final String widgetTitle;
+  final Service service;
+  // final String servicePicture;
 
   @override
   _ServiceWidgetState createState() => _ServiceWidgetState();
@@ -36,7 +36,7 @@ class _ServiceWidgetState extends State<ServiceWidget> {
     //   _servicesListFuture = servicesProvider.fetchServices(5);
     //   print("This is hit");
     // });
-    _servicesListFuture = ApiService().fetchServicesList(this.widget.id);
+    _servicesListFuture = ApiService().fetchServicesList(this.widget.service.id);
   }
 
   @override
@@ -52,7 +52,7 @@ class _ServiceWidgetState extends State<ServiceWidget> {
             hoverColor: Colors.transparent,
             icon: Hero(
               tag: 'backarrow',
-              child: Icon(Icons.arrow_back_ios,
+              child: Icon(Icons.arrow_back,
                   color: Colors.black, size: response.setHeight(24)),
             ),
             onPressed: () {
@@ -60,7 +60,7 @@ class _ServiceWidgetState extends State<ServiceWidget> {
               Navigator.pop(context);
             }),
         title: Text(
-          this.widget.widgetTitle,
+          this.widget.service.name,
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -123,7 +123,7 @@ class _ServiceWidgetState extends State<ServiceWidget> {
             child: Container(
               decoration: BoxDecoration(shape: BoxShape.rectangle),
               child: Image.asset(
-                this.widget.servicePicture,
+                this.widget.service.image,
                 scale: 1.2,
                 fit: BoxFit.fill,
               ),
@@ -171,5 +171,4 @@ class _ServiceWidgetState extends State<ServiceWidget> {
       ),
     );
   }
-
 }

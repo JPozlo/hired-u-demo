@@ -12,7 +12,8 @@ import 'package:provider/provider.dart';
 import '../providers/product_provider.dart';
 
 class CheckOut extends StatefulWidget {
-  const CheckOut({Key key}) : super(key: key);
+  const CheckOut({Key key, this.id}) : super(key: key);
+  final int id;
 
   @override
   _CheckOutState createState() => _CheckOutState();
@@ -56,16 +57,23 @@ class _CheckOutState extends State<CheckOut> with AfterLayoutMixin<CheckOut> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: Text('Check your E-mail for confirmation.'),
-              ),
+              // Padding(
+              //   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              //   child: Text('Check your E-mail for confirmation.'),
+              // ),
               SizedBox(height: 30),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                child: Text(
+                child: this.widget.id == null ? 
+ Text(
                   "Your Order Number is \n#" +
-                      _randomGeneratedCode().toString(),
+                       _randomGeneratedCode().toString(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20),
+                ) :
+                Text(
+                  "Your Order Number is \n#" +
+                       this.widget.id.toString(),
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 20),
                 ),

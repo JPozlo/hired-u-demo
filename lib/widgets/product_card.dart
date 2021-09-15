@@ -83,7 +83,7 @@ class _ProductCardState extends State<ProductCard> {
                               this.widget.product.picPath.first.image
                           : 'https://uhired.herokuapp.com/profile-images/profile.png',
                       errorWidget: (context, url, error) =>
-                          Text(error.toString()),
+                          Text("Problem loading the image"),
                     )
                     // child: Image.network(
                     //   "${ApiService.imageBaseURL + this.widget.product.picPath.first.image}",

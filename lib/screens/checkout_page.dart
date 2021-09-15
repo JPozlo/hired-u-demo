@@ -63,6 +63,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         streetAddress: "Masai Lodge",
         building: "Viewtower",
         suite: "7j33j3n");
+    // defaultAddress = ApiService().fetchAddressesList()[0];
     print("Default value address: ${defaultValueAddress.toString()}");
     _orderProducts =
         Provider.of<ProductsOperationsController>(context, listen: false).cart;
@@ -90,120 +91,118 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   Widget build(BuildContext context) {
     var addressProvider = Provider.of<AddressProvider>(context);
-    return MaterialApp(
-      home: Scaffold(
-        key: _scaffoldKey,
-        body: SafeArea(
-          child: Builder(builder: (context) {
-            return Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Scaffold(
+      key: _scaffoldKey,
+      body: SafeArea(
+        child: Builder(builder: (context) {
+          return Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Hero(
+                      tag: 'backarrow',
+                      child: GestureDetector(
+                        onTap: () {
+                          // Navigator.pop(context);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen()));
+                          // Navigator.pushAndRemoveUntil(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => HomeScreen()),
+                          //     (route) => false);
+                        },
+                        child: Icon(
+                          Icons.arrow_back,
+                          size: response.setHeight(23),
+                        ),
+                      ),
+                    ),
+                    Spacer(flex: 5),
+                    Text(
+                      "Confirm Order",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: response.setFontSize(18),
+                      ),
+                    ),
+                    Spacer(flex: 5),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  child: ListView(
                     children: <Widget>[
-                      Hero(
-                        tag: 'backarrow',
-                        child: GestureDetector(
-                          onTap: () {
-                            // Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomeScreen()));
-                            // Navigator.pushAndRemoveUntil(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => HomeScreen()),
-                            //     (route) => false);
-                          },
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            size: response.setHeight(23),
-                          ),
-                        ),
-                      ),
-                      Spacer(flex: 5),
-                      Text(
-                        "Confirm Order",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: response.setFontSize(18),
-                        ),
-                      ),
-                      Spacer(flex: 5),
+                      selectedAddressSection(
+                          addressProvider.userAddress == null ||
+                                  addressProvider.userAddress.suite == null
+                              ? defaultValueAddress
+                              : addressProvider.userAddress),
+                      priceSection(
+                          totalPrice: _totalPrice,
+                          taxPrice: _taxPrice,
+                          totalOverall: _totalOverallCharge,
+                          deliveryCharge: _deliveryPrice)
                     ],
                   ),
                 ),
-                Expanded(
-                  child: Container(
-                    child: ListView(
-                      children: <Widget>[
-                        selectedAddressSection(
-                            addressProvider.userAddress == null ||
-                                    addressProvider.userAddress.suite == null
-                                ? defaultValueAddress
-                                : addressProvider.userAddress),
-                        priceSection(
-                            totalPrice: _totalPrice,
-                            taxPrice: _taxPrice,
-                            totalOverall: _totalOverallCharge,
-                            deliveryCharge: _deliveryPrice)
-                      ],
+                flex: 90,
+              ),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      var result = await confirmOrder();
+                      if (result.status) {
+                        Flushbar(
+                          message: result.message,
+                          title: "Success",
+                          duration: Duration(seconds: 4),
+                        ).show(context);
+                      } else {
+                        Flushbar(
+                          message: result.errors.first.toString(),
+                          title: "Error",
+                          duration: Duration(seconds: 4),
+                        ).show(context);
+                      }
+                      //      Widget selectedPaymentOption = MpesaPayment();
+                      // if (val == PaymentMethodOptions.MPESA) {
+                      //   selectedPaymentOption = MpesaPayment();
+                      // } else if (val == PaymentMethodOptions.CARD) {
+                      //   selectedPaymentOption = PayWithCreditCardPage();
+                      // }
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => MpesaPayment()));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: AppTheme.mainBlueColor,
+                      textStyle: TextStyle(color: Colors.black),
+                    ),
+                    child: Text(
+                      "Confirm Order",
+                      style: CustomTextStyle.textFormFieldMedium.copyWith(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
-                  flex: 90,
                 ),
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        var result = await confirmOrder();
-                        if (result.status) {
-                          Flushbar(
-                            message: result.message,
-                            title: "Success",
-                            duration: Duration(seconds: 4),
-                          ).show(context);
-                        } else {
-                          Flushbar(
-                            message: result.errors.first.toString(),
-                            title: "Error",
-                            duration: Duration(seconds: 4),
-                          ).show(context);
-                        }
-                        //      Widget selectedPaymentOption = MpesaPayment();
-                        // if (val == PaymentMethodOptions.MPESA) {
-                        //   selectedPaymentOption = MpesaPayment();
-                        // } else if (val == PaymentMethodOptions.CARD) {
-                        //   selectedPaymentOption = PayWithCreditCardPage();
-                        // }
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => MpesaPayment()));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: AppTheme.mainBlueColor,
-                        textStyle: TextStyle(color: Colors.black),
-                      ),
-                      child: Text(
-                        "Confirm Order",
-                        style: CustomTextStyle.textFormFieldMedium.copyWith(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  flex: 10,
-                )
-              ],
-            );
-          }),
-        ),
+                flex: 10,
+              )
+            ],
+          );
+        }),
       ),
     );
   }
@@ -217,79 +216,79 @@ class _CheckoutPageState extends State<CheckoutPage> {
     return result;
   }
 
-  showPaymentModalSheet(BuildContext context) {
-    return showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Container(
-            height: 130,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.grey.shade200, width: 2),
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(16),
-                    topLeft: Radius.circular(16))),
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(left: 16, right: 16),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: AppTheme.mainBlueColor,
-                      padding: EdgeInsets.only(left: 48, right: 48),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(13))),
-                    ),
-                    onPressed: () {
-                      Widget selectedPaymentOption = MpesaPayment();
-                      if (val == PaymentMethodOptions.MPESA) {
-                        selectedPaymentOption = MpesaPayment();
-                      } else if (val == PaymentMethodOptions.CARD) {
-                        selectedPaymentOption = PayWithCreditCardPage();
-                      }
-                      Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => selectedPaymentOption))
-                          .then((value) => Navigator.pop(context));
-                    },
-                    child: Text(
-                      "Pay Now",
-                      style: CustomTextStyle.textFormFieldMedium
-                          .copyWith(color: Colors.black),
-                    ),
-                  ),
-                ),
-                Spacer(),
-                Container(
-                  margin: EdgeInsets.only(left: 16, right: 16, bottom: 10),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: AppTheme.mainOrangeColor,
-                      padding: EdgeInsets.only(left: 48, right: 48),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(13))),
-                    ),
-                    onPressed: () {
-                      // Send order info to API
-                      Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CheckOut()))
-                          .then((value) => Navigator.pop(context));
-                    },
-                    child: Text(
-                      "Pay Later",
-                      style: CustomTextStyle.textFormFieldMedium
-                          .copyWith(color: Colors.black),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          );
-        });
-  }
+  // showPaymentModalSheet(BuildContext context) {
+  //   return showModalBottomSheet(
+  //       context: context,
+  //       builder: (context) {
+  //         return Container(
+  //           height: 130,
+  //           decoration: BoxDecoration(
+  //               color: Colors.white,
+  //               border: Border.all(color: Colors.grey.shade200, width: 2),
+  //               borderRadius: BorderRadius.only(
+  //                   topRight: Radius.circular(16),
+  //                   topLeft: Radius.circular(16))),
+  //           child: Column(
+  //             children: [
+  //               Container(
+  //                 margin: EdgeInsets.only(left: 16, right: 16),
+  //                 child: ElevatedButton(
+  //                   style: ElevatedButton.styleFrom(
+  //                     primary: AppTheme.mainBlueColor,
+  //                     padding: EdgeInsets.only(left: 48, right: 48),
+  //                     shape: RoundedRectangleBorder(
+  //                         borderRadius: BorderRadius.all(Radius.circular(13))),
+  //                   ),
+  //                   onPressed: () {
+  //                     Widget selectedPaymentOption = MpesaPayment();
+  //                     if (val == PaymentMethodOptions.MPESA) {
+  //                       selectedPaymentOption = MpesaPayment();
+  //                     } else if (val == PaymentMethodOptions.CARD) {
+  //                       selectedPaymentOption = PayWithCreditCardPage();
+  //                     }
+  //                     Navigator.push(
+  //                             context,
+  //                             MaterialPageRoute(
+  //                                 builder: (context) => selectedPaymentOption))
+  //                         .then((value) => Navigator.pop(context));
+  //                   },
+  //                   child: Text(
+  //                     "Pay Now",
+  //                     style: CustomTextStyle.textFormFieldMedium
+  //                         .copyWith(color: Colors.black),
+  //                   ),
+  //                 ),
+  //               ),
+  //               Spacer(),
+  //               Container(
+  //                 margin: EdgeInsets.only(left: 16, right: 16, bottom: 10),
+  //                 child: ElevatedButton(
+  //                   style: ElevatedButton.styleFrom(
+  //                     primary: AppTheme.mainOrangeColor,
+  //                     padding: EdgeInsets.only(left: 48, right: 48),
+  //                     shape: RoundedRectangleBorder(
+  //                         borderRadius: BorderRadius.all(Radius.circular(13))),
+  //                   ),
+  //                   onPressed: () {
+  //                     // Send order info to API
+  //                     Navigator.push(
+  //                             context,
+  //                             MaterialPageRoute(
+  //                                 builder: (context) => CheckOut()))
+  //                         .then((value) => Navigator.pop(context));
+  //                   },
+  //                   child: Text(
+  //                     "Pay Later",
+  //                     style: CustomTextStyle.textFormFieldMedium
+  //                         .copyWith(color: Colors.black),
+  //                   ),
+  //                 ),
+  //               )
+  //             ],
+  //           ),
+  //         );
+  //       });
+  // }
 
   showThankYouBottomSheet(BuildContext context) {
     return _scaffoldKey.currentState.showBottomSheet((context) {
@@ -577,15 +576,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ChooseAddressPage()));
-                setState(() {
-                  _selectedAddress = selectedAddress;
-                  defaultValueAddress = selectedAddress;
-                });
-                print("Orderitems: ${_orderItems.toString()}");
-                print("selctedaddress: ${_selectedAddress.toString()}");
+
+                if (selectedAddress != null) {
+                  setState(() {
+                    _selectedAddress = selectedAddress;
+                    defaultValueAddress = selectedAddress;
+                  });
+                  print("Orderitems: ${_orderItems.toString()}");
+                  print("selctedaddress: ${_selectedAddress.toString()}");
+                }
               },
               child: Text(
-                "Change",
+                "Choos Another Address",
                 style: CustomTextStyle.textFormFieldSemiBold
                     .copyWith(fontSize: 12, color: Colors.indigo.shade700),
               ),

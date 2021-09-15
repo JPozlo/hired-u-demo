@@ -7,4 +7,8 @@ class ProductImage {
 
   factory ProductImage.fromJson(Map<String, dynamic> json) =>
       ProductImage(image: json['image'] ?? null);
+
+          Map<String, dynamic> toJson() => {
+        'image': image,
+      };
 }

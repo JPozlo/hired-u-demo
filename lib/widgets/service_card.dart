@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
+import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/models/service_category.dart';
 import 'package:groceries_shopping_app/screens/grocery_home.dart';
 import 'package:groceries_shopping_app/screens/home.dart';
@@ -11,79 +12,35 @@ import 'package:groceries_shopping_app/widgets/service_widget.dart';
 import 'package:provider/provider.dart';
 
 class ServiceCard extends StatelessWidget {
-  ServiceCard({@required this.index, @required this.serviceName});
+  ServiceCard({@required this.index, @required this.service});
   final int index;
-  final String serviceName;
+  // final String serviceName;
+  final Service service;
 
   @override
   Widget build(BuildContext context) {
-
-    List<ServiceCategory> _maidServiceCategories = maidCategories;
-    List<ServiceCategory> _mechanicServiceCategories = mechanicCategories;
-    List<ServiceCategory> _carpenterServiceCategories = carpenterCategories;
-    List<ServiceCategory> _electricianServiceCategories = electricianCategories;
-
     Widget serviceDetails = HomeScreen();
 
-    switch (serviceName) {
-      case 'Grocery':
-        serviceDetails = HomeScreen();
-        break;
-      case 'Taxi':
-        serviceDetails = HomeScreen();
-        break;
-      case 'Electrician':
-        serviceDetails = ServiceWidget(
-          servicePicture: 'assets/electrician.jpg',
-          id: 2,
-            widgetTitle: "Electrician",);
-        break;
-      case 'Carpenter':
-        serviceDetails = ServiceWidget(
-          id: 4,
-          servicePicture: 'assets/carpenter.jpg',
-            widgetTitle: "Carpenter",);
-        break;
-      case 'Plumbing':
-        serviceDetails = ServiceWidget(
-          id: 5,
-          servicePicture: 'assets/plumbing.jpg',
-            widgetTitle: "Plumbing",);
-        break;
-      case 'Maids':
-        serviceDetails = ServiceWidget(
-          id: 3,
-          servicePicture: 'assets/maid.jpg',
-            widgetTitle: "Maids", );
-        break;
-              case 'Technician':
-        serviceDetails = ServiceWidget(
-          id: 1,
-          servicePicture: 'assets/technician.jpg',
-            widgetTitle: "Mobile Technician");
-        break;
-      default:
-        serviceDetails = HomeScreen();
+    if (service.name == "Grocery") {
+      serviceDetails = HomeScreen();
+    } else if (service.name == "Taxi") {
+      serviceDetails = HomeScreen();
+    } else {
+      serviceDetails = ServiceWidget(
+        service: this.service,
+      );
     }
-  
-      var servicesOffered =
-          Provider.of<ServiceProvider>(context).servicesOffered;
+
+    var servicesOffered = Provider.of<ServiceProvider>(context).servicesOffered;
 
     return SingleChildScrollView(
       child: GestureDetector(
         onTap: () {
-          // if(serviceName == "Grocery"){
-          //     Navigator.of(context).push(MaterialPageRoute(
-          //       builder: (context) => serviceDetails,
-          //       settings: RouteSettings(name: "GroceryProducts")));
-          // } else{
-          // Navigator.push(context, DetailsPageRoute(route: serviceDetails));
-          // }
           Navigator.push(context, DetailsPageRoute(route: serviceDetails));
         },
         child: Container(
           margin: EdgeInsets.symmetric(vertical: 10),
-          height: response.setHeight(120),
+          height: response.setHeight(150),
           width: response.setWidth(100),
           decoration: BoxDecoration(
               color: AppTheme.mainBlueColor,

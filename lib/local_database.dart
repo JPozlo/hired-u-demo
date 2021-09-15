@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
+import 'package:groceries_shopping_app/models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenceUtils {
@@ -34,7 +37,10 @@ class PreferenceUtils {
       return await _preferences.setInt(key, value);
     } else if (value is List<String>) {
       print("WARNING: You are trying to save a [value] of type [List<String>]");
-      await _preferences.setStringList(key, value);
+      return await _preferences.setStringList(key, value);
+    } else if (value is List<Product>) {
+      List<String> _list = value?.map((e) => json.encode(e.toJson()))?.toList();
+      return await _preferences.setStringList(key, _list);
     } else {
       throw "not a supported type";
     }
@@ -65,6 +71,39 @@ class PreferenceUtils {
     return value;
   }
 
+/// Retrieve object Lists
+   List<T> getObjectListValuesWithKey<T>(String key, T f(Map v),
+      {bool bypassValueChecking = true, bool hideDebugPrint = false, List<T> defValue = const []}) {
+    assert(_preferences != null);
+    assert(_instance != null);
+    List<Map> dataList = getObjectList(key);
+    List<T> listValues = dataList?.map((value) {
+      return f(value);
+    })?.toList();
+    if (listValues.length < 1 || listValues == null && !bypassValueChecking) {
+      throw PlatformException(
+          code: "SHARED_PREFERENCES_VALUE_CAN'T_BE_NULL",
+          message:
+              "you have ordered a value which doesn't exist in Shared Preferences",
+          details:
+              "make sure you have saved the value in advance in order to get it back");
+    }
+    if (!hideDebugPrint)
+      print("SharedPreferences: [Reading data] -> key: $key, value: ${listValues.toString()}");
+    return listValues;
+  }
+
+
+  List<Map> getObjectList(String key) {
+    assert(_preferences != null);
+    assert(_instance != null);
+    List<String> dataList = _preferences.getStringList(key);
+    return dataList?.map((value) {
+      Map _dataMap = json.decode(value);
+      return _dataMap;
+    })?.toList();
+  }
+  
   Future<bool> removeValueWithKey(String key) async {
     var value = _preferences.get(key);
     if (value == null) return true;

@@ -79,84 +79,74 @@ class _ChooseAddressPageState extends State<ChooseAddressPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        key: _scaffoldKey,
-        body: SafeArea(
-          child: Builder(builder: (context) {
-            return Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Hero(
-                        tag: 'backarrow',
-                        child: GestureDetector(
-                          onTap: () {
-                            nextScreen(context, ProfileScreen());
-                          },
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            size: response.setHeight(23),
-                          ),
+    return Scaffold(
+      key: _scaffoldKey,
+      body: SafeArea(
+        child: Builder(builder: (context) {
+          return Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Hero(
+                      tag: 'backarrow',
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.arrow_back,
+                          size: response.setHeight(23),
                         ),
                       ),
-                      Spacer(flex: 5),
-                      Text(
-                        "Your Addresses",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: response.setFontSize(18),
-                        ),
+                    ),
+                    Spacer(flex: 5),
+                    Text(
+                      "Choose a delivery address",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: response.setFontSize(18),
                       ),
-                      Spacer(flex: 5),
-                    ],
-                  ),
+                    ),
+                    Spacer(flex: 5),
+                  ],
                 ),
-                FutureBuilder(
-                  future: _addressesListFuture,
-                  builder: (context, AsyncSnapshot<Result> snapshot) {
-                    Widget defaultWidget;
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.done:
-                        if (snapshot.hasData && snapshot.data != null) {
-                          if (snapshot.data.addresses.length > 0) {
-                            defaultWidget =
-                                mainDisplayWidget(snapshot.data.addresses);
-                          } else {
-                            defaultWidget = errorWidget();
-                          }
+              ),
+              FutureBuilder(
+                future: _addressesListFuture,
+                builder: (context, AsyncSnapshot<Result> snapshot) {
+                  Widget defaultWidget;
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.done:
+                      if (snapshot.hasData && snapshot.data != null) {
+                        if (snapshot.data.addresses.length > 0) {
+                          defaultWidget =
+                              mainDisplayWidget(snapshot.data.addresses);
                         } else {
                           defaultWidget = errorWidget();
                         }
-                        break;
-                      case ConnectionState.none:
-                        defaultWidget = loading();
-                        break;
-                      case ConnectionState.waiting:
-                        defaultWidget = loading();
-                        break;
-                      default:
-                        defaultWidget = loading();
-                        break;
-                    }
-                    return defaultWidget;
-                  },
-                )
-              ],
-            );
-          }),
-        ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: AppTheme.mainBlueColor,
-          foregroundColor: AppTheme.mainScaffoldBackgroundColor,
-          child: Icon(Icons.add),
-          onPressed: () {
-            nextScreen(context, CreateAddressPage());
-          },
-        ),
+                      } else {
+                        defaultWidget = errorWidget();
+                      }
+                      break;
+                    case ConnectionState.none:
+                      defaultWidget = loading();
+                      break;
+                    case ConnectionState.waiting:
+                      defaultWidget = loading();
+                      break;
+                    default:
+                      defaultWidget = loading();
+                      break;
+                  }
+                  return defaultWidget;
+                },
+              )
+            ],
+          );
+        }),
       ),
     );
   }
@@ -194,13 +184,24 @@ class _ChooseAddressPageState extends State<ChooseAddressPage> {
   Widget mainDisplayWidget(List<UserAddress> userAddressesList) {
     return Expanded(
       child: Container(
-          child: ListView.builder(
+          child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.4),
+            child: Text(
+              "Select an address by tapping on it",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          ListView.builder(
               shrinkWrap: true,
               itemCount: userAddressesList.length,
               itemBuilder: (context, index) {
                 var currentAddress = userAddressesList[index];
                 return singleAddressWidget(currentAddress);
-              })),
+              }),
+        ],
+      )),
       flex: 90,
     );
   }

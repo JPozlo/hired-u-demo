@@ -25,13 +25,13 @@ class ServiceProvider extends ChangeNotifier {
   ServiceStatus get createServiceStatus => _createServiceStatus;
 
   List<Service> _servicesOffered = [
-    Service(id: 0, name: 'Grocery', picPath: 'assets/grocery.png'),
-    Service(id: 1, name: 'Plumbing', picPath: 'assets/plumbing.png'),
-    Service(id: 2, name: 'Electrician', picPath: 'assets/electrician.png'),
-    Service(id: 4, name: 'Carpenter', picPath: 'assets/carpenter.png'),
+    Service(id: 0, name: 'Grocery', picPath: 'assets/grocery.png', image: "assets/grocery.png"),
+    Service(id: 1, name: 'Plumbing', picPath: 'assets/plumbing.png', image: 'assets/plumbing.jpg'),
+    Service(id: 2, name: 'Electrician', picPath: 'assets/electrician.png', image: 'assets/electrician.jpg'),
+    Service(id: 4, name: 'Carpenter', picPath: 'assets/carpenter.png', image: 'assets/carpenter.jpg' ),
     Service(
-        id: 5, name: 'Technician', picPath: 'assets/phone-repair-symbol.png'),
-    Service(id: 3, name: 'Maids', picPath: 'assets/maid.png')
+        id: 5, name: 'Technician', picPath: 'assets/phone-repair-symbol.png', image: 'assets/technician.jpg'),
+    Service(id: 3, name: 'Maids', picPath: 'assets/maid.png', image: 'assets/maid.jpg')
   ];
 
   set servicesOffered(List<Service> services) {

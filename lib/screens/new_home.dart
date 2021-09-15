@@ -116,15 +116,15 @@ class _NewHomeState extends State<NewHome> {
                       crossAxisCount: 3,
                       crossAxisSpacing: 6.0,
                       mainAxisSpacing: 5.0,
-                      childAspectRatio: 1/1.2
+                      childAspectRatio: 0.73
                       // childAspectRatio:  MediaQuery.of(context).size.width /
                       //       (MediaQuery.of(context).size.height / 1.8)
                     ),
                     itemCount: listInfo.length,
                     itemBuilder: (context, index) {
                       return ServiceCard(
+                        service: listInfo[index],
                         index: index,
-                        serviceName: listInfo[index].name,
                       );
                     },
                   )),
