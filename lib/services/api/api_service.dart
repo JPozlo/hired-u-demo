@@ -18,7 +18,7 @@ class ApiService {
   static const String loginUser = appBaseURL + "login";
   static const String resetPassword = resetBaseURL + "password/reset";
   static const String logoutUser = appBaseURL + "logout";
-  static const String fetchUser = appBaseURL + "get";
+  static const String fetchUser = appBaseURL;
   static const String fetchIP = appBaseURL + "getip";
   //Profile
   static const String changeProfile = appBaseURL + "profile/changeprofile";
@@ -32,7 +32,7 @@ class ApiService {
   static const String ordersHistory = appBaseURL + "orderhistory";
   // Address
   static const String createAddress = appBaseURL + "createaddress";
-  static const String updateAddress = appBaseURL + "updateaddress";
+  static const String updateAddress = appBaseURL + "update/address/";
   static const String allAddresses = appBaseURL + "addresses";
   // Products
   static const String fetchProducts = appBaseURL + "products";
@@ -41,9 +41,7 @@ class ApiService {
   static const String fetchServices = appBaseURL + "services/main/";
   static const String createServiceOrder = appBaseURL + "services/orders";
   // Payments
-  static const String paymentsList = appBaseURL + "payments";
-
-
+  static const String paymentsList = appBaseURL + "history/payments";
 
   Future<Result> fetchServicesList(int id) async {
     Result result;
@@ -151,7 +149,6 @@ class ApiService {
             productsData.map<Product>((e) => Product.fromJson(e)).toList();
         PaginationData pagination = PaginationData.fromJson(paginationData);
 
-        
         // if (products.length > 0) {
         //   var status = await _sharedPreferences.saveValueWithKey(
         //       Constants.productsListPrefKey, products);
@@ -276,19 +273,33 @@ class ApiService {
     var status = responseData['status_code'];
 
     if (status == 200) {
-      var addressData = responseData['payments'];
-      List<Payment> payments =
-          addressData.map<Payment>((e) => Payment.fromJson(e)).toList();
+      var groceryPayments = responseData['grocerypayment'];
+      var servicesPayments = responseData['servicespayment'];
+      // List<Payment> payments =
+      //     addressData.map<Payment>((e) => Payment.fromJson(e)).toList();
+      List<PaymentHistory> groceryPaymentsList = groceryPayments
+          .map<PaymentHistory>((e) => PaymentHistory.fromJson(e))
+          .toList();
+      List<PaymentHistory> servicesPaymentsList = groceryPayments
+          .map<PaymentHistory>((e) => PaymentHistory.fromJson(e))
+          .toList();
+
+      List<PaymentHistory> singleList = [
+        ...groceryPaymentsList,
+        ...servicesPaymentsList
+      ];
+
+      print("Grocery payments: $groceryPaymentsList");
+      print("Service payments: $servicesPaymentsList");
+      print("Single list combined: $singleList");
 
       String message = responseData['message'];
 
       result = Result(true, message == null ? "Success" : message,
-          payments: payments);
+          paymentsHistory: singleList);
     } else {
       result = Result(false, "An unexpected error occurred");
     }
     return result;
   }
-
-
 }

@@ -279,7 +279,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       // Navigator.push(context, MaterialPageRoute(builder: (context) => MainHome() ));
                       ),
               SizedBox(
-                height: 20.0,
+                height: 10.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  RichText(text: TextSpan(
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                    children: [
+                      TextSpan(text: "OR")
+                    ]
+                  ))
+                ],
+              ),
+                 SizedBox(
+                height: 10.0,
               ),
               AppButton(
                   type: ButtonType.PRIMARY,

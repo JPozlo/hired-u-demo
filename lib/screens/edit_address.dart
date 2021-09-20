@@ -135,7 +135,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
       ],
     );
 
-    var doCreateAddress = () {
+    var doCreateAddress = () {      
       final form = _formKey.currentState;
       if (form.validate()) {
         form.save();
@@ -149,7 +149,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
             suite: _suite);
 
         final Future<Result> createAddressResponse =
-            addressProvider.updateAddress(updateAddressDTO);
+            addressProvider.updateAddress(updateAddressDTO, this.widget.address.id);
 
         createAddressResponse.then((response) {
           if (response.status) {
@@ -177,6 +177,8 @@ class _EditAddressPageState extends State<EditAddressPage> {
         ).show(context);
       }
     };
+
+
     return SingleChildScrollView(
       child: Form(
         key: _formKey,

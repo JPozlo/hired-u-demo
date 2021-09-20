@@ -62,6 +62,9 @@ class _ServiceDetailsState extends State<ServiceDetails> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+
+            this.itemsMap == null || this.itemsMap.length < 1 ?
+            Text("No services available under this category yet!", style: TextStyle(fontSize: 17),) :
             ListView.builder(
                 shrinkWrap: true,
                 itemCount: this.itemsMap.length,
@@ -84,6 +87,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                         print("The selected items: $_selectedItem");
                       });
                 }),
+            SizedBox(height: 12,),
             locationWidget(),
             doLoading
                 ? loading

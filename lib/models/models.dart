@@ -22,3 +22,4 @@ export 'update_profile_user.dart';
 export 'order_history.dart';
 export 'update_profile_dto.dart';
 export 'user_address.dart';
+export 'payment_history.dart';

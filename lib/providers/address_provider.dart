@@ -30,6 +30,7 @@ class AddressProvider extends ChangeNotifier {
 
   set isFavorite(UserAddress userAddress) {
     userAddress.isFavorite = !userAddress.isFavorite;
+    notifyListeners();
   }
 
   get isFavorite =>
@@ -82,7 +83,7 @@ class AddressProvider extends ChangeNotifier {
     return result;
   }
 
-  Future<Result> updateAddress(UserAddress userAddressParam) async {
+  Future<Result> updateAddress(UserAddress userAddressParam, int id) async {
     Result result;
 
     String token =
@@ -93,7 +94,7 @@ class AddressProvider extends ChangeNotifier {
     _createAddressStatus = AddressStatus.Processing;
     notifyListeners();
 
-    Response response = await post(Uri.parse(ApiService.updateAddress),
+    Response response = await post(Uri.parse(ApiService.updateAddress + id.toString()),
         body: json.encode(createServiceData),
         headers: {
           'Content-Type': 'application/json',
@@ -106,7 +107,7 @@ class AddressProvider extends ChangeNotifier {
 
     if (status == 200) {
       var userData = responseData['user'];
-      var addressData = responseData['new_address'];
+      var addressData = responseData['updated_address'];
       UserAddress address = UserAddress.fromJson(addressData);
       User user = User.fromJsonUserData(userData);
 

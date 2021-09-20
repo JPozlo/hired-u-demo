@@ -9,6 +9,7 @@ class Result {
   final Service service;
   final Payment payment;
   final List<Payment> payments;
+  final List<PaymentHistory> paymentsHistory;
   final CreateOrderDTO createOrderDto;
   final UpdateProfileUser updateProfileUser;
   final PaginationData pagination;
@@ -26,6 +27,7 @@ class Result {
       this.payment, this.addresses,
       this.service,
       this.productStatus,
+      this.paymentsHistory,
       this.createOrderDto,
       this.order,
       this.pagination,

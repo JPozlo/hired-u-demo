@@ -100,7 +100,7 @@ class ServiceProvider extends ChangeNotifier {
     _createServiceStatus = ServiceStatus.CreatingService;
     notifyListeners();
 
-    Response response = await post(Uri.parse(ApiService.fetchServices),
+    Response response = await post(Uri.parse(ApiService.createServiceOrder),
         body: json.encode(createServiceData),
         headers: {
           'Content-Type': 'application/json',

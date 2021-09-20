@@ -167,7 +167,7 @@ class ProductsOperationsController extends ChangeNotifier {
     return UnmodifiableListView(_shoppingCart);
   }
 
-  void addProductToCart(int index, {int bulkOrder = 0}) {
+  void addProductToCart(int index, int id, {int bulkOrder = 0}) {
     bool inCart = false;
     int indexInCard = 0;
     if (_shoppingCart.length != 0) {
@@ -183,6 +183,7 @@ class ProductsOperationsController extends ChangeNotifier {
     if (inCart == false) {
       _shoppingCart.add(
         Product(
+          id: id,
           name: _productsInStock[index].name,
           picPath: _productsInStock[index].picPath,
           price: _productsInStock[index].price,
@@ -300,6 +301,57 @@ class ProductsOperationsController extends ChangeNotifier {
 
     print("Result value: $result");
 
+    return result;
+  }
+
+  Future<Result> createProductOrderList(
+      CreateProductOrderDTO createOrderDTOParam) async {
+    Result result;
+
+    String token =
+        await _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
+
+    CreateProductOrderDTO createServiceDTO = CreateProductOrderDTO(
+        items: createOrderDTOParam.items,
+        userAddressesId: createOrderDTOParam.userAddressesId);
+
+    // final Map<String, dynamic> createServiceData = createServiceDTO.toJson();
+    final Map<String, dynamic> createServiceData = {
+      "user_addresses_id": createOrderDTOParam.userAddressesId,
+      "items": createOrderDTOParam.items
+    };
+    print("createServiceDat: $createServiceData");
+
+    _createProductStatus = ProductStatus.CreatingProduct;
+    notifyListeners();
+
+    Response response = await post(Uri.parse(ApiService.createProductOrder),
+        body: json.encode(createServiceData),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        });
+    print("response: $response");
+
+    final Map<String, dynamic> responseData = json.decode(response.body);
+
+    var status = responseData['status_code'];
+
+    if (status == 200) {
+      var serviceData = responseData['payment'];
+      Payment payment = Payment.fromJson(serviceData);
+
+         _createProductStatus = ProductStatus.CreateProductSuccess;
+      notifyListeners();
+
+      String message = responseData['message'];
+      result =
+          Result(true, message == null ? "Success" : message, payment: payment);
+    } else {
+      result = Result(false, "An unexpected error occurred");
+         _createProductStatus = ProductStatus.CreateProductFailure;
+      notifyListeners();
+    }
     return result;
   }
 }

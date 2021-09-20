@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/models/product.dart';
 import 'dart:collection';
@@ -112,13 +113,20 @@ class CartPreviewCard extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: response.setHeight(3)),
             child: CircleAvatar(
-              backgroundColor: Colors.white,
               radius: response.setWidth(21),
-              child: Image.network(
-                ApiService.imageBaseURL + cartProductsProvider[index].picPath.first.image,
-                scale: 7,
+               backgroundColor: Colors.white,
+              child: CachedNetworkImage(                
+                placeholder: (context, url) => const CircularProgressIndicator(),
+                imageUrl: cartProductsProvider[index].picPath.first.image != null
+                    ? ApiService.imageBaseURL + cartProductsProvider[index].picPath.first.image
+                    : 'https://uhired.herokuapp.com/profile-images/profile.png',
+                errorWidget: (context, url, error) =>
+                    Image.asset(
+                      'assets/avatar.png',
+                      scale: 7,
+                    ),
               ),
-            ),
+            ), 
           ),
           cartProductsProvider[index].orderedQuantity > 1
               ? Positioned(

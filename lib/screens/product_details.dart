@@ -214,6 +214,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                   onTap: () {
                                     provider.addProductToCart(
                                       this.widget.index,
+                                      this.widget.product.id,
                                       bulkOrder: orderQuantity,
                                     );
                                     setState(() {

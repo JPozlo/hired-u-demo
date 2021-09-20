@@ -191,10 +191,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: Text("Payment"),
                   ),
                 ),
-                ListTile(
-                  leading: Icon(Icons.support_agent),
-                  title: Text("Support"),
-                ),
+                // ListTile(
+                //   leading: Icon(Icons.support_agent),
+                //   title: Text("Support"),
+                // ),
                 GestureDetector(
                   onTap: () async {
                     logout(context);

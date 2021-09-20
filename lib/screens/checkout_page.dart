@@ -76,6 +76,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       var current = _orderProducts[i];
       OrderItem orderItem =
           OrderItem(id: current.id, quantity: current.orderedQuantity);
+      print("Order item hit: ${orderItem.toString()}");
       _orderItems.add(orderItem);
     }
     print("The Total Price is $_totalPrice");
@@ -90,6 +91,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   @override
   Widget build(BuildContext context) {
+    var productsProvider = Provider.of<ProductsOperationsController>(context);
     var addressProvider = Provider.of<AddressProvider>(context);
     return Scaffold(
       key: _scaffoldKey,
@@ -154,19 +156,38 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 ),
                 flex: 90,
               ),
-              Expanded(
+              productsProvider.createOrderStatus ==
+                      ProductStatus.CreatingProduct
+                  ? loading
+                  : Expanded(
                 child: Container(
                   width: double.infinity,
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   child: ElevatedButton(
                     onPressed: () async {
-                      var result = await confirmOrder();
+                      // confirmOrder(context, productsProvider);
+                        Result result;
+
+                      // var productProvider = Provider.of<ProductsOperationsController>(context, listen: false);
+
+                      CreateProductOrderDTO createdService =
+                          CreateProductOrderDTO(
+                              userAddressesId: _userAddressId,
+                              items: _orderItems);
+
+                      result =
+                          await productsProvider.createProductOrderList(createdService);
                       if (result.status) {
-                        Flushbar(
-                          message: result.message,
-                          title: "Success",
-                          duration: Duration(seconds: 4),
-                        ).show(context);
+                        // productsProvider.clearCart();
+                        if (result.payment != null) {
+                          nextScreen(
+                              context,
+                              CheckOut(
+                                id: result.payment.id,
+                              ));
+                        } else {
+                          nextScreen(context, CheckOut());
+                        }
                       } else {
                         Flushbar(
                           message: result.errors.first.toString(),
@@ -174,28 +195,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           duration: Duration(seconds: 4),
                         ).show(context);
                       }
-                      //      Widget selectedPaymentOption = MpesaPayment();
-                      // if (val == PaymentMethodOptions.MPESA) {
-                      //   selectedPaymentOption = MpesaPayment();
-                      // } else if (val == PaymentMethodOptions.CARD) {
-                      //   selectedPaymentOption = PayWithCreditCardPage();
-                      // }
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => MpesaPayment()));
                     },
                     style: ElevatedButton.styleFrom(
                       primary: AppTheme.mainBlueColor,
                       textStyle: TextStyle(color: Colors.black),
                     ),
                     child: Text(
-                      "Confirm Order",
-                      style: CustomTextStyle.textFormFieldMedium.copyWith(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold),
-                    ),
+                            "Confirm Order",
+                            style: CustomTextStyle.textFormFieldMedium.copyWith(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
+                          ),
                   ),
                 ),
                 flex: 10,
@@ -207,13 +218,43 @@ class _CheckoutPageState extends State<CheckoutPage> {
     );
   }
 
-  confirmOrder() async {
+  var loading = Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      CircularProgressIndicator(),
+      Text(" Processing ... Please wait")
+    ],
+  );
+
+  confirmOrder(BuildContext context, ProductsOperationsController provider) async {
     print("Orderitems length: ${_orderItems.length}");
     Result result;
+
+    // var productProvider = Provider.of<ProductsOperationsController>(context, listen: false);
+
     CreateProductOrderDTO createdService = CreateProductOrderDTO(
         userAddressesId: _userAddressId, items: _orderItems);
-    result = await ApiService().createProductOrderList(createdService);
-    return result;
+
+    result = await provider.createProductOrderList(createdService);
+
+    if (result.status) {
+      provider.clearCart();
+      if (result.payment != null) {
+        nextScreen(
+            context,
+            CheckOut(
+              id: result.payment.id,
+            ));
+      } else {
+        nextScreen(context, CheckOut());
+      }
+    } else {
+      Flushbar(
+        message: result.errors.first.toString(),
+        title: "Error",
+        duration: Duration(seconds: 4),
+      ).show(context);
+    }
   }
 
   // showPaymentModalSheet(BuildContext context) {
@@ -587,7 +628,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 }
               },
               child: Text(
-                "Choos Another Address",
+                "Choose Another Address",
                 style: CustomTextStyle.textFormFieldSemiBold
                     .copyWith(fontSize: 12, color: Colors.indigo.shade700),
               ),

@@ -40,6 +40,7 @@ class Product {
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       name: json['name'] as String,
+      id: json['id'] as int,
       description: json['desc'] as String,
       foodCategory: ProductCategory.fromJson(json['category']),
       picPath: (json['images'].map<ProductImage>((e) => ProductImage.fromJson(e)).toList()) ?? null,

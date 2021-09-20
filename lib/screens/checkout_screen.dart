@@ -93,6 +93,7 @@ class _CheckOutState extends State<CheckOut> with AfterLayoutMixin<CheckOut> {
         ),
       ),
       btnOkOnPress: () {
+        
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => MainHome()),
