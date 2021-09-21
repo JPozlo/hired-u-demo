@@ -275,12 +275,10 @@ class ApiService {
     if (status == 200) {
       var groceryPayments = responseData['grocerypayment'];
       var servicesPayments = responseData['servicespayment'];
-      // List<Payment> payments =
-      //     addressData.map<Payment>((e) => Payment.fromJson(e)).toList();
       List<PaymentHistory> groceryPaymentsList = groceryPayments
           .map<PaymentHistory>((e) => PaymentHistory.fromJson(e))
           .toList();
-      List<PaymentHistory> servicesPaymentsList = groceryPayments
+      List<PaymentHistory> servicesPaymentsList = servicesPayments
           .map<PaymentHistory>((e) => PaymentHistory.fromJson(e))
           .toList();
 
@@ -297,6 +295,45 @@ class ApiService {
 
       result = Result(true, message == null ? "Success" : message,
           paymentsHistory: singleList);
+    } else {
+      result = Result(false, "An unexpected error occurred");
+    }
+    return result;
+  }
+
+  Future<Result> fetchOrdersHistoryList() async {
+    Result result;
+
+    String token =
+        await _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
+
+    Response response = await get(Uri.parse(ApiService.ordersHistory),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        });
+
+    final Map<String, dynamic> responseData = json.decode(response.body);
+
+    var status = responseData['status_code'];
+
+    if (status == 200) {
+      var orderHistory = responseData['orderhistory'];
+
+      if (ordersHistory == null) {
+        result = Result(true, "No orders found", ordersHistoryList: null);
+      } else{
+      List<Order> orderHistoryList = orderHistory
+          .map<Order>((e) => Order.fromJson(e))
+          .toList();
+
+      print("Orders History List: $orderHistoryList");
+
+      String message = responseData['message'];
+
+      result = Result(true, message == null ? "Success" : message,
+          ordersHistoryList: orderHistoryList);
+      }
     } else {
       result = Result(false, "An unexpected error occurred");
     }

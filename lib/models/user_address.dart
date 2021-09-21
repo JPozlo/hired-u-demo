@@ -30,6 +30,7 @@ class UserAddress {
   }
 
   Map<String, dynamic> toJson() => {
+    'id': id,
         'country': country,
         'county': county,
         'home_town': homeTown,
@@ -40,6 +41,6 @@ class UserAddress {
 
   @override
   String toString() {
-    return "Country: $country";
+    return "Country: $country\n County: $county\n Town: $homeTown\n Street: $streetAddress\n Building: $building\n Suite: $suite";
   }
 }

@@ -20,26 +20,18 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  ProductsOperationsController _productsProvider;
   List<Product> producInfoProvider;
 
   @override
   void initState() {
     super.initState();
     print("Lenght of picpath: ${this.widget.product.picPath.length}");
-    // print("Image in INITSTATE: ${ApiService.imageBaseURL + this.widget.product.picPath.first.image}");
-    // Future.delayed(Duration.zero, () {
-    //  ;
-    //   producInfoProvider = _productsProvider.viewProductsInStock();
-    // });
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Provider.of<ProductsOperationsController>(context, listen: false)
-            .updateSingleItem = this.widget.product;
         Navigator.push(
             context,
             DetailsPageRoute(
@@ -85,22 +77,12 @@ class _ProductCardState extends State<ProductCard> {
                       errorWidget: (context, url, error) =>
                           Text("Problem loading the image"),
                     )
-                    // child: Image.network(
-                    //   "${ApiService.imageBaseURL + this.widget.product.picPath.first.image}",
-                    //   scale: 2.4,
-                    //   errorBuilder: (context, exception, stacktrace) {
-                    //     print("The exception network: ${exception.toString()}");
-                    //     print("The stacktrace network: ${stacktrace.toString()}");
-                    //     return Text("Error widget");
-                    //   },
-                    // ),
                     ),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    // getFormattedCurrency(producInfoProvider[index].price),
                     "KSh ${this.widget.product.price}",
                     style: TextStyle(
                       fontSize: response.setFontSize(24),

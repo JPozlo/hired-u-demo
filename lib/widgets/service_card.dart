@@ -39,9 +39,9 @@ class ServiceCard extends StatelessWidget {
           Navigator.push(context, DetailsPageRoute(route: serviceDetails));
         },
         child: Container(
-          margin: EdgeInsets.symmetric(vertical: 10),
-          height: response.setHeight(150),
-          width: response.setWidth(100),
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+          height: response.setHeight(110),
+          width: response.screenWidth * 0.3,
           decoration: BoxDecoration(
               color: AppTheme.mainBlueColor,
               borderRadius: BorderRadius.circular(10),

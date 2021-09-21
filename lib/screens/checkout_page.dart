@@ -4,6 +4,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
+import 'package:groceries_shopping_app/local_database.dart';
 import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/models/product.dart';
 import 'package:groceries_shopping_app/providers/product_provider.dart';
@@ -33,6 +34,7 @@ class CheckoutPage extends StatefulWidget {
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
+  PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
   String defaultAddress = "Commerce House, Masai Lodge, Rongai";
@@ -55,16 +57,37 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   void initState() {
     super.initState();
-    defaultValueAddress = UserAddress(
-        id: 0,
-        country: "Kenya",
-        county: "Nairobi",
-        homeTown: "Nairobi",
-        streetAddress: "Masai Lodge",
-        building: "Viewtower",
-        suite: "7j33j3n");
-    // defaultAddress = ApiService().fetchAddressesList()[0];
-    print("Default value address: ${defaultValueAddress.toString()}");
+    var address = _sharedPreferences.getFavoriteAddress();
+    if (address != null) {
+      print("Address value checkout page: $address");
+      defaultValueAddress = UserAddress(
+        id: address['id'],
+        country: address['country'],
+        county: address['county'],
+        homeTown: address['home_town'],
+        streetAddress: address['street_address'],
+        building: address['building'],
+        suite: address['suite'],
+      );
+      print("Address value after creation checkout page: $defaultValueAddress");
+      // defaultValueAddress = UserAddress(
+      //     id: 0,
+      //     country: "Kenya",
+      //     county: "Nairobi",
+      //     homeTown: "Nairobi",
+      //     streetAddress: "Masai Lodge",
+      //     building: "Viewtower",
+      //     suite: "7j33j3n");
+    } else {
+      defaultValueAddress = UserAddress(
+          id: 0,
+          country: "Kenya",
+          county: "Nairobi",
+          homeTown: "Nairobi",
+          streetAddress: "Masai Lodge",
+          building: "Viewtower",
+          suite: "7j33j3n");
+    }
     _orderProducts =
         Provider.of<ProductsOperationsController>(context, listen: false).cart;
     _totalPrice =
@@ -160,57 +183,58 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       ProductStatus.CreatingProduct
                   ? loading
                   : Expanded(
-                child: Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      // confirmOrder(context, productsProvider);
-                        Result result;
+                      child: Container(
+                        width: double.infinity,
+                        margin:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            // confirmOrder(context, productsProvider);
+                            Result result;
 
-                      // var productProvider = Provider.of<ProductsOperationsController>(context, listen: false);
+                            // var productProvider = Provider.of<ProductsOperationsController>(context, listen: false);
 
-                      CreateProductOrderDTO createdService =
-                          CreateProductOrderDTO(
-                              userAddressesId: _userAddressId,
-                              items: _orderItems);
+                            CreateProductOrderDTO createdService =
+                                CreateProductOrderDTO(
+                                    userAddressesId: _userAddressId,
+                                    items: _orderItems);
 
-                      result =
-                          await productsProvider.createProductOrderList(createdService);
-                      if (result.status) {
-                        // productsProvider.clearCart();
-                        if (result.payment != null) {
-                          nextScreen(
-                              context,
-                              CheckOut(
-                                id: result.payment.id,
-                              ));
-                        } else {
-                          nextScreen(context, CheckOut());
-                        }
-                      } else {
-                        Flushbar(
-                          message: result.errors.first.toString(),
-                          title: "Error",
-                          duration: Duration(seconds: 4),
-                        ).show(context);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: AppTheme.mainBlueColor,
-                      textStyle: TextStyle(color: Colors.black),
-                    ),
-                    child: Text(
+                            result = await productsProvider
+                                .createProductOrderList(createdService);
+                            if (result.status) {
+                              // productsProvider.clearCart();
+                              if (result.payment != null) {
+                                nextScreen(
+                                    context,
+                                    CheckOut(
+                                      id: result.payment.id,
+                                    ));
+                              } else {
+                                nextScreen(context, CheckOut());
+                              }
+                            } else {
+                              Flushbar(
+                                message: result.errors.first.toString(),
+                                title: "Error",
+                                duration: Duration(seconds: 4),
+                              ).show(context);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: AppTheme.mainBlueColor,
+                            textStyle: TextStyle(color: Colors.black),
+                          ),
+                          child: Text(
                             "Confirm Order",
                             style: CustomTextStyle.textFormFieldMedium.copyWith(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold),
                           ),
-                  ),
-                ),
-                flex: 10,
-              )
+                        ),
+                      ),
+                      flex: 10,
+                    )
             ],
           );
         }),
@@ -226,7 +250,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
     ],
   );
 
-  confirmOrder(BuildContext context, ProductsOperationsController provider) async {
+  confirmOrder(
+      BuildContext context, ProductsOperationsController provider) async {
     print("Orderitems length: ${_orderItems.length}");
     Result result;
 
@@ -532,17 +557,20 @@ class _CheckoutPageState extends State<CheckoutPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  // Container(
-                  //   padding:
-                  //       EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
-                  //   decoration: BoxDecoration(
-                  //       shape: BoxShape.rectangle,
-                  //       color: Colors.grey.shade300,
-                  //       borderRadius: BorderRadius.all(Radius.circular(16))),
-                  //   child: Text(
-                  //     "HOME",
-                  //     style: CustomTextStyle.textFormFieldBlack.copyWith(
-                  //         color: Colors.indigoAccent.shade200, fontSize: 8),
+                  // Visibility(
+                  //   visible: userAddress.isFavorite,
+                  //   child: Container(
+                  //     padding:
+                  //         EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
+                  //     decoration: BoxDecoration(
+                  //         shape: BoxShape.rectangle,
+                  //         color: Colors.grey.shade300,
+                  //         borderRadius: BorderRadius.all(Radius.circular(16))),
+                  //     child: Text(
+                  //       "DEFAULT",
+                  //       style: CustomTextStyle.textFormFieldBlack.copyWith(
+                  //           color: Colors.indigoAccent.shade200, fontSize: 8),
+                  //     ),
                   //   ),
                   // )
                 ],

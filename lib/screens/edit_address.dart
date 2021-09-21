@@ -1,8 +1,11 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:groceries_shopping_app/local_database.dart';
 import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/providers.dart';
+import 'package:groceries_shopping_app/screens/pages.dart';
 import 'package:groceries_shopping_app/widgets/app_button.dart';
 import 'package:groceries_shopping_app/widgets/input_decoration_widget.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +19,7 @@ class EditAddressPage extends StatefulWidget {
 }
 
 class _EditAddressPageState extends State<EditAddressPage> {
+  PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
   final _formKey = new GlobalKey<FormState>();
   final TextEditingController _countryController = new TextEditingController();
   final TextEditingController _countyController = new TextEditingController();
@@ -24,6 +28,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
   final TextEditingController _buildingController = new TextEditingController();
   final TextEditingController _suiteController = new TextEditingController();
   String _country, _county, _building, _hometown, _streetaddress, _suite;
+  bool isFavourite = false;
 
   @override
   void initState() {
@@ -127,6 +132,39 @@ class _EditAddressPageState extends State<EditAddressPage> {
         onSaved: (value) => _suite = value,
         decoration: inputFieldDecoration("Enter the suite"));
 
+    Widget inputFav() {
+     return  Container(
+        height: response.setHeight(55),
+        width: response.setWidth(55),
+        decoration: BoxDecoration(
+            color: Colors.transparent,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.black12, width: 1)
+            ),
+        child: Center(
+          child: IconButton(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              icon: FaIcon(isFavourite
+                  ? FontAwesomeIcons.solidStar
+                  : FontAwesomeIcons.star),
+              onPressed: () {
+                setState(() => isFavourite = !isFavourite);
+              }),
+        ),
+      );
+    }
+
+    Widget favoriteInput() =>
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            Text("Make this the default address"),
+            inputFav(),
+          ]),
+        );
+
     var loading = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -135,7 +173,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
       ],
     );
 
-    var doCreateAddress = () {      
+    var doCreateAddress = () {
       final form = _formKey.currentState;
       if (form.validate()) {
         form.save();
@@ -148,14 +186,22 @@ class _EditAddressPageState extends State<EditAddressPage> {
             building: _building,
             suite: _suite);
 
-        final Future<Result> createAddressResponse =
-            addressProvider.updateAddress(updateAddressDTO, this.widget.address.id);
+        final Future<Result> createAddressResponse = addressProvider
+            .updateAddress(updateAddressDTO, this.widget.address.id);
 
-        createAddressResponse.then((response) {
-          if (response.status) {
+
+        createAddressResponse.then((response) async{
+          if (response.status){
             if (response.user != null || response.address != null) {
               userProvider.user = response.user;
               addressProvider.userAddress = response.address;
+                        if(isFavourite){
+            // response.address.isFavorite = true;
+                await _sharedPreferences.saveFavoriteAddress(response.address);
+            // if (!result) {
+            //   response.address.isFavorite = false;
+            // }
+            }
             }
             Fluttertoast.showToast(
                 msg: "Successfully updated address",
@@ -177,7 +223,6 @@ class _EditAddressPageState extends State<EditAddressPage> {
         ).show(context);
       }
     };
-
 
     return SingleChildScrollView(
       child: Form(
@@ -218,6 +263,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
             SizedBox(
               height: 25.0,
             ),
+            favoriteInput(),
             // label("Password"),
             // SizedBox(
             //   height: 7.0,
@@ -230,7 +276,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
                 ? loading
                 : AppButton(
                     type: ButtonType.PRIMARY,
-                    text: "Create Address",
+                    text: "Update Address",
                     onPressed: doCreateAddress
                     // Navigator.doCrea(context, MaterialPageRoute(builder: (context) => MainHome() ));
                     ),

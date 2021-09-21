@@ -89,11 +89,11 @@ class ProductsOperationsController extends ChangeNotifier {
     this.onCheckOutCallback = onCheckOutCallback;
   }
 
-  Future<Result> get productsInStock async {
-    Result result;
-    result = await Result(true, "Success", products: _productsInStock);
-    return result;
-    // return UnmodifiableListView(_productsInStock);
+  UnmodifiableListView<Product> get productsInStock {
+    // Result result;
+    // result = await Result(true, "Success", products: _productsInStock);
+    // return result;
+    return UnmodifiableListView(_productsInStock);
   }
 
   UnmodifiableListView get selectedCategories {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/models/orders_history.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({Key key}) : super(key: key);
@@ -9,6 +11,8 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
+  Future<Result> _ordersHistoryFuture;
+
   List<OrderHistoryTest> ordersHistory = [
     OrderHistoryTest(
       id: "2683",
@@ -33,6 +37,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _ordersHistoryFuture = ApiService().fetchOrdersHistoryList();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -43,26 +53,96 @@ class _OrdersScreenState extends State<OrdersScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Orders History", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                  Text(
+                    "Orders History",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
             ),
-            ListView.builder(
-              shrinkWrap: true,
-                itemCount: ordersHistory.length,
-                itemBuilder: (context, index) {
-                  var currentOrder = ordersHistory[index];
-                  return Padding(
-                    padding: const EdgeInsets.all(11.0),
-                    child: ListTile(
-                      title: Text("KSh ${currentOrder.total.toString()}"),
-                      subtitle: Text("#${currentOrder.id}"),
-                      trailing: Text(currentOrder.time),
-                    ),
-                  );
-                })
+            FutureBuilder(
+              future: _ordersHistoryFuture,
+              builder: (context, AsyncSnapshot<Result> snapshot) {
+                Widget defaultWidget;
+                switch (snapshot.connectionState) {
+                  case ConnectionState.done:
+                    if (snapshot.hasData && snapshot.data != null) {
+                      if (snapshot.data.ordersHistoryList.length > 0) {
+                        defaultWidget =
+                            mainDisplayWidget(snapshot.data.ordersHistoryList);
+                      } else {
+                        defaultWidget = errorWidget();
+                      }
+                    } else {
+                      defaultWidget = errorWidget();
+                    }
+                    break;
+                  case ConnectionState.none:
+                    defaultWidget = loading();
+                    break;
+                  case ConnectionState.waiting:
+                    defaultWidget = loading();
+                    break;
+                  default:
+                    defaultWidget = loading();
+                    break;
+                }
+                return defaultWidget;
+              },
+            )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget loading() {
+    return Center(
+      child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(),
+            Text("Loading ... Please wait")
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget errorWidget() {
+    return Center(
+      child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "No orders found!",
+              style: TextStyle(fontSize: 23),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget mainDisplayWidget(List<Order> ordersList) {
+    return Expanded(
+      child: Container(
+        child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: ordersList.length,
+            itemBuilder: (context, index) {
+              var currentOrder = ordersList[index];
+              return Padding(
+                padding: const EdgeInsets.all(11.0),
+                child: ListTile(
+                  title: Text("KSh ${currentOrder.total.toString()}"),
+                  subtitle: Text("#${currentOrder.id}"),
+                  // trailing: Text(currentOrder.time),
+                ),
+              );
+            }),
       ),
     );
   }

@@ -110,13 +110,13 @@ class _NewHomeState extends State<NewHome> {
                   height: response.screenHeight * 0.6,
                   width: response.screenWidth,
                   child: GridView.builder(
-                    physics: NeverScrollableScrollPhysics(),
+                    // physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,                  
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
+                      crossAxisCount: 2,
                       crossAxisSpacing: 6.0,
-                      mainAxisSpacing: 5.0,
-                      childAspectRatio: 0.73
+                      mainAxisSpacing: 2.0,
+                      childAspectRatio: 3/2
                       // childAspectRatio:  MediaQuery.of(context).size.width /
                       //       (MediaQuery.of(context).size.height / 1.8)
                     ),

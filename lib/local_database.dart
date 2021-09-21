@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:groceries_shopping_app/models/models.dart';
+import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenceUtils {
@@ -47,6 +48,48 @@ class PreferenceUtils {
     return false;
   }
 
+  Future<bool> saveFavoriteAddress(UserAddress value) async {
+    print(
+        "SharedPreferences: [Saving data] -> key: ${Constants.userFavoriteAddressPrefKey}, value: $value");
+    assert(_instance != null);
+    assert(_preferences != null);
+    var address = getFavoriteAddress();
+    print("Address that is fetched");
+    if (address != null) {
+      _preferences.remove(Constants.userFavoriteAddressPrefKey);
+    }
+    return await _preferences.setString(
+        Constants.userFavoriteAddressPrefKey, json.encode(value));
+  }
+
+   getFavoriteAddress(
+      {bool bypassValueChecking = true, bool hideDebugPrint = false}) {
+    var value;
+    assert(_instance != null);
+    assert(_preferences != null);
+    var initalValue =
+        _preferences.getString(Constants.userFavoriteAddressPrefKey);
+    print("VALUE: ${initalValue}");
+    if (initalValue != null) {
+      value = json.decode(initalValue);
+      print("VALUE DECODED: ${json.decode(initalValue)}");
+    } else {
+      value = null;
+    }
+    if (value == null && !bypassValueChecking) {
+      throw PlatformException(
+          code: "SHARED_PREFERENCES_VALUE_CAN'T_BE_NULL",
+          message:
+              "you have ordered a value which doesn't exist in Shared Preferences",
+          details:
+              "make sure you have saved the value in advance in order to get it back");
+    }
+    if (!hideDebugPrint)
+      print(
+          "SharedPreferences: [Reading data] -> key: ${Constants.userFavoriteAddressPrefKey}, value: $value");
+    return value;
+  }
+
   // Future<bool> saveBool(String key, bool value) {
   //   print("SharedPreferences: [Save data] -> key: $key, value: $value");
   //   return _preferences.setBool(key, value);
@@ -71,9 +114,11 @@ class PreferenceUtils {
     return value;
   }
 
-/// Retrieve object Lists
-   List<T> getObjectListValuesWithKey<T>(String key, T f(Map v),
-      {bool bypassValueChecking = true, bool hideDebugPrint = false, List<T> defValue = const []}) {
+  /// Retrieve object Lists
+  List<T> getObjectListValuesWithKey<T>(String key, T f(Map v),
+      {bool bypassValueChecking = true,
+      bool hideDebugPrint = false,
+      List<T> defValue = const []}) {
     assert(_preferences != null);
     assert(_instance != null);
     List<Map> dataList = getObjectList(key);
@@ -89,10 +134,10 @@ class PreferenceUtils {
               "make sure you have saved the value in advance in order to get it back");
     }
     if (!hideDebugPrint)
-      print("SharedPreferences: [Reading data] -> key: $key, value: ${listValues.toString()}");
+      print(
+          "SharedPreferences: [Reading data] -> key: $key, value: ${listValues.toString()}");
     return listValues;
   }
-
 
   List<Map> getObjectList(String key) {
     assert(_preferences != null);
@@ -103,7 +148,7 @@ class PreferenceUtils {
       return _dataMap;
     })?.toList();
   }
-  
+
   Future<bool> removeValueWithKey(String key) async {
     var value = _preferences.get(key);
     if (value == null) return true;

@@ -5,6 +5,7 @@ class Result {
   final bool status;
   final String message;
   final List<Order> orders;
+  final List<Order> ordersHistoryList;
   final List<Product> products;
   final Service service;
   final Payment payment;
@@ -26,6 +27,7 @@ class Result {
       this.payments,
       this.payment, this.addresses,
       this.service,
+      this.ordersHistoryList,
       this.productStatus,
       this.paymentsHistory,
       this.createOrderDto,

@@ -41,129 +41,161 @@ class _ProductsPreviewState extends State<ProductsPreview> {
   void initState() {
     super.initState();
     _productsFuture = ApiService().fetchProductsList();
-    Future.delayed(Duration.zero, () {
-      _productsProvider =
-          Provider.of<ProductsOperationsController>(context, listen: false);
-      _productsFuture.then((value) {
-        if (value.status) {
-          _productsProvider.updateProductsList = value.products;
-        } else {
-          _productsProvider.updateProductsList = [];
-        }
-      });
-    });
-    // _productsList = _sharedPreferences.getObjectListValuesWithKey(
-    //     Constants.productsListPrefKey, (v) => Product.fromJson(v));
-    // print("Products list pref values INITSTATE: $_productsList");
   }
 
   @override
   Widget build(BuildContext context) {
-    // var productsService = Provider.of<ProductsOperationsController>(context);
-    return FutureBuilder(
-      future: _productsFuture,
-      initialData: Result(false, "Success", products: []),
-      builder: (context, AsyncSnapshot<Result> snapshot) {
-        Widget defaultWidget;
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            defaultWidget = doLoading;
-            break;
-          case ConnectionState.none:
-            defaultWidget = doLoading;
-            break;
-          case ConnectionState.done:
-            if (snapshot.hasData && snapshot.data.products != null) {
-              print("Snapshot data: ${snapshot.data.toString()}");
-              defaultWidget =
-                  productsMainDisplay(snapshot.data.products, context);
-              print("listProducts: ${snapshot.data.products}");
-            } else if (snapshot.hasError) {
-              defaultWidget = errorWidget(error: snapshot.error.toString());
-            }
-            break;
-          default:
-            defaultWidget = doLoading;
-            break;
-        }
-        return defaultWidget;
-      },
-    );
+    var productsList =
+        Provider.of<ProductsOperationsController>(context).productsInStock;
+
+        return (productsList != null && productsList.length > 0)?  productsMainDisplay(productsList, context) :
+         FutureBuilder(
+            future: _productsFuture,
+            initialData: Result(false, "Success", products: []),
+            builder: (context, AsyncSnapshot<Result> snapshot) {
+              Widget defaultWidget;
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  defaultWidget = doLoading;
+                  break;
+                case ConnectionState.none:
+                  defaultWidget = doLoading;
+                  break;
+                case ConnectionState.done:
+                  if (snapshot.hasData && snapshot.data.products != null) {
+                    print("Snapshot data: ${snapshot.data.toString()}");
+                    defaultWidget =
+                        productsMainDisplay(snapshot.data.products, context);
+                    Provider.of<ProductsOperationsController>(context, listen: false)
+                        .updateProductsList = snapshot.data.products;
+                    print("listProducts: ${snapshot.data.products}");
+                  } else if (snapshot.hasError) {
+                    defaultWidget = errorWidget(error: snapshot.error.toString());
+                  }
+                  break;
+                default:
+                  defaultWidget = doLoading;
+                  break;
+              }
+              return defaultWidget;
+            },
+          );
+  
   }
 
   Widget errorWidget({String error}) {
     return Stack(
       alignment: Alignment.center,
-      children: <Widget>[
-        Positioned(
-          top: 230,
-          left: 10,
-          width: response.screenWidth,
-          child: Container(
-            height: response.setHeight(70),
-            margin: EdgeInsets.only(top: 6.0),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0.5, 1],
-                colors: [
-                  AppTheme.mainScaffoldBackgroundColor,
-                  AppTheme.mainScaffoldBackgroundColor.withAlpha(150)
-                ],
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  error == null ? "Sorry! No products available yet" : error,
-                  style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-                )
+      children:[
+         Positioned(
+        top: 230,
+        left: 10,
+        width: response.screenWidth,
+        child: Container(
+          height: response.setHeight(70),
+          margin: EdgeInsets.only(top: 6.0),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0.5, 1],
+              colors: [
+                AppTheme.mainScaffoldBackgroundColor,
+                AppTheme.mainScaffoldBackgroundColor.withAlpha(150)
               ],
             ),
           ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                error == null ? "Sorry! No products available yet" : error,
+                style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+              )
+            ],
+          ),
         ),
-      ],
-    );
+      ),
+      ]);
   }
 
   Widget productsMainDisplay(List<Product> listInfo, BuildContext context) {
     return Stack(
-      children: <Widget>[
+      children: [
         Positioned(
-          top: 90,
-          left: 0,
-          right: 0,
-          child: Container(
-            height: response.screenHeight * 0.79,
-            width: response.screenWidth,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: response.setHeight(12.5)),
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 35),
-                  child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: MediaQuery.of(context).size.width /
-                              (MediaQuery.of(context).size.height / 1.2),
-                          crossAxisSpacing: 6),
-                      itemCount: listInfo.length,
-                      itemBuilder: (context, index) {
-                        Product currentProduct = listInfo[index];
-                        print("Current product: ${currentProduct.tags}");
-                        return ProductCard(
-                            product: currentProduct, index: index);
-                      }),
-                ),
+        top: 90,
+        left: 0,
+        right: 0,
+        child: Container(
+          height: response.screenHeight * 0.79,
+          width: response.screenWidth,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: response.setHeight(12.5)),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 35),
+                child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: MediaQuery.of(context).size.width /
+                            (MediaQuery.of(context).size.height / 1.2),
+                        crossAxisSpacing: 6),
+                    itemCount: listInfo.length,
+                    itemBuilder: (context, index) {
+                      Product currentProduct = listInfo[index];
+                      print("Current product: ${currentProduct.tags}");
+                      return ProductCard(
+                          product: currentProduct, index: index);
+                    }),
               ),
             ),
           ),
         ),
-        Positioned(
+      ),
+      topBarWidget(),
+      filterBarWidget(listInfo: listInfo.length)
+      ]);
+  }
+
+   Widget productsLocalDisplay(List<Product> listInfo, BuildContext context) {
+    return Positioned(
+      top: 90,
+      left: 0,
+      right: 0,
+      child: Container(
+        height: response.screenHeight * 0.79,
+        width: response.screenWidth,
+        child: Padding(
+          padding: EdgeInsets.only(bottom: response.setHeight(12.5)),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 35),
+              child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: MediaQuery.of(context).size.width /
+                          (MediaQuery.of(context).size.height / 1.2),
+                      crossAxisSpacing: 6),
+                  itemCount: listInfo.length,
+                  itemBuilder: (context, index) {
+                    Product currentProduct = listInfo[index];
+                    print("Current product: ${currentProduct.tags}");
+                    return ProductCard(
+                        product: currentProduct, index: index);
+                  }),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget topBarWidget(){
+       return Positioned(
           top: 0,
           left: 0,
           width: response.screenWidth,
@@ -193,8 +225,11 @@ class _ProductsPreviewState extends State<ProductsPreview> {
               ),
             ),
           ),
-        ),
-        Positioned(
+        );
+  }
+
+  Widget filterBarWidget({int listInfo}){
+    return Positioned(
           top: 70,
           left: 0,
           width: response.screenWidth,
@@ -216,13 +251,11 @@ class _ProductsPreviewState extends State<ProductsPreview> {
               child: Padding(
                 padding:
                     EdgeInsets.symmetric(horizontal: response.setWidth(20)),
-                child: getFilterBarUI(productsCount: listInfo.length),
+                child: getFilterBarUI(productsCount: listInfo),
               ),
             ),
           ),
-        ),
-      ],
-    );
+        );
   }
 
   Widget getTopBar(BuildContext context) {

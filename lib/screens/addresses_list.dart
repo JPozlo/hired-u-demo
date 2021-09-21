@@ -229,17 +229,21 @@ class _AddressesListState extends State<AddressesList> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    // Container(
-                    //   padding:
-                    //       EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
-                    //   decoration: BoxDecoration(
-                    //       shape: BoxShape.rectangle,
-                    //       color: Colors.grey.shade300,
-                    //       borderRadius: BorderRadius.all(Radius.circular(16))),
-                    //   child: Text(
-                    //     "HOME",
-                    //     style: CustomTextStyle.textFormFieldBlack.copyWith(
-                    //         color: Colors.indigoAccent.shade200, fontSize: 8),
+                    //            Visibility(
+                    //   visible: userAddress.isFavorite,
+                    //   child: Container(
+                    //     padding: EdgeInsets.only(
+                    //         left: 8, right: 8, top: 4, bottom: 4),
+                    //     decoration: BoxDecoration(
+                    //         shape: BoxShape.rectangle,
+                    //         color: Colors.grey.shade300,
+                    //         borderRadius:
+                    //             BorderRadius.all(Radius.circular(16))),
+                    //     child: Text(
+                    //       "DEFAULT",
+                    //       style: CustomTextStyle.textFormFieldBlack.copyWith(
+                    //           color: Colors.indigoAccent.shade200, fontSize: 8),
+                    //     ),
                     //   ),
                     // )
                   ],

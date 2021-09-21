@@ -78,16 +78,11 @@ class ProductsCheckout extends StatelessWidget {
               response.setHeight(cartProductsProvider.isNotEmpty ? 40 : 200),
           right: 0,
           child: Container(
-            // color: AppTheme.mainCartBackgroundColor,
             child: Visibility(
               visible: cartProductsProvider.isNotEmpty,
-              // replacement: IllustrationContainer(
-              //   path: AppTheme.emptyCartSVG2,
-              // ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  // DeliveryCard(totalPriceProvider: totalPriceProvider),
                   SizedBox(height: response.setHeight(40)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -125,15 +120,10 @@ class ProductsCheckout extends StatelessWidget {
 
   Widget _buildNextButton(BuildContext context) {
     return GestureDetector(
-      // onTap: () => Navigator.of(context).push(
-      //   MaterialPageRoute(builder: (context) => CheckoutPage(cartProductsProvider: cartProductsProvider),
-      //   settings: RouteSettings(name: "CheckoutPage")
-      //   )),
       onTap: () => Navigator.push(
           context,
            MaterialPageRoute(builder: (context) => CheckoutPage(cartProductsProvider: cartProductsProvider))
            ),
-
       child: Container(
         height: response.setHeight(55),
         decoration: BoxDecoration(
@@ -151,13 +141,6 @@ class ProductsCheckout extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-              // SizedBox(
-              //   width: 20,
-              // ),
-              // Icon(
-              //   Icons.arrow_forward_ios,
-              //   color: Colors.black,
-              // )
             ],
           ),
         ),

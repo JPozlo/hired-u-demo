@@ -67,13 +67,6 @@ class _PaymentListState extends State<PaymentList> {
   void initState() {
     super.initState();
     _paymentsListFuture = ApiService().fetchPaymentsList();
-    // ApiService().fetchPaymentsList().then((value) {
-    //   if (value.status) {
-    //     print("HAS VALUE HIT");
-    //   } else {
-    //     print("HAS NO VALUE HIT");
-    //   }
-    // });
   }
 
   @override
@@ -171,7 +164,7 @@ class _PaymentListState extends State<PaymentList> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "No addresses found!",
+              "No payments found!",
               style: TextStyle(fontSize: 23),
             )
           ],

@@ -33,7 +33,7 @@ class Checkout extends StatelessWidget {
           children: <Widget>[
             CircleAvatar(
               backgroundColor: Colors.white,
-              radius: response.setWidth(22),
+              radius: response.setWidth(15),
               child: Image.network(
                 ApiService.imageBaseURL + cartProductsProvider[index].picPath.first.image,
                 scale: 7,
@@ -49,7 +49,7 @@ class Checkout extends StatelessWidget {
               ),
             ),
             Container(
-              width: response.screenWidth * 0.4,
+              width: response.screenWidth * 0.35,
               // color: Colors.red,
               child: Text(
                 cartProductsProvider[index].name.toString(),

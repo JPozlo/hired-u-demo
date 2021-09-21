@@ -9,5 +9,6 @@ class Constants {
   static const String userProfilePrefKey = "user_profile";
   static const String userTokenPrefKey = "user_token";
   static const String userDeviceModelPrefKey = "user_device_model";
+  static const String userFavoriteAddressPrefKey = "user_favorite_address";
   static const String productsListPrefKey = "user_device_model";
 }
