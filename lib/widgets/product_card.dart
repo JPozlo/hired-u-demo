@@ -42,8 +42,8 @@ class _ProductCardState extends State<ProductCard> {
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
-        height: response.setHeight(350),
-        width: response.setWidth(170),
+        // height: response.setHeight(490),
+        // width: response.setWidth(170),
         decoration: BoxDecoration(
             color: AppTheme.secondaryScaffoldColor,
             borderRadius: BorderRadius.circular(10),
@@ -85,7 +85,7 @@ class _ProductCardState extends State<ProductCard> {
                   Text(
                     "KSh ${this.widget.product.price}",
                     style: TextStyle(
-                      fontSize: response.setFontSize(24),
+                      fontSize: response.setFontSize(19),
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -95,15 +95,6 @@ class _ProductCardState extends State<ProductCard> {
                     style: TextStyle(
                       fontSize: response.setFontSize(15),
                       fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  SizedBox(height: response.setHeight(4)),
-                  Text(
-                    this.widget.product.name,
-                    style: TextStyle(
-                      fontSize: response.setFontSize(14),
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],

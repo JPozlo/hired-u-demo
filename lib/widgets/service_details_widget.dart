@@ -20,6 +20,7 @@ class ServiceDetails extends StatefulWidget {
 }
 
 class _ServiceDetailsState extends State<ServiceDetails> {
+  final _formKey = new GlobalKey<FormState>();
   bool selected = false;
   String _location;
   bool doLoading = false;
@@ -62,32 +63,36 @@ class _ServiceDetailsState extends State<ServiceDetails> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-
-            this.itemsMap == null || this.itemsMap.length < 1 ?
-            Text("No services available under this category yet!", style: TextStyle(fontSize: 17),) :
-            ListView.builder(
-                shrinkWrap: true,
-                itemCount: this.itemsMap.length,
-                itemBuilder: (context, index) {
-                  MiniService item = this.itemsMap.keys.elementAt(index);
-                  return CheckboxListTile(
-                      title: Text(item.name),
-                      subtitle: Text("KSh ${item.price}"),
-                      value: item.isChecked,
-                      onChanged: (bool value) {
-                        print("Value $value");
-                        setState(() {
-                          item.isChecked = value;
-                          if (item.isChecked == true) {
-                            _selectedItem.add(item.id);
-                          } else {
-                            _selectedItem.remove(item.id);
-                          }
-                        });
-                        print("The selected items: $_selectedItem");
-                      });
-                }),
-            SizedBox(height: 12,),
+            this.itemsMap == null || this.itemsMap.length < 1
+                ? Text(
+                    "No services available under this category yet!",
+                    style: TextStyle(fontSize: 17),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: this.itemsMap.length,
+                    itemBuilder: (context, index) {
+                      MiniService item = this.itemsMap.keys.elementAt(index);
+                      return CheckboxListTile(
+                          title: Text(item.name),
+                          subtitle: Text("KSh ${item.price}"),
+                          value: item.isChecked,
+                          onChanged: (bool value) {
+                            print("Value $value");
+                            setState(() {
+                              item.isChecked = value;
+                              if (item.isChecked == true) {
+                                _selectedItem.add(item.id);
+                              } else {
+                                _selectedItem.remove(item.id);
+                              }
+                            });
+                            print("The selected items: $_selectedItem");
+                          });
+                    }),
+            SizedBox(
+              height: 12,
+            ),
             locationWidget(),
             doLoading
                 ? loading
@@ -109,27 +114,48 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                       ),
                     ),
                     onPressed: () async {
+                      final form = _formKey.currentState;
+                      if (form.validate()) {
+                        form.save();
+
                       setState(() {
                         doLoading = true;
                       });
-                      var result = await createService();
-                      if (result.status) {
+                      if (this.itemsMap == null || this.itemsMap.length < 1) {
                         setState(() {
                           doLoading = false;
                         });
-                        if(result.payment != null){
-                        nextScreen(context, CheckOut(id: result.payment.id));
-
-                        }
-                        // Fluttertoast.showToast(msg: "Successfully c")
+                        Fluttertoast.showToast(
+                            msg:
+                                "Sorry! Can't make an order without a service!",
+                            toastLength: Toast.LENGTH_LONG);
                       } else {
-                              setState(() {
-                          doLoading = false;
-                        });
-                        Flushbar(
-                          message: result.errors.first.toString(),
-                          title: "Error",
-                          duration: Duration(seconds: 4),
+                        var result = await createService();
+                        if (result.status) {
+                          setState(() {
+                            doLoading = false;
+                          });
+                          if (result.payment != null) {
+                            nextScreen(
+                                context, CheckOut(id: result.payment.id));
+                          }
+                          // Fluttertoast.showToast(msg: "Successfully c")
+                        } else {
+                          setState(() {
+                            doLoading = false;
+                          });
+                          Flushbar(
+                            message: result.errors.first.toString(),
+                            title: "Error",
+                            duration: Duration(seconds: 4),
+                          ).show(context);
+                        }
+                      }
+                      } else{
+                                Flushbar(
+                          title: "Invalid details",
+                          message: "Please fill in the information correctly",
+                          duration: Duration(seconds: 10),
                         ).show(context);
                       }
                     },
@@ -159,46 +185,49 @@ class _ServiceDetailsState extends State<ServiceDetails> {
   Widget locationWidget() {
     Widget child = Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            height: response.setHeight(48.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: TextFormField(
-              onChanged: (value) {
-                setState(() {
-                  _location = value;
-                });
-              },
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromRGBO(74, 77, 84, 0.2),
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: AppTheme.mainOrangeColor,
-                  ),
-                ),
-                hintText: "Enter Location",
-                hintStyle: TextStyle(
-                  fontSize: 14.0,
-                  color: Color.fromRGBO(105, 108, 121, 0.7),
-                ),
+        Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              height: response.setHeight(48.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.0),
               ),
-              validator: (value) {
-                String returnMessage;
-                if (value.isEmpty) {
-                  returnMessage = "Location can't be empty";
-                } else {
-                  returnMessage = null;
-                }
-                return returnMessage;
-              },
+              child: TextFormField(
+                onChanged: (value) {
+                  setState(() {
+                    _location = value;
+                  });
+                },
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color.fromRGBO(74, 77, 84, 0.2),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: AppTheme.mainOrangeColor,
+                    ),
+                  ),
+                  hintText: "Enter Location",
+                  hintStyle: TextStyle(
+                    fontSize: 14.0,
+                    color: Color.fromRGBO(105, 108, 121, 0.7),
+                  ),
+                ),
+                validator: (value) {
+                  String returnMessage;
+                  if (value.isEmpty) {
+                    returnMessage = "Location can't be empty";
+                  } else {
+                    returnMessage = null;
+                  }
+                  return returnMessage;
+                },
+              ),
             ),
           ),
         ),

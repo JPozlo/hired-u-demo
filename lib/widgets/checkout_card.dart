@@ -31,23 +31,24 @@ class Checkout extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: response.setWidth(15),
-              child: Image.network(
-                ApiService.imageBaseURL + cartProductsProvider[index].picPath.first.image,
-                scale: 7,
-              ),
-            ),
-            SizedBox(width: response.setWidth(15)),
+            // CircleAvatar(
+            //   backgroundColor: Colors.white,
+            //   radius: response.setWidth(10),
+            //   child: Image.network(
+            //     ApiService.imageBaseURL + cartProductsProvider[index].picPath.first.image,
+            //     scale: 7,
+            //   ),
+            // ),
+            // SizedBox(width: response.setWidth(15)),
             Text(
               cartProductsProvider[index].orderedQuantity.toString() + '  x   ',
               textAlign: TextAlign.start,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: response.setFontSize(12),
+                fontSize: response.setFontSize(14),
               ),
-            ),
+            ), 
+            // Spacer(),
             Container(
               width: response.screenWidth * 0.35,
               // color: Colors.red,
@@ -56,34 +57,37 @@ class Checkout extends StatelessWidget {
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: response.setFontSize(16),
+                  fontSize: 14,
                 ),
               ),
             ),
-            // Spacer(),
+            // SizedBox(width: 12,),
             Text(
               "KSh " + _cost(),
               textAlign: TextAlign.start,
               style: TextStyle(
                 color: Colors.white70,
-                fontSize: response.setFontSize(15),
+                fontSize: 14,
               ),
             ),
                 Spacer(),
-                GestureDetector(
-                  onTap: (){
-                         Provider.of<ProductsOperationsController>(context,
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: GestureDetector(
+                    onTap: (){
+                  Provider.of<ProductsOperationsController>(context,
                         listen: false)
-                    .deleteFromCart(index);
-                Provider.of<ProductsOperationsController>(context,
+                      .deleteFromCart(index);
+                  Provider.of<ProductsOperationsController>(context,
                         listen: false)
-                    .returnTotalCost();
-                  },
-                  child:     Icon(
-                    Icons.delete,
-                    color: Colors.red,
+                      .returnTotalCost();
+                    },
+                    child:     Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
+                    
                   ),
-                  
                 )
           ],
         ),

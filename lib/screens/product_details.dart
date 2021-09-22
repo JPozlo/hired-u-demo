@@ -185,7 +185,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                   "KSh ${this.widget.product.price}",
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
-                                      fontSize: response.setFontSize(40),
+                                      fontSize: response.setFontSize(32),
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black),
                                 ),
@@ -228,8 +228,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                     child: Container(
                                       height: response.setHeight(55),
                                       // width: response.setWidth(235),
-                                      width: response
-                                          .setWidth(response.screenWidth * 0.6),
+                                      width: response.screenWidth * 0.6,
                                       decoration: BoxDecoration(
                                           color: AppTheme.mainBlueColor,
                                           borderRadius: BorderRadius.circular(
@@ -349,7 +348,7 @@ class ProductQuantity extends StatelessWidget {
     );
     return Container(
       height: response.setHeight(45),
-      width: response.setWidth(100),
+      width: response.setWidth(70),
       padding: EdgeInsets.symmetric(horizontal: response.setWidth(15)),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(response.setHeight(30)),

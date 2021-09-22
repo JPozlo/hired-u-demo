@@ -234,7 +234,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
           left: 0,
           width: response.screenWidth,
           child: Container(
-            height: response.setHeight(50),
+            height: response.setHeight(60),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -416,4 +416,5 @@ class _ProductsPreviewState extends State<ProductsPreview> {
       ),
     );
   }
+
 }

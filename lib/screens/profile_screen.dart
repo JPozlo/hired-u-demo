@@ -96,8 +96,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ],
             borderRadius: BorderRadius.all(Radius.circular(13.5))),
-        width: response.setWidth(response.screenWidth * 0.7),
-        height: response.setHeight(210),
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -216,7 +214,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Action'),
+        title: const Text('Confirm Logout'),
         content: const Text('Are you sure  you want to logout?'),
         actions: <Widget>[
           TextButton(
