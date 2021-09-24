@@ -10,7 +10,7 @@ class CreateOrderDTO{
   final String createdAt;
   final String updatedAt;
 
-  const CreateOrderDTO({this.id, this.userId, this.services, this.phone, this.location, this.deliveryDate, this.deliveryTime, this.specifics, this.updatedAt, this.createdAt});
+  const CreateOrderDTO({required this.id, required this.userId, required this.services, required this.phone, required this.location, required this.deliveryDate, required this.deliveryTime, required this.specifics, required this.updatedAt, required this.createdAt});
 
   factory CreateOrderDTO.fromJson(Map<String, dynamic> json) {
     return CreateOrderDTO(

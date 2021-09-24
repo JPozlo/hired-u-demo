@@ -3,7 +3,7 @@ import 'package:groceries_shopping_app/appTheme.dart';
 
 
 class SliderView extends StatefulWidget {
-  const SliderView({Key key, this.onChangedistValue, this.distValue})
+  const SliderView({Key? key, required this.onChangedistValue, required this.distValue})
       : super(key: key);
 
   final Function(double) onChangedistValue;
@@ -93,21 +93,21 @@ class CustomThumbShape extends SliderComponentShape {
   void paint(
     PaintingContext context,
     Offset thumbCenter, {
-    Animation<double> activationAnimation,
-    Animation<double> enableAnimation,
-    bool isDiscrete,
-    TextPainter labelPainter,
-    RenderBox parentBox,
-    Size sizeWithOverflow,
-    SliderThemeData sliderTheme,
+    Animation<double>? activationAnimation,
+    Animation<double>? enableAnimation,
+    bool? isDiscrete,
+    TextPainter? labelPainter,
+    RenderBox? parentBox,
+    Size? sizeWithOverflow,
+    SliderThemeData? sliderTheme,
     TextDirection textDirection = TextDirection.ltr,
-    double textScaleFactor,
-    double value,
+    double? textScaleFactor,
+    double? value,
   }) {
     final Canvas canvas = context.canvas;
     final ColorTween colorTween = ColorTween(
-      begin: sliderTheme.disabledThumbColor,
-      end: sliderTheme.thumbColor,
+      begin: sliderTheme?.disabledThumbColor,
+      end: sliderTheme?.thumbColor,
     );
     canvas.drawPath(
         Path()
@@ -124,7 +124,7 @@ class CustomThumbShape extends SliderComponentShape {
     cPaint..color = Colors.white;
     cPaint..strokeWidth = 14 / 2;
     canvas.drawCircle(Offset(thumbCenter.dx, thumbCenter.dy), 12, cPaint);
-    cPaint..color = colorTween.evaluate(enableAnimation);
+    cPaint..color = colorTween.evaluate(enableAnimation!)!;
     canvas.drawCircle(Offset(thumbCenter.dx, thumbCenter.dy), 10, cPaint);
   }
 

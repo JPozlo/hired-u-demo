@@ -7,7 +7,7 @@ import 'package:groceries_shopping_app/utils/helpers.dart';
 import 'package:groceries_shopping_app/utils/utils.dart';
 
 class AddressesList extends StatefulWidget {
-  const AddressesList({Key key}) : super(key: key);
+  const AddressesList({Key? key}) : super(key: key);
 
   @override
   _AddressesListState createState() => _AddressesListState();
@@ -15,8 +15,7 @@ class AddressesList extends StatefulWidget {
 
 class _AddressesListState extends State<AddressesList> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
-  List<UserAddress> _userAddresses = [];
-  Future<Result> _addressesListFuture;
+  late Future<Result> _addressesListFuture;
 
   List<UserAddress> tempAddresses = [
     UserAddress(
@@ -119,9 +118,9 @@ class _AddressesListState extends State<AddressesList> {
                   switch (snapshot.connectionState) {
                     case ConnectionState.done:
                       if (snapshot.hasData && snapshot.data != null) {
-                        if (snapshot.data.addresses.length > 0) {
+                        if (snapshot.data!.addresses!.length > 0) {
                           defaultWidget =
-                              mainDisplayWidget(snapshot.data.addresses);
+                              mainDisplayWidget(snapshot.data!.addresses!);
                         } else {
                           defaultWidget = errorWidget();
                         }

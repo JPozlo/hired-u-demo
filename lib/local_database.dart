@@ -6,14 +6,14 @@ import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenceUtils {
-  static PreferenceUtils _instance;
-  static SharedPreferences _preferences;
+  static PreferenceUtils? _instance;
+  static SharedPreferences? _preferences;
 
   static PreferenceUtils getInstance() {
     if (_instance == null) {
       _instance = PreferenceUtils();
     }
-    return _instance;
+    return _instance!;
   }
 
   static Future<void> init() async {
@@ -29,19 +29,19 @@ class PreferenceUtils {
     assert(_instance != null);
     assert(_preferences != null);
     if (value is String) {
-      return await _preferences.setString(key, value);
+      return await _preferences!.setString(key, value);
     } else if (value is bool) {
-      return await _preferences.setBool(key, value);
+      return await _preferences!.setBool(key, value);
     } else if (value is double) {
-      return await _preferences.setDouble(key, value);
+      return await _preferences!.setDouble(key, value);
     } else if (value is int) {
-      return await _preferences.setInt(key, value);
+      return await _preferences!.setInt(key, value);
     } else if (value is List<String>) {
       print("WARNING: You are trying to save a [value] of type [List<String>]");
-      return await _preferences.setStringList(key, value);
+      return await _preferences!.setStringList(key, value);
     } else if (value is List<Product>) {
-      List<String> _list = value?.map((e) => json.encode(e.toJson()))?.toList();
-      return await _preferences.setStringList(key, _list);
+      List<String>? _list = value.map((e) => json.encode(e.toJson())).toList();
+      return await _preferences!.setStringList(key, _list);
     } else {
       throw "not a supported type";
     }
@@ -56,9 +56,9 @@ class PreferenceUtils {
     var address = getFavoriteAddress();
     print("Address that is fetched");
     if (address != null) {
-      _preferences.remove(Constants.userFavoriteAddressPrefKey);
+      _preferences!.remove(Constants.userFavoriteAddressPrefKey);
     }
-    return await _preferences.setString(
+    return await _preferences!.setString(
         Constants.userFavoriteAddressPrefKey, json.encode(value));
   }
 
@@ -68,7 +68,7 @@ class PreferenceUtils {
     assert(_instance != null);
     assert(_preferences != null);
     var initalValue =
-        _preferences.getString(Constants.userFavoriteAddressPrefKey);
+        _preferences!.getString(Constants.userFavoriteAddressPrefKey);
     print("VALUE: ${initalValue}");
     if (initalValue != null) {
       value = json.decode(initalValue);
@@ -100,7 +100,7 @@ class PreferenceUtils {
       {bool bypassValueChecking = true, bool hideDebugPrint = false}) {
     assert(_preferences != null);
     assert(_instance != null);
-    var value = _preferences.get(key);
+    var value = _preferences!.get(key);
     if (value == null && !bypassValueChecking) {
       throw PlatformException(
           code: "SHARED_PREFERENCES_VALUE_CAN'T_BE_NULL",
@@ -122,9 +122,9 @@ class PreferenceUtils {
     assert(_preferences != null);
     assert(_instance != null);
     List<Map> dataList = getObjectList(key);
-    List<T> listValues = dataList?.map((value) {
+    List<T>? listValues = dataList.map((value) {
       return f(value);
-    })?.toList();
+    }).toList();
     if (listValues.length < 1 || listValues == null && !bypassValueChecking) {
       throw PlatformException(
           code: "SHARED_PREFERENCES_VALUE_CAN'T_BE_NULL",
@@ -142,20 +142,20 @@ class PreferenceUtils {
   List<Map> getObjectList(String key) {
     assert(_preferences != null);
     assert(_instance != null);
-    List<String> dataList = _preferences.getStringList(key);
-    return dataList?.map((value) {
+    List<String>? dataList = _preferences!.getStringList(key);
+    return dataList!.map((value) {
       Map _dataMap = json.decode(value);
       return _dataMap;
-    })?.toList();
+    }).toList();
   }
 
   Future<bool> removeValueWithKey(String key) async {
-    var value = _preferences.get(key);
+    var value = _preferences!.get(key);
     if (value == null) return true;
     assert(_preferences != null);
     assert(_instance != null);
     print("SharedPreferences: [Removing data] -> key: $key, value: $value");
-    return await _preferences.remove(key);
+    return await _preferences!.remove(key);
   }
 
   removeMultipleValuesWithKeys(List<String> keys) async {
@@ -163,13 +163,13 @@ class PreferenceUtils {
     assert(_instance != null);
     var value;
     for (String key in keys) {
-      value = _preferences.get(key);
+      value = _preferences!.get(key);
       if (value == null) {
         print(
             "SharedPreferences: [Removing data] -> key: $key, value: {ERROR 'null' value}");
         print("Skipping...");
       } else {
-        await _preferences.remove(key);
+        await _preferences!.remove(key);
         print("SharedPreferences: [Removing data] -> key: $key, value: $value");
       }
     }
@@ -179,6 +179,6 @@ class PreferenceUtils {
   Future<bool> clearAll() async {
     assert(_preferences != null);
     assert(_instance != null);
-    return await _preferences.clear();
+    return await _preferences!.clear();
   }
 }

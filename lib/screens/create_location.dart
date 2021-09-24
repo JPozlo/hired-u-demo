@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/screen_util.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
 import 'package:groceries_shopping_app/services/place_service.dart';
@@ -8,7 +7,7 @@ import 'package:groceries_shopping_app/utils/helpers.dart';
 import 'package:groceries_shopping_app/widgets/address_search.dart';
 
 class CreateLocationPage extends StatefulWidget {
-  const CreateLocationPage({Key key}) : super(key: key);
+  const CreateLocationPage({Key? key}) : super(key: key);
 
   @override
   _CreateLocationPageState createState() => _CreateLocationPageState();
@@ -211,8 +210,8 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
                 ),
               ),
               validator: (value) {
-                String returnMessage;
-                if (value.isEmpty) {
+                String? returnMessage;
+                if (value!.isEmpty) {
                   returnMessage = "Apartment name can't be empty";
                 } else {
                   returnMessage = null;
@@ -233,8 +232,8 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
             ),
             child: TextFormField(
               validator: (value){
-                    String message;
-                if (value.isEmpty) {
+                    String? message;
+                if (value!.isEmpty) {
                   message = "House number can't be null";
                 } else {
                   message = null;
@@ -290,8 +289,8 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
       ),
       child: TextFormField(
         validator: (value) {
-          String message;
-          if (value.isEmpty) {
+          String? message;
+          if (value!.isEmpty) {
             message = "Mobile number can't be null";
           } else {
             message = null;
@@ -328,13 +327,13 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
 
   Widget buttonWidget() {
     return Container(
-      width: response.screenWidth * 0.9,
+      width: response.screenWidth! * 0.9,
       height: response.setHeight(40),
       margin: EdgeInsets.only(left: 12.0, right: 12.0),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
       child: ElevatedButton(
         onPressed: () {
-          if (_formKey.currentState.validate()) {
+          if (_formKey.currentState!.validate()) {
             showSnackBar(context, "Details successfully saved!");
           } else {
             showSnackBar(context, "Some details missing!");

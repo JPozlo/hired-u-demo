@@ -16,7 +16,7 @@ import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key key}) : super(key: key);
+  const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -24,7 +24,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
-  UserProvider userProvider;
+  late UserProvider userProvider;
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           topBar(),
           listView(context),
-          personalInfoArea(userProvider == null ? null : userProvider.user)
+          personalInfoArea(userProvider == null ? User() : userProvider.user)
         ],
       )),
     );
@@ -60,13 +60,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Text("Profile"),
             RichText(
               text: TextSpan(
                 children: [
                   TextSpan(
                     text: "Profile",
-                    style: Theme.of(context).textTheme.headline6.copyWith(
+                    style: Theme.of(context).textTheme.headline6?.copyWith(
                           color: Colors.white,
                         ),
                   ),
@@ -83,7 +82,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Positioned(
       top: 40,
       left: 50, right: 50,
-      // width: response.screenWidth * 0.7,
       child: Container(
         decoration: BoxDecoration(
             color: Colors.white,
@@ -97,57 +95,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
             borderRadius: BorderRadius.all(Radius.circular(13.5))),
         child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                backgroundImage: user.profile == null || user.profile.isEmpty
-                    ? AssetImage("assets/avatar.png")
-                    : NetworkImage(
-                        ApiService.imageBaseURL + user.profile,
-                        // errorBuilder: (context, exception, stacktrace) {
-                        //   print("Exception: ${exception.toString()}");
-                        //   print("Stacktrace: ${stacktrace.toString()}");
-                        //   return Text("Image can't be loaded");
-                        // },
+          child: Padding(
+            padding: const EdgeInsets.only(top: 9.0, bottom: 9.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  backgroundImage: user.profile!.isEmpty
+                      ? AssetImage("assets/avatar.png")
+                      : NetworkImage(
+                          ApiService.imageBaseURL + user.profile!,
+                          // errorBuilder: (context, exception, stacktrace) {
+                          //   print("Exception: ${exception.toString()}");
+                          //   print("Stacktrace: ${stacktrace.toString()}");
+                          //   return Text("Image can't be loaded");
+                          // },
+                        ) as ImageProvider,
+                  radius: 50.0,
+                ),
+                SizedBox(
+                  height: 13.0,
+                ),
+                Text(user.name == null ? "Osolo" : user.name!),
+                SizedBox(
+                  height: 9.0,
+                ),
+                Text(user.email == null ? "email@gmail.com" : user.email!),
+                SizedBox(
+                  height: 13.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        nextScreen(
+                            context,
+                            EditProfilePage(
+                              user: user,
+                            ));
+                      },
+                      child: Container(
+                        child: SvgPicture.asset(
+                          'assets/edit.svg',
+                          width: 30,
+                          height: 30,
+                          color: AppTheme.mainBlueColor,
+                        ),
                       ),
-                radius: 50.0,
-              ),
-              SizedBox(
-                height: 13.0,
-              ),
-              Text(user.name == null ? "Osolo" : user.name),
-              SizedBox(
-                height: 9.0,
-              ),
-              Text(user.email == null ? "email@gmail.com" : user.email),
-              SizedBox(
-                height: 13.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      nextScreen(
-                          context,
-                          EditProfilePage(
-                            user: user,
-                          ));
-                    },
-                    child: Container(
-                      child: SvgPicture.asset(
-                        'assets/edit.svg',
-                        width: 30,
-                        height: 30,
-                        color: AppTheme.mainBlueColor,
-                      ),
-                    ),
-                  )
-                ],
-              )
-            ],
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -160,7 +161,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       left: 0,
       width: response.screenWidth,
       child: Container(
-        height: response.screenHeight * 0.8,
+        height: response.screenHeight! * 0.8,
         decoration: BoxDecoration(color: Colors.white),
         child: Column(
           children: [

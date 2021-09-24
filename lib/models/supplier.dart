@@ -1,5 +1,5 @@
 class Supplier {
-  Supplier({this.id, this.name});
+  Supplier({required this.id, required this.name});
 
   final int id;
   final String name;

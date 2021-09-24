@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class DeliveryCard extends StatelessWidget {
   const DeliveryCard({
-    Key key,
-    @required this.totalPriceProvider,
+    Key? key,
+    required this.totalPriceProvider,
   }) : super(key: key);
 
   final double totalPriceProvider;

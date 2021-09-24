@@ -1,5 +1,5 @@
 class UpdatePasswordDTO {
-  UpdatePasswordDTO({this.password, this.newPassword});
+  UpdatePasswordDTO({required this.password,required this.newPassword});
   final String password;
   final String newPassword;
 

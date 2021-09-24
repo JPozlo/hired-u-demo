@@ -13,8 +13,8 @@ import 'package:groceries_shopping_app/widgets/drawer_widget.dart';
 import 'package:provider/provider.dart';
 
 class MainHome extends StatefulWidget {
-  const MainHome({Key key, this.user}) : super(key: key);
-  final User user;
+  const MainHome({Key? key, this.user}) : super(key: key);
+  final User? user;
 
   @override
   _MainHomeState createState() => _MainHomeState();
@@ -23,12 +23,7 @@ class MainHome extends StatefulWidget {
 class _MainHomeState extends State<MainHome> {
   PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
   int _currentIndex = 0;
-  String userName;
-  String userEmail;
-  String userToken;
-  String userProfile;
-  String userPhone;
-  String userDevice;
+  late String userName, userEmail, userToken, userProfile, userPhone, userDevice;
 
   final screens = [NewHome(), OrdersScreen(), ProfileScreen()];
 
@@ -36,7 +31,7 @@ class _MainHomeState extends State<MainHome> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-          print("User value: ${this.widget.user}");
+      print("User value: ${this.widget.user}");
       if (this.widget.user == null) {
         userName =
             _sharedPreferences.getValueWithKey(Constants.userNamePrefKey);
@@ -44,26 +39,27 @@ class _MainHomeState extends State<MainHome> {
             _sharedPreferences.getValueWithKey(Constants.userEmailPrefKey);
         userToken =
             _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
-            userProfile = _sharedPreferences.getValueWithKey(Constants.userProfilePrefKey);
-            userPhone = _sharedPreferences.getValueWithKey(Constants.userPhonePrefKey);
+        userProfile =
+            _sharedPreferences.getValueWithKey(Constants.userProfilePrefKey);
+        userPhone =
+            _sharedPreferences.getValueWithKey(Constants.userPhonePrefKey);
         userDevice = _sharedPreferences
             .getValueWithKey(Constants.userDeviceModelPrefKey);
         print("If place is HIT: $userName");
       } else {
-        userName = this.widget.user.name;
-        userEmail = this.widget.user.email;
-        userPhone = this.widget.user.phone ?? "";
-        userProfile = this.widget.user.profile ?? "";
+        userName = this.widget.user!.name!;
+        userEmail = this.widget.user!.email!;
+        userPhone = this.widget.user!.phone ?? "";
+        userProfile = this.widget.user!.profile ?? "";
       }
       Provider.of<UserProvider>(context, listen: false).user = User(
-userProfile ?? "",
+          profile: userProfile,
           name: userName,
-          phone: userPhone ?? "",
+          phone: userPhone,
           email: userEmail,
           deviceName: userDevice,
           token: userToken);
     });
-
   }
 
   @override

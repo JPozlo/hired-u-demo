@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 
 class HomeDrawer extends StatefulWidget {
-  const HomeDrawer({Key key, this.screenIndex, this.iconAnimationController, this.callBackIndex}) : super(key: key);
+  const HomeDrawer({Key? key, required this.screenIndex, 
+  required this.iconAnimationController, required this.callBackIndex}) : super(key: key);
 
   final AnimationController iconAnimationController;
   final DrawerIndex screenIndex;
@@ -13,7 +14,7 @@ class HomeDrawer extends StatefulWidget {
 }
 
 class _HomeDrawerState extends State<HomeDrawer> {
-  List<DrawerList> drawerList;
+  late List<DrawerList> drawerList;
   @override
   void initState() {
     setDrawerListArray();
@@ -30,6 +31,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
       DrawerList(
         index: DrawerIndex.Help,
         labelName: 'Help',
+         icon: Icon(Icons.home),
         isAssetsImage: true,
         imageName: 'assets/images/supportIcon.png',
       ),
@@ -75,7 +77,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 children: <Widget>[
                   AnimatedBuilder(
                     animation: widget.iconAnimationController,
-                    builder: (BuildContext context, Widget child) {
+                    builder: (BuildContext context, Widget? child) {
                       return ScaleTransition(
                         scale: AlwaysStoppedAnimation<double>(1.0 - (widget.iconAnimationController.value) * 0.2),
                         child: RotationTransition(
@@ -127,7 +129,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.all(0.0),
-              itemCount: drawerList?.length,
+              itemCount: drawerList.length,
               itemBuilder: (BuildContext context, int index) {
                 return inkwell(drawerList[index]);
               },
@@ -210,7 +212,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           height: 24,
                           child: Image.asset(listData.imageName, color: widget.screenIndex == listData.index ? Colors.blue : AppTheme.mainCardBackgroundColor),
                         )
-                      : Icon(listData.icon?.icon, color: widget.screenIndex == listData.index ? Colors.blue : AppTheme.mainCardBackgroundColor),
+                      : Icon(listData.icon.icon, color: widget.screenIndex == listData.index ? Colors.blue : AppTheme.mainCardBackgroundColor),
                   const Padding(
                     padding: EdgeInsets.all(4.0),
                   ),
@@ -229,7 +231,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             widget.screenIndex == listData.index
                 ? AnimatedBuilder(
                     animation: widget.iconAnimationController,
-                    builder: (BuildContext context, Widget child) {
+                    builder: (BuildContext context, Widget? child) {
                       return Transform(
                         transform: Matrix4.translationValues(
                             (MediaQuery.of(context).size.width * 0.75 - 64) * (1.0 - widget.iconAnimationController.value - 1.0), 0.0, 0.0),
@@ -278,8 +280,8 @@ class DrawerList {
   DrawerList({
     this.isAssetsImage = false,
     this.labelName = '',
-    this.icon,
-    this.index,
+    required this.icon,
+    required this.index,
     this.imageName = '',
   });
 

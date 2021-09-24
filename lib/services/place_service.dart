@@ -2,16 +2,16 @@ import 'dart:convert';
 import 'package:http/http.dart';
 
 class Place {
-  String streetNumber;
-  String street;
-  String city;
-  String zipCode;
+   String? streetNumber;
+  String? street;
+  String? city;
+  String? zipCode;
 
   Place({
-    this.streetNumber,
-    this.street,
-    this.city,
-    this.zipCode,
+     this.streetNumber,
+     this.street,
+     this.city,
+     this.zipCode,
   });
 
   @override

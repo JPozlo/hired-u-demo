@@ -1,13 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_money_formatter/flutter_money_formatter.dart';
-
-String getFormattedCurrency(double amount) {
-  FlutterMoneyFormatter fmf = new FlutterMoneyFormatter(amount: amount);
-  fmf.settings.symbol = "KSh";
-  fmf.settings.thousandSeparator = ",";
-  fmf.settings.decimalSeparator = ".";
-  return fmf.output.symbolOnLeft;
-}
 
 showSnackBar(BuildContext context, String message, {String action = "OK"}) {
   final _snackBar = SnackBar(
@@ -22,16 +13,14 @@ showSnackBar(BuildContext context, String message, {String action = "OK"}) {
   ScaffoldMessenger.of(context).showSnackBar(_snackBar);
 }
 
-String validateEmail(String value) {
-  String _msg;
+String? validateEmail(String? value) {
   RegExp regex = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-  if (value.isEmpty) {
-    _msg = "Your email is required";
+  if (value!.isEmpty) {
+    return  "Your email is required";
   } else if (!regex.hasMatch(value)) {
-    _msg = "Please provide a valid email address";
+    return "Please provide a valid email address";
   }
-  return _msg;
 }
 
 nextScreenNamed(BuildContext context, String route) {

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:groceries_shopping_app/local_database.dart';
+import 'package:groceries_shopping_app/models/errors.dart';
 import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:http/http.dart';
@@ -42,6 +44,9 @@ class ApiService {
   static const String createServiceOrder = appBaseURL + "services/orders";
   // Payments
   static const String paymentsList = appBaseURL + "history/payments";
+  static const String confirmPayment = appBaseURL + "payment/confirmation";
+  // Logs
+  static const String mobileLogs = appBaseURL + "mobilelogs";
 
   Future<Result> fetchServicesList(int id) async {
     Result result;
@@ -155,9 +160,9 @@ class ApiService {
         //   print("Save values status: $status");
         // }
 
-        String message = responseData['message'];
+        String? message = responseData['message'];
 
-        print("Service products list: ${products.first.picPath.first.image}");
+        print("Service products list: ${products.first.picPath?.first.image}");
 
         result = Result(true, message == null ? "Success" : message,
             products: products,
@@ -165,7 +170,7 @@ class ApiService {
             productStatus: productsDataStatus);
       }
     } else {
-      String errorMessage;
+      String? errorMessage;
 
       var errors = responseData['errors'];
 
@@ -322,21 +327,107 @@ class ApiService {
 
       if (ordersHistory == null) {
         result = Result(true, "No orders found", ordersHistoryList: null);
-      } else{
-      List<Order> orderHistoryList = orderHistory
-          .map<Order>((e) => Order.fromJson(e))
-          .toList();
+      } else {
+        List<Order> orderHistoryList =
+            orderHistory.map<Order>((e) => Order.fromJson(e)).toList();
 
-      print("Orders History List: $orderHistoryList");
+        print("Orders History List: $orderHistoryList");
 
-      String message = responseData['message'];
+        String message = responseData['message'];
 
-      result = Result(true, message == null ? "Success" : message,
-          ordersHistoryList: orderHistoryList);
+        result = Result(true, message == null ? "Success" : message,
+            ordersHistoryList: orderHistoryList);
       }
     } else {
       result = Result(false, "An unexpected error occurred");
     }
     return result;
+  }
+
+  Future<int> sendPaymentConfirmation(int id) async {
+    late int finalStatus;
+
+    String token =
+        await _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
+
+    final Map<String, dynamic> chargingResponse = {'id': id};
+
+    Response response = await post(Uri.parse(ApiService.confirmPayment),
+        body: json.encode(chargingResponse),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        });
+
+    final Map<String, dynamic> responseData = json.decode(response.body);
+
+    finalStatus = responseData['status_code'];
+
+    if (finalStatus == 200) {
+      var orderHistory = responseData;
+
+      print("Response data: $responseData");
+
+      // if (ordersHistory == null) {
+      //   result = Result(true, "No orders found", ordersHistoryList: null);
+      // } else {
+      //   List<Order> orderHistoryList =
+      //       orderHistory.map<Order>((e) => Order.fromJson(e)).toList();
+
+      //   print("Orders History List: $orderHistoryList");
+
+      //   String message = responseData['message'];
+
+      // result = Result(true, "Success");
+      // }
+
+    } else {
+      // final
+      // result = Result(false, "An unexpected error occurred");
+    }
+    return finalStatus;
+  }
+
+  sendMobileLogs(Errors error) async {
+    late Result result;
+
+    String token =
+        await _sharedPreferences.getValueWithKey(Constants.userTokenPrefKey);
+
+    final Map<String, dynamic> errorData = error.toJson();
+
+    Response response = await post(Uri.parse(ApiService.mobileLogs),
+        body: json.encode(errorData),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        });
+
+    final Map<String, dynamic> responseData = json.decode(response.body);
+
+    var status = responseData['status_code'];
+
+    if (status == 200) {
+      var orderHistory = responseData;
+
+      print("Response data: $responseData");
+
+      // if (ordersHistory == null) {
+      //   result = Result(true, "No orders found", ordersHistoryList: null);
+      // } else {
+      //   List<Order> orderHistoryList =
+      //       orderHistory.map<Order>((e) => Order.fromJson(e)).toList();
+
+      //   print("Orders History List: $orderHistoryList");
+
+      //   String message = responseData['message'];
+
+      // result = Result(true, "Success");
+      // }
+
+    } else {
+      // result = Result(false, "An unexpected error occurred");
+    }
+    // return result;
   }
 }

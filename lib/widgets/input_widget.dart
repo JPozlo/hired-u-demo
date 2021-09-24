@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 
 class InputWidget extends StatelessWidget {
-  final String hintText;
-  final IconData prefixIcon;
+  final String? hintText;
+  final IconData? prefixIcon;
   final double height;
   final String topLabel;
   final bool obscureText;
@@ -32,9 +32,7 @@ class InputWidget extends StatelessWidget {
           child: TextFormField(
             obscureText: this.obscureText,
             decoration: InputDecoration(
-              prefixIcon: this.prefixIcon == null
-                  ? this.prefixIcon
-                  : Icon(
+              prefixIcon:  Icon(
                       this.prefixIcon,
                       color: Color.fromRGBO(105, 108, 121, 1),
                     ),

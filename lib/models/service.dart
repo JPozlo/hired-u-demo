@@ -2,11 +2,11 @@ import 'package:groceries_shopping_app/models/models.dart';
 
 class Service {
   Service({this.id, this.name = "null", this.subCategories, this.picPath, this.image});
-  final int id;
-  final String name;
-  final String image;
-  final String picPath;
-  final List<SubCategory> subCategories;
+  final int? id;
+  final String? name;
+  final String? image;
+  final String? picPath;
+  final List<SubCategory>? subCategories;
 
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(

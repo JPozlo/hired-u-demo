@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class ForgotPassword extends StatelessWidget {
   final _formKey = new GlobalKey<FormState>();
-  String _email, _token;
+  late String _email, _token;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class ForgotPassword extends StatelessWidget {
 
     final emailInput = TextFormField(
         validator: validateEmail,
-        onSaved: (value) => _email = value,
+        onSaved: (value) => _email = value!,
         decoration: inputFieldDecoration("Enter your email address"));
 
     var loading = Row(
@@ -108,7 +108,7 @@ class ForgotPassword extends StatelessWidget {
                               style: Theme.of(context)
                                   .textTheme
                                   .headline6
-                                  .copyWith(
+                                  ?.copyWith(
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,
                                   ),

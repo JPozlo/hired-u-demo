@@ -20,15 +20,16 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   final TextEditingController _emailController = new TextEditingController();
   final TextEditingController _nameController = new TextEditingController();
+  final TextEditingController _phoneController = new TextEditingController();
   final _formKey = new GlobalKey<FormState>();
-  File _imageFile;
-  String _email, _phone, _password, _confirmPassword;
+  File? _imageFile;
+  String? _email, _name, _phone, _password, _confirmPassword;
 
   Future signIn() async {
     var googleUser = await GoogleAuthentication.googleLogin();
     setState(() {
-      _emailController.text = googleUser.email;
-      _nameController.text = googleUser.displayName;
+      _emailController.text = googleUser!.email;
+      _nameController.text = googleUser.displayName!;
     });
   }
 
@@ -46,24 +47,30 @@ class _RegisterState extends State<Register> {
 
     final nameInput = TextFormField(
         controller: _nameController,
-        validator: (value) => value.isEmpty ? "Please enter your name" : null,
-        onSaved: (value) => _phone = value,
+        validator: (value) => value!.isEmpty ? "Please enter your name" : null,
+        onSaved: (value) => _name = value,
         decoration: inputFieldDecoration("Enter your name"));
+
+            final phoneInput = TextFormField(
+        controller: _phoneController,
+        validator: (value) => value!.isEmpty ? "Please enter your phone number" : null,
+        onSaved: (value) => _phone = value,
+        decoration: inputFieldDecoration("Enter your phone number"));
 
     final passwordInput = TextFormField(
         obscureText: true,
-        validator: (value) => value.isEmpty ? "Please enter password" : null,
+        validator: (value) => value!.isEmpty ? "Please enter password" : null,
         onSaved: (value) => _password = value,
         decoration: inputFieldDecoration("Enter your password"));
 
     final confirmPasswordInput = TextFormField(
         obscureText: true,
-        validator: (value) => value.isEmpty ? "Please confirm password" : null,
+        validator: (value) => value!.isEmpty ? "Please confirm password" : null,
         onSaved: (value) => _confirmPassword = value,
         decoration: inputFieldDecoration("Enter your password again"));
 
     bool _verifyPasswordsMatch() {
-      if (_confirmPassword.trim() != _password.trim()) {
+      if (_confirmPassword!.trim() != _password!.trim()) {
         print("Pass NOT MATCH HIT");
         return false;
       }
@@ -81,12 +88,12 @@ class _RegisterState extends State<Register> {
 
     var doRegister = () {
       final form = _formKey.currentState;
-      if (form.validate()) {
+      if (form!.validate()) {
         form.save();
         if (_verifyPasswordsMatch()) {
-          auth.register(_email, _password, _phone).then((response) {
+          auth.register(_email!, _password!, _name!, _phone!).then((response) {
             if (response.status) {
-              userProvider.user = response.user;
+              userProvider.user = response.user!;
               nextFirstScreen(context, MainHome(user: userProvider.user,));
             } else {
               Flushbar(
@@ -151,7 +158,7 @@ class _RegisterState extends State<Register> {
                               style: Theme.of(context)
                                   .textTheme
                                   .headline6
-                                  .copyWith(
+                                  ?.copyWith(
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,
                                   ),
@@ -196,6 +203,14 @@ class _RegisterState extends State<Register> {
                                   height: 7.0,
                                 ),
                                 nameInput,
+                                   SizedBox(
+                                  height: 25.0,
+                                ),
+                                label("Phone"),
+                                SizedBox(
+                                  height: 7.0,
+                                ),
+                                phoneInput,
                                 SizedBox(
                                   height: 25.0,
                                 ),
@@ -268,7 +283,7 @@ class _RegisterState extends State<Register> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text("Or Sign In with a Social Account")],
+            children: [Text("Or Sign In with a Google Account")],
           ),
           SizedBox(
             height: 23.8,
@@ -276,20 +291,20 @@ class _RegisterState extends State<Register> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: signIn,
-                child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      // borderRadius: BorderRadius.circular(21.0),
-                      // border: Border.all(color: AppTheme.mainBlueColor)
-                    ),
-                    child: Image(
-                        width: 55, image: AssetImage('assets/facebook.png'))),
-              ),
-              SizedBox(
-                width: 12.7,
-              ),
+              // GestureDetector(
+              //   onTap: signIn,
+              //   child: Container(
+              //       decoration: BoxDecoration(
+              //         shape: BoxShape.circle,
+              //         // borderRadius: BorderRadius.circular(21.0),
+              //         // border: Border.all(color: AppTheme.mainBlueColor)
+              //       ),
+              //       child: Image(
+              //           width: 55, image: AssetImage('assets/facebook.png'))),
+              // ),
+              // SizedBox(
+              //   width: 12.7,
+              // ),
               GestureDetector(
                 onTap: signIn,
                 child: Container(
@@ -303,26 +318,26 @@ class _RegisterState extends State<Register> {
               ),
             ],
           ),
-          SizedBox(
-            height: 12.4,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: signIn,
-                child: Container(
-                    // width: response.setWidth(response.screenWidth * 0.8),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      // borderRadius: BorderRadius.circular(21.0),
-                      // border: Border.all(color: AppTheme.mainBlueColor)
-                    ),
-                    child: Image(
-                        width: 55, image: AssetImage('assets/apple.png'))),
-              ),
-            ],
-          )
+          // SizedBox(
+          //   height: 12.4,
+          // ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     GestureDetector(
+          //       onTap: signIn,
+          //       child: Container(
+          //           // width: response.setWidth(response.screenWidth * 0.8),
+          //           decoration: BoxDecoration(
+          //             shape: BoxShape.circle,
+          //             // borderRadius: BorderRadius.circular(21.0),
+          //             // border: Border.all(color: AppTheme.mainBlueColor)
+          //           ),
+          //           child: Image(
+          //               width: 55, image: AssetImage('assets/apple.png'))),
+          //     ),
+          //   ],
+          // )
         ],
       ),
     );

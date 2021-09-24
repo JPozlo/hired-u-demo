@@ -7,25 +7,19 @@ import 'package:groceries_shopping_app/widgets/service_details_widget.dart';
 
 class ServiceWidget extends StatefulWidget {
   const ServiceWidget(
-      {Key key,
-      // @required this.widgetTitle,
-      // @required this.id,
-      // @required this.servicePicture,
-      @required this.service,
+      {Key? key,
+      required this.service,
       })
       : super(key: key);
 
-  // final int id;
-  // final String widgetTitle;
   final Service service;
-  // final String servicePicture;
 
   @override
   _ServiceWidgetState createState() => _ServiceWidgetState();
 }
 
 class _ServiceWidgetState extends State<ServiceWidget> {
-  Future<Result> _servicesListFuture;
+  late Future<Result> _servicesListFuture;
 
   @override
   void initState() {
@@ -36,7 +30,7 @@ class _ServiceWidgetState extends State<ServiceWidget> {
     //   _servicesListFuture = servicesProvider.fetchServices(5);
     //   print("This is hit");
     // });
-    _servicesListFuture = ApiService().fetchServicesList(this.widget.service.id);
+    _servicesListFuture = ApiService().fetchServicesList(this.widget.service.id!);
   }
 
   @override
@@ -60,7 +54,7 @@ class _ServiceWidgetState extends State<ServiceWidget> {
               Navigator.pop(context);
             }),
         title: Text(
-          this.widget.service.name,
+          this.widget.service.name!,
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -73,8 +67,8 @@ class _ServiceWidgetState extends State<ServiceWidget> {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               if (snapshot.hasData && snapshot.data != null) {
-                if (snapshot.data.service.subCategories.length > 0) {
-                  defaultWidget = displayListItems(snapshot.data.service);
+                if (snapshot.data!.service!.subCategories!.length > 0) {
+                  defaultWidget = displayListItems(snapshot.data!.service!);
                 } else {
                   defaultWidget = errorWidget();
                 }
@@ -123,7 +117,7 @@ class _ServiceWidgetState extends State<ServiceWidget> {
             child: Container(
               decoration: BoxDecoration(shape: BoxShape.rectangle),
               child: Image.asset(
-                this.widget.service.image,
+                this.widget.service.image!,
                 scale: 1.2,
                 fit: BoxFit.fill,
               ),
@@ -133,22 +127,22 @@ class _ServiceWidgetState extends State<ServiceWidget> {
             height: 10,
           ),
           Container(
-            height: response.screenHeight * 0.6,
+            height: response.screenHeight! * 0.6,
             child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: service.subCategories.length,
+                itemCount: service.subCategories!.length,
                 itemBuilder: (context, index) {
-                  var currentItem = service.subCategories[index];
+                  var currentItem = service.subCategories![index];
                   return ListTile(
-                      title: Text(currentItem.name),
+                      title: Text(currentItem.name!),
                       trailing: Icon(Icons.arrow_forward_ios),
                       onTap: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ServiceDetails(
-                                      widgetTitle: currentItem.name,
-                                      subServices: currentItem.miniServices,
+                                      widgetTitle: currentItem.name!,
+                                      subServices: currentItem.miniServices!,
                                     )));
                       });
                 }),

@@ -42,8 +42,9 @@ class UserService {
       UpdateProfileUser updateProfileUser =
           UpdateProfileUser.fromJson(userData);
 
-      User user = User(updateProfileUser.profile,
+      User user = User(
           name: updateProfileUser.name,
+          profile: updateProfileUser.profile,
           email: updateProfileUser.email,
           uid: updateProfileUser.id,
           phone: updateProfileUser.phone,
@@ -53,10 +54,10 @@ class UserService {
           Constants.userNamePrefKey, updateProfileUser.name);
       _sharedPreferences.saveValueWithKey(
           Constants.userPhonePrefKey, updateProfileUser.phone);
-      if (updateProfileUser.phone.isNotEmpty ||
+      if (updateProfileUser.phone!.isNotEmpty ||
           updateProfileUser.phone == null ||
           updateProfileUser.profile == null ||
-          updateProfileUser.profile.isNotEmpty) {
+          updateProfileUser.profile!.isNotEmpty) {
         _sharedPreferences.saveValueWithKey(
             Constants.userPhonePrefKey, updateProfileUser.phone ?? "");
         _sharedPreferences.saveValueWithKey(
@@ -106,10 +107,10 @@ class UserService {
       UpdateProfileUser updateProfileUser =
           UpdateProfileUser.fromJson(userData);
 
-      if (updateProfileUser.phone.isNotEmpty ||
+      if (updateProfileUser.phone!.isNotEmpty ||
           updateProfileUser.phone == null ||
           updateProfileUser.profile == null ||
-          updateProfileUser.profile.isNotEmpty) {
+          updateProfileUser.profile!.isNotEmpty) {
         _sharedPreferences.saveValueWithKey(
             Constants.userPhonePrefKey, updateProfileUser.phone ?? "");
         _sharedPreferences.saveValueWithKey(
@@ -153,6 +154,7 @@ class UserService {
         Constants.userNamePrefKey,
         Constants.userPhonePrefKey,
         Constants.userProfilePrefKey,
+        Constants.userFavoriteAddressPrefKey
       ]);
     } else {
       result = Result(false, "An unexpected error occurred");

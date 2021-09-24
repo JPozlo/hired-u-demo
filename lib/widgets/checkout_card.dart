@@ -9,16 +9,16 @@ import 'package:provider/provider.dart';
 
 class Checkout extends StatelessWidget {
   const Checkout({
-    Key key,
-    @required this.cartProductsProvider,
-    @required this.index,
+    Key? key,
+    required this.cartProductsProvider,
+    required this.index,
   }) : super(key: key);
 
   final UnmodifiableListView<Product> cartProductsProvider;
   final int index;
   String _cost() {
     int totalCost =
-        cartProductsProvider[index].price *
+        cartProductsProvider[index].price! *
             cartProductsProvider[index].orderedQuantity;
     return totalCost.toStringAsFixed(2);
   }
@@ -50,7 +50,7 @@ class Checkout extends StatelessWidget {
             ), 
             // Spacer(),
             Container(
-              width: response.screenWidth * 0.35,
+              width: response.screenWidth! * 0.35,
               // color: Colors.red,
               child: Text(
                 cartProductsProvider[index].name.toString(),

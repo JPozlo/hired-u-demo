@@ -1,16 +1,18 @@
 class PaginationData {
   PaginationData(
-      {this.total,
-      this.count,
+      {
+      required this.total,
+      required this.count,
       this.perPage,
       this.currentPage,
-      this.totalPages});
+      this.totalPages
+      });
 
   final int total;
   final int count;
-  final int perPage;
-  final int currentPage;
-  final int totalPages;
+  final int? perPage;
+  final int? currentPage;
+  final int? totalPages;
 
   factory PaginationData.fromJson(Map<String, dynamic> json) =>
       PaginationData(

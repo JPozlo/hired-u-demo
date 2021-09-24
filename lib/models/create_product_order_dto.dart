@@ -2,7 +2,7 @@ import 'package:groceries_shopping_app/models/models.dart';
 import 'package:provider/provider.dart';
 
 class CreateProductOrderDTO {
-  CreateProductOrderDTO({this.items, this.userAddressesId});
+  CreateProductOrderDTO({required this.items, required this.userAddressesId});
   final List<OrderItem> items;
   final int userAddressesId;
 

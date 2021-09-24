@@ -18,7 +18,7 @@ enum ProcessingState {
 
 class UserProvider with ChangeNotifier {
   PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
-  User _user = new User("");
+  User _user = new User();
 
   ProcessingState _processingStatus = ProcessingState.NotProcessing;
 
@@ -64,7 +64,8 @@ class UserProvider with ChangeNotifier {
       UpdateProfileUser updateProfileUser =
           UpdateProfileUser.fromJson(userData);
 
-      User user = User(updateProfileUser.profile,
+      User user = User(
+      profile: updateProfileUser.profile,
           name: updateProfileUser.name,
           email: updateProfileUser.email,
           uid: updateProfileUser.id,
@@ -75,10 +76,10 @@ class UserProvider with ChangeNotifier {
           Constants.userNamePrefKey, updateProfileUser.name);
       _sharedPreferences.saveValueWithKey(
           Constants.userPhonePrefKey, updateProfileUser.phone);
-      if (updateProfileUser.phone.isNotEmpty ||
+      if (updateProfileUser.phone!.isNotEmpty ||
           updateProfileUser.phone == null ||
           updateProfileUser.profile == null ||
-          updateProfileUser.profile.isNotEmpty) {
+          updateProfileUser.profile!.isNotEmpty) {
         _sharedPreferences.saveValueWithKey(
             Constants.userPhonePrefKey, updateProfileUser.phone ?? "");
         _sharedPreferences.saveValueWithKey(

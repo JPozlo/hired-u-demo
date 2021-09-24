@@ -1,6 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:groceries_shopping_app/local_database.dart';
 import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/providers.dart';
 import 'package:groceries_shopping_app/screens/main_home.dart';
@@ -10,15 +11,16 @@ import 'package:groceries_shopping_app/widgets/input_decoration_widget.dart';
 import 'package:provider/provider.dart';
 
 class CreateAddressPage extends StatefulWidget {
-  const CreateAddressPage({Key key}) : super(key: key);
+  const CreateAddressPage({Key? key}) : super(key: key);
 
   @override
   _CreateAddressPageState createState() => _CreateAddressPageState();
 }
 
 class _CreateAddressPageState extends State<CreateAddressPage> {
+    PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
   final _formKey = new GlobalKey<FormState>();
-  String _country, _county, _building, _hometown, _streetaddress, _suite;
+  late String _country, _county, _building, _hometown, _streetaddress, _suite;
 
   @override
   void initState() {
@@ -52,7 +54,7 @@ class _CreateAddressPageState extends State<CreateAddressPage> {
         children: [
           // Text("Profile"),
           GestureDetector(
-            onTap: () => Navigator.pop(context),
+            onTap: () => Navigator.pop(this.context),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Icon(
@@ -67,7 +69,7 @@ class _CreateAddressPageState extends State<CreateAddressPage> {
               children: [
                 TextSpan(
                   text: "Create New Address",
-                  style: Theme.of(context).textTheme.headline6.copyWith(
+                  style: Theme.of(context).textTheme.headline6?.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -85,28 +87,28 @@ class _CreateAddressPageState extends State<CreateAddressPage> {
     UserProvider userProvider = Provider.of<UserProvider>(context);
 
     final countryInput = TextFormField(
-        validator: (value) => value.isEmpty ? "Please enter country" : null,
-        onSaved: (value) => _country = value,
+        validator: (value) => value!.isEmpty ? "Please enter country" : null,
+        onSaved: (value) => _country = value!,
         decoration: inputFieldDecoration("Enter the country"));
     final countyInput = TextFormField(
-        validator: (value) => value.isEmpty ? "Please enter county" : null,
-        onSaved: (value) => _county = value,
+        validator: (value) => value!.isEmpty ? "Please enter county" : null,
+        onSaved: (value) => _county = value!,
         decoration: inputFieldDecoration("Enter the county"));
     final townInput = TextFormField(
-        validator: (value) => value.isEmpty ? "Please enter town" : null,
-        onSaved: (value) => _hometown = value,
+        validator: (value) => value!.isEmpty ? "Please enter town" : null,
+        onSaved: (value) => _hometown = value!,
         decoration: inputFieldDecoration("Enter the town"));
     final streetInput = TextFormField(
-        validator: (value) => value.isEmpty ? "Please enter street" : null,
-        onSaved: (value) => _streetaddress = value,
+        validator: (value) => value!.isEmpty ? "Please enter street" : null,
+        onSaved: (value) => _streetaddress = value!,
         decoration: inputFieldDecoration("Enter the street"));
     final buildingInput = TextFormField(
-        validator: (value) => value.isEmpty ? "Please enter building" : null,
-        onSaved: (value) => _building = value,
+        validator: (value) => value!.isEmpty ? "Please enter building" : null,
+        onSaved: (value) => _building = value!,
         decoration: inputFieldDecoration("Enter the building"));
     final suiteInput = TextFormField(
-        validator: (value) => value.isEmpty ? "Please enter suite" : null,
-        onSaved: (value) => _suite = value,
+        validator: (value) => value!.isEmpty ? "Please enter suite" : null,
+        onSaved: (value) => _suite = value!,
         decoration: inputFieldDecoration("Enter the suite"));
 
     var loading = Row(
@@ -119,7 +121,7 @@ class _CreateAddressPageState extends State<CreateAddressPage> {
 
     var doCreateAddress = () {
       final form = _formKey.currentState;
-      if (form.validate()) {
+      if (form!.validate()) {
         form.save();
 
         UserAddress createAddressDTO = UserAddress(
@@ -133,10 +135,11 @@ class _CreateAddressPageState extends State<CreateAddressPage> {
         final Future<Result> createAddressResponse =
             addressProvider.createAddress(createAddressDTO);
 
-        createAddressResponse.then((response) {
+        createAddressResponse.then((response) async {
           if (response.status) {
-            if (response.user != null) {
-              userProvider.user = response.user;
+            if (response.user != null || response.address != null) {
+              userProvider.user = response.user!;
+              await _sharedPreferences.saveFavoriteAddress(response.address!);
             }
             Fluttertoast.showToast(
                 msg: "Successfully created address",

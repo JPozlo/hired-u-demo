@@ -8,7 +8,7 @@ import 'package:groceries_shopping_app/widgets/service_widget.dart';
 import 'package:provider/provider.dart';
 
 class ServiceCard extends StatelessWidget {
-  ServiceCard({@required this.index, @required this.service});
+  ServiceCard({required this.index, required this.service});
   final int index;
   // final String serviceName;
   final Service service;
@@ -55,7 +55,7 @@ class ServiceCard extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.center,
                     child: Image.asset(
-                      servicesOffered[index].picPath,
+                      servicesOffered[index].picPath!,
                       height: 50,
                       width: 50,
                       color: AppTheme.mainOrangeColor,
@@ -69,7 +69,7 @@ class ServiceCard extends StatelessWidget {
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      servicesOffered[index].name,
+                      servicesOffered[index].name!,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 15,

@@ -1,40 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/models/models.dart';
-import 'package:groceries_shopping_app/models/orders_history.dart';
 import 'package:groceries_shopping_app/services/api/api_service.dart';
 
 class OrdersScreen extends StatefulWidget {
-  const OrdersScreen({Key key}) : super(key: key);
+  const OrdersScreen({Key? key}) : super(key: key);
 
   @override
   _OrdersScreenState createState() => _OrdersScreenState();
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
-  Future<Result> _ordersHistoryFuture;
-
-  List<OrderHistoryTest> ordersHistory = [
-    OrderHistoryTest(
-      id: "2683",
-      total: 230,
-      time: "2020/12/01",
-    ),
-    OrderHistoryTest(
-      id: "7393",
-      total: 892,
-      time: "2021/05/01",
-    ),
-    OrderHistoryTest(
-      id: "7832",
-      total: 1672,
-      time: "2021/01/01",
-    ),
-    OrderHistoryTest(
-      id: "8002",
-      total: 9022,
-      time: "2021/08/21",
-    ),
-  ];
+  late Future<Result> _ordersHistoryFuture;
 
   @override
   void initState() {
@@ -67,9 +43,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 switch (snapshot.connectionState) {
                   case ConnectionState.done:
                     if (snapshot.hasData && snapshot.data != null) {
-                      if (snapshot.data.ordersHistoryList.length > 0) {
+                      if (snapshot.data!.ordersHistoryList!.length > 0) {
                         defaultWidget =
-                            mainDisplayWidget(snapshot.data.ordersHistoryList);
+                            mainDisplayWidget(snapshot.data!.ordersHistoryList!);
                       } else {
                         defaultWidget = errorWidget();
                       }
@@ -139,7 +115,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 child: ListTile(
                   title: Text("KSh ${currentOrder.total.toString()}"),
                   subtitle: Text("#${currentOrder.id}"),
-                  // trailing: Text(currentOrder.time),
+                  trailing: Text(currentOrder.status!, style: TextStyle(fontWeight: FontWeight.bold),),
                 ),
               );
             }),

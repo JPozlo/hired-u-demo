@@ -9,7 +9,7 @@ import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class ChooseAddressPage extends StatefulWidget {
-  const ChooseAddressPage({Key key}) : super(key: key);
+  const ChooseAddressPage({Key? key}) : super(key: key);
 
   @override
   _ChooseAddressPageState createState() => _ChooseAddressPageState();
@@ -17,8 +17,8 @@ class ChooseAddressPage extends StatefulWidget {
 
 class _ChooseAddressPageState extends State<ChooseAddressPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
-  List<UserAddress> _userAddresses = [];
-  Future<Result> _addressesListFuture;
+  late List<UserAddress> _userAddresses = [];
+  late Future<Result> _addressesListFuture;
 
   List<UserAddress> tempAddresses = [
     UserAddress(
@@ -121,9 +121,9 @@ class _ChooseAddressPageState extends State<ChooseAddressPage> {
                   switch (snapshot.connectionState) {
                     case ConnectionState.done:
                       if (snapshot.hasData && snapshot.data != null) {
-                        if (snapshot.data.addresses.length > 0) {
+                        if (snapshot.data!.addresses!.length > 0) {
                           defaultWidget =
-                              mainDisplayWidget(snapshot.data.addresses);
+                              mainDisplayWidget(snapshot.data!.addresses!);
                         } else {
                           defaultWidget = errorWidget();
                         }
@@ -210,8 +210,6 @@ class _ChooseAddressPageState extends State<ChooseAddressPage> {
     var provider = Provider.of<AddressProvider>(context);
     return GestureDetector(
       onTap: () {
-        provider.userAddress = userAddress;
-        print(provider.userAddress.country);
         Navigator.pop(context, userAddress);
       },
       child: Container(

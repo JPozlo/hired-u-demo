@@ -1,7 +1,7 @@
 class CheckBoxState {
 
   CheckBoxState({
-    this.title,
+    this.title = "",
     this.value = false
 });
 

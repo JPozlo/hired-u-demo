@@ -14,11 +14,13 @@ class AppButton extends StatelessWidget {
   final bool disabled;
 
   AppButton(
-      {this.type,
-      this.onPressed,
-      this.text,
+      {
+        required this.type,
+      required this.onPressed,
+      required this.text,
       this.disabled = false,
-      this.disabledMessage});
+      this.disabledMessage = "Disabled"
+      });
 
   @override
   Widget build(BuildContext context) {

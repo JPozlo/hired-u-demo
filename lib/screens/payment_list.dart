@@ -6,8 +6,16 @@ import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:groceries_shopping_app/utils/helpers.dart';
 import 'package:groceries_shopping_app/utils/utils.dart';
 
+enum PaymentStatus{
+  pending,
+  successful,
+  failed,
+  cancelled,
+  error
+}
+
 class PaymentList extends StatefulWidget {
-  const PaymentList({Key key}) : super(key: key);
+  const PaymentList({Key? key}) : super(key: key);
 
   @override
   _PaymentListState createState() => _PaymentListState();
@@ -16,7 +24,7 @@ class PaymentList extends StatefulWidget {
 class _PaymentListState extends State<PaymentList> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
   List<Payment> _userAddresses = [];
-  Future<Result> _paymentsListFuture;
+  late Future<Result> _paymentsListFuture;
 
   List<Payment> tempPaymentsList = [
     Payment(
@@ -113,9 +121,9 @@ class _PaymentListState extends State<PaymentList> {
                   switch (snapshot.connectionState) {
                     case ConnectionState.done:
                       if (snapshot.hasData && snapshot.data != null) {
-                        if (snapshot.data.paymentsHistory.length > 0) {
+                        if (snapshot.data!.paymentsHistory!.length > 0) {
                           defaultWidget =
-                              mainDisplayWidget(snapshot.data.paymentsHistory);
+                              mainDisplayWidget(snapshot.data!.paymentsHistory!);
                         } else {
                           defaultWidget = errorWidget();
                         }
@@ -183,7 +191,7 @@ class _PaymentListState extends State<PaymentList> {
                 var currentItem = paymentsList[index];
                 return ListTile(
                   title: Text("KSh " + currentItem.amount.toString()),
-                  // subtitle: Text("#" + currentItem.status.String()),
+                  subtitle: Text("#" + currentItem.id.toString()),
                   trailing: Text("Status: " + currentItem.status),
                 );
               })),

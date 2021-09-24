@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key key}) : super(key: key);
+  const Login({Key? key}) : super(key: key);
 
   @override
   _LoginState createState() => _LoginState();
@@ -26,7 +26,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = new GlobalKey<FormState>();
-  String _email, _password;
+  late String _email, _password;
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +34,12 @@ class _LoginState extends State<Login> {
     UserProvider userProvider = Provider.of<UserProvider>(context);
     final emailInput = TextFormField(
         validator: validateEmail,
-        onSaved: (value) => _email = value,
+        onSaved: (value) => _email = value!,
         decoration: inputFieldDecoration("Enter your email address"));
     final passwordInput = TextFormField(
         obscureText: true,
-        validator: (value) => value.isEmpty ? "Please enter password" : null,
-        onSaved: (value) => _password = value,
+        validator: (value) => value!.isEmpty ? "Please enter password" : null,
+        onSaved: (value) => _password = value!,
         decoration: inputFieldDecoration("Enter your password"));
 
     var loading = Row(
@@ -52,14 +52,14 @@ class _LoginState extends State<Login> {
 
     var doLogin = () {
       final form = _formKey.currentState;
-      if (form.validate()) {
+      if (form!.validate()) {
         form.save();
 
         final Future<Result> loginResponse = auth.login(_email, _password);
 
         loginResponse.then((response) {
           if (response.status) {
-            userProvider.user = response.user;
+            userProvider.user = response.user!;
             nextScreen(
                 context,
                 MainHome(
@@ -122,7 +122,7 @@ class _LoginState extends State<Login> {
                               style: Theme.of(context)
                                   .textTheme
                                   .headline6
-                                  .copyWith(
+                                  ?.copyWith(
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,
                                   ),

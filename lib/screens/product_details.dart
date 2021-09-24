@@ -16,7 +16,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../appTheme.dart';
 
 class ProductDetails extends StatefulWidget {
-  ProductDetails({@required this.product, this.index});
+  ProductDetails({required this.product, required this.index});
   final int index;
   final Product product;
   @override
@@ -26,11 +26,11 @@ class ProductDetails extends StatefulWidget {
 class _ProductDetailsState extends State<ProductDetails>
     with SingleTickerProviderStateMixin, AfterLayoutMixin {
   bool isFavourite = false;
-  PreferenceUtils _utils;
-  AnimationController animationController;
-  Animation animation;
-  Animation secondaryAnimation;
-  bool isToPreview;
+  late PreferenceUtils _utils;
+  late AnimationController animationController;
+  late Animation animation;
+  late Animation secondaryAnimation;
+  late bool isToPreview;
   double opacity = 1;
   int orderQuantity = 1;
   bool temp = false;
@@ -43,8 +43,8 @@ class _ProductDetailsState extends State<ProductDetails>
     super.initState();
     isToPreview = false;
     print("The product: ${this.widget.product.toString()}");
-    if (this.widget.product.picPath.length > 0) {
-      productImage = this.widget.product.picPath;
+    if (this.widget.product.picPath!.length > 0) {
+      productImage = this.widget.product.picPath!;
     } else {
       productImage = [
         ProductImage(
@@ -67,7 +67,7 @@ class _ProductDetailsState extends State<ProductDetails>
 
   @override
   void dispose() {
-    animationController?.dispose();
+    animationController.dispose();
     super.dispose();
   }
 
@@ -135,7 +135,7 @@ class _ProductDetailsState extends State<ProductDetails>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  productImages(this.productImage, this.widget.product.name),
+                  productImages(this.productImage, this.widget.product.name!),
                   SizedBox(height: 13),
                   buildIndicator(this.productImage),
                   Transform(
@@ -152,7 +152,7 @@ class _ProductDetailsState extends State<ProductDetails>
                           children: <Widget>[
                             SizedBox(height: response.setHeight(20)),
                             Text(
-                              this.widget.product.name,
+                              this.widget.product.name!,
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   fontSize: response.setFontSize(40),
@@ -161,7 +161,7 @@ class _ProductDetailsState extends State<ProductDetails>
                             ),
                             SizedBox(height: response.setHeight(5)),
                             Text(
-                              this.widget.product.foodCategory.name,
+                              this.widget.product.foodCategory!.name!,
                               style: TextStyle(
                                   fontSize: response.setFontSize(15),
                                   fontWeight: FontWeight.w500,
@@ -201,7 +201,7 @@ class _ProductDetailsState extends State<ProductDetails>
                             ),
                             SizedBox(height: response.setHeight(5)),
                             Text(
-                              this.widget.product.description,
+                              this.widget.product.description!,
                               style: TextStyle(
                                   fontSize: response.setFontSize(15),
                                   color: Colors.black87),
@@ -214,7 +214,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                   onTap: () {
                                     provider.addProductToCart(
                                       this.widget.index,
-                                      this.widget.product.id,
+                                      this.widget.product.id!,
                                       bulkOrder: orderQuantity,
                                     );
                                     setState(() {
@@ -228,7 +228,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                     child: Container(
                                       height: response.setHeight(55),
                                       // width: response.setWidth(235),
-                                      width: response.screenWidth * 0.6,
+                                      width: response.screenWidth! * 0.6,
                                       decoration: BoxDecoration(
                                           color: AppTheme.mainBlueColor,
                                           borderRadius: BorderRadius.circular(
@@ -297,7 +297,7 @@ class _ProductDetailsState extends State<ProductDetails>
          placeholder: (context, url) => const CircularProgressIndicator(),
           imageUrl: path != null
               ? ApiService.imageBaseURL +
-                  path.image
+                  path.image!
               : 'https://uhired.herokuapp.com/profile-images/profile.png',
           errorWidget: (context, url, error) => Text("Problem loading the image!"),
        )
@@ -333,9 +333,9 @@ class _ProductDetailsState extends State<ProductDetails>
 
 class ProductQuantity extends StatelessWidget {
   ProductQuantity({
-    this.orderQuantity,
-    this.minusOnTap,
-    this.plusOnTap,
+    required this.orderQuantity,
+    required this.minusOnTap,
+    required this.plusOnTap,
   });
   final int orderQuantity;
   final VoidCallback minusOnTap;

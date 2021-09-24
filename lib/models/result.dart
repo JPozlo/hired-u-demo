@@ -4,22 +4,22 @@ import 'package:groceries_shopping_app/models/models.dart';
 class Result {
   final bool status;
   final String message;
-  final List<Order> orders;
-  final List<Order> ordersHistoryList;
-  final List<Product> products;
-  final Service service;
-  final Payment payment;
-  final List<Payment> payments;
-  final List<PaymentHistory> paymentsHistory;
-  final CreateOrderDTO createOrderDto;
-  final UpdateProfileUser updateProfileUser;
-  final PaginationData pagination;
-  final bool productStatus;
-  final UserAddress address;
-  final List<UserAddress> addresses;
-  final Order order;
-  final User user;
-  final List errors;
+  final List<Order>? orders;
+  final List<Order>? ordersHistoryList;
+  final List<Product>? products;
+  final Service? service;
+  final Payment? payment;
+  final List<Payment>? payments;
+  final List<PaymentHistory>? paymentsHistory;
+  final CreateOrderDTO? createOrderDto;
+  final UpdateProfileUser? updateProfileUser;
+  final PaginationData? pagination;
+  final bool? productStatus;
+  final UserAddress? address;
+  final List<UserAddress>? addresses;
+  final Order? order;
+  final User? user;
+  final List? errors;
 
   Result(this.status, this.message,
  

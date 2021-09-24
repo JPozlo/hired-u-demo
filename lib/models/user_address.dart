@@ -1,21 +1,21 @@
 class UserAddress {
   UserAddress(
-      {this.id,
-      this.country,
-      this.county,
-      this.building,
-      this.streetAddress,
-      this.isFavorite,
-      this.suite,
-      this.homeTown});
+      {
+      this.id,
+      required this.country,
+      required this.county,
+      required this.building,
+      required this.streetAddress,
+      required this.suite,
+      required this.homeTown
+      });
   final String country;
-  final int id;
+  final int? id;
   final String county;
   final String homeTown;
   final String streetAddress;
   final String building;
   final String suite;
-  bool isFavorite;
 
   factory UserAddress.fromJson(Map<String, dynamic> json) {
     return UserAddress(

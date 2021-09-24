@@ -11,7 +11,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../appTheme.dart';
 
 class ProductCard extends StatefulWidget {
-  const ProductCard({Key key, @required this.product, this.index}) : super(key: key);
+  const ProductCard({Key? key, required this.product, required this.index}) : super(key: key);
   final Product product;
   final int index;
 
@@ -20,12 +20,12 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  List<Product> producInfoProvider;
+  late List<Product> producInfoProvider;
 
   @override
   void initState() {
     super.initState();
-    print("Lenght of picpath: ${this.widget.product.picPath.length}");
+    print("Lenght of picpath: ${this.widget.product.picPath!.length}");
   }
 
   @override
@@ -42,8 +42,6 @@ class _ProductCardState extends State<ProductCard> {
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
-        // height: response.setHeight(490),
-        // width: response.setWidth(170),
         decoration: BoxDecoration(
             color: AppTheme.secondaryScaffoldColor,
             borderRadius: BorderRadius.circular(10),
@@ -70,9 +68,9 @@ class _ProductCardState extends State<ProductCard> {
                     child: CachedNetworkImage(
                       placeholder: (context, url) =>
                           const CircularProgressIndicator(),
-                      imageUrl: this.widget.product.picPath.length > 0
+                      imageUrl: this.widget.product.picPath!.length > 0
                           ? ApiService.imageBaseURL +
-                              this.widget.product.picPath.first.image
+                              this.widget.product.picPath!.first.image!
                           : 'https://uhired.herokuapp.com/profile-images/profile.png',
                       errorWidget: (context, url, error) =>
                           Text("Problem loading the image"),
@@ -91,7 +89,7 @@ class _ProductCardState extends State<ProductCard> {
                   ),
                   SizedBox(height: response.setHeight(8)),
                   Text(
-                    this.widget.product.name,
+                    this.widget.product.name!,
                     style: TextStyle(
                       fontSize: response.setFontSize(15),
                       fontWeight: FontWeight.w800,

@@ -14,9 +14,8 @@ import 'package:groceries_shopping_app/widgets/product_card.dart';
 import 'package:provider/provider.dart';
 
 class ProductsPreview extends StatefulWidget {
-  // const ProductsPreview({ Key key }) : super(key: key);
   ProductsPreview({this.opacityAnimation});
-  final Animation<double> opacityAnimation;
+  final Animation<double>? opacityAnimation;
 
   @override
   _ProductsPreviewState createState() => _ProductsPreviewState();
@@ -25,9 +24,7 @@ class ProductsPreview extends StatefulWidget {
 class _ProductsPreviewState extends State<ProductsPreview> {
   PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
   int productsFilterCount = 6;
-  Future<Result> _productsFuture;
-  ProductsOperationsController _productsProvider;
-  List<Product> _productsList;
+  late Future<Result> _productsFuture;
 
   var doLoading = Row(
     mainAxisAlignment: MainAxisAlignment.center,
@@ -53,7 +50,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
             future: _productsFuture,
             initialData: Result(false, "Success", products: []),
             builder: (context, AsyncSnapshot<Result> snapshot) {
-              Widget defaultWidget;
+              late Widget defaultWidget;
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
                   defaultWidget = doLoading;
@@ -62,13 +59,13 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                   defaultWidget = doLoading;
                   break;
                 case ConnectionState.done:
-                  if (snapshot.hasData && snapshot.data.products != null) {
+                  if (snapshot.hasData && snapshot.data?.products != null) {
                     print("Snapshot data: ${snapshot.data.toString()}");
                     defaultWidget =
-                        productsMainDisplay(snapshot.data.products, context);
+                        productsMainDisplay(snapshot.data!.products!, context);
                     Provider.of<ProductsOperationsController>(context, listen: false)
-                        .updateProductsList = snapshot.data.products;
-                    print("listProducts: ${snapshot.data.products}");
+                        .updateProductsList = snapshot.data!.products!;
+                    print("listProducts: ${snapshot.data!.products!}");
                   } else if (snapshot.hasError) {
                     defaultWidget = errorWidget(error: snapshot.error.toString());
                   }
@@ -83,7 +80,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
   
   }
 
-  Widget errorWidget({String error}) {
+  Widget errorWidget({String? error}) {
     return Stack(
       alignment: Alignment.center,
       children:[
@@ -127,7 +124,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
         left: 0,
         right: 0,
         child: Container(
-          height: response.screenHeight * 0.79,
+          height: response.screenHeight! * 0.79,
           width: response.screenWidth,
           child: Padding(
             padding: EdgeInsets.only(bottom: response.setHeight(12.5)),
@@ -165,7 +162,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
       left: 0,
       right: 0,
       child: Container(
-        height: response.screenHeight * 0.79,
+        height: response.screenHeight! * 0.79,
         width: response.screenWidth,
         child: Padding(
           padding: EdgeInsets.only(bottom: response.setHeight(12.5)),
@@ -228,7 +225,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
         );
   }
 
-  Widget filterBarWidget({int listInfo}){
+  Widget filterBarWidget({required int listInfo}){
     return Positioned(
           top: 70,
           left: 0,
@@ -297,7 +294,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
     );
   }
 
-  Widget getFilterBarUI({int productsCount}) {
+  Widget getFilterBarUI({required int productsCount}) {
     return Stack(
       children: <Widget>[
         Positioned(
@@ -392,7 +389,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
     );
   }
 
-  FutureOr<bool> _buildAlartDialog(BuildContext context) async {
+  FutureOr<bool?> _buildAlartDialog(BuildContext context) async {
     return showPlatformDialog<bool>(
       context: context,
       builder: (_) => PlatformAlertDialog(

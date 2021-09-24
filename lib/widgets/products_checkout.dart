@@ -14,10 +14,10 @@ import 'package:provider/provider.dart';
 
 class ProductsCheckout extends StatelessWidget {
   const ProductsCheckout({
-    Key key,
-    @required this.cartCheckoutTransitionValue,
-    @required this.cartProductsProvider,
-    @required this.totalPriceProvider,
+    Key? key,
+    required this.cartCheckoutTransitionValue,
+    required this.cartProductsProvider,
+    required this.totalPriceProvider,
   }) : super(key: key);
 
   final double cartCheckoutTransitionValue;
@@ -153,7 +153,7 @@ class ProductsCheckout extends StatelessWidget {
       itemCount: cartProductsProvider.length,
       itemBuilder: (BuildContext context, int index) {
         return Dismissible(
-          key: Key( ApiService.imageBaseURL + cartProductsProvider[index].picPath.first.image),
+          key: Key( ApiService.imageBaseURL + cartProductsProvider[index].picPath!.first.image!),
           direction: DismissDirection.endToStart,
           onDismissed: (direction) {
             Provider.of<ProductsOperationsController>(context, listen: false)

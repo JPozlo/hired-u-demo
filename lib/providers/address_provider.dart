@@ -19,23 +19,6 @@ class AddressProvider extends ChangeNotifier {
 
   List<UserAddress> _userAddresses = [];
 
-  UserAddress _userAddress = new UserAddress();
-
-  UserAddress get userAddress => _userAddress;
-
-  set userAddress(UserAddress newAddress) {
-    newAddress = _userAddress;
-    notifyListeners();
-  }
-
-  set isFavorite(UserAddress userAddress) {
-    userAddress.isFavorite = !userAddress.isFavorite;
-    notifyListeners();
-  }
-
-  get isFavorite =>
-      _userAddresses.where((element) => element.isFavorite == true);
-
   AddressStatus _createAddressStatus = AddressStatus.NotProcessing;
   AddressStatus get createAddressStatus => _createAddressStatus;
 

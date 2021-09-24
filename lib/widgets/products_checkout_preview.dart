@@ -8,10 +8,10 @@ import '../appTheme.dart';
 
 class CartPreview extends StatelessWidget {
   const CartPreview({
-    Key key,
-    @required this.transformAnimationValue,
-    @required this.animationValue,
-    @required this.cartProductsProvider,
+    Key? key,
+    required this.transformAnimationValue,
+    required this.animationValue,
+    required this.cartProductsProvider,
   }) : super(key: key);
 
   final double transformAnimationValue;
@@ -96,9 +96,9 @@ class CartPreview extends StatelessWidget {
 
 class CartPreviewCard extends StatelessWidget {
   const CartPreviewCard({
-    Key key,
-    @required this.cartProductsProvider,
-    @required this.index,
+    Key? key,
+    required this.cartProductsProvider,
+    required this.index,
   }) : super(key: key);
 
   final UnmodifiableListView<Product> cartProductsProvider;
@@ -117,8 +117,8 @@ class CartPreviewCard extends StatelessWidget {
                backgroundColor: Colors.white,
               child: CachedNetworkImage(                
                 placeholder: (context, url) => const CircularProgressIndicator(),
-                imageUrl: cartProductsProvider[index].picPath.first.image != null
-                    ? ApiService.imageBaseURL + cartProductsProvider[index].picPath.first.image
+                imageUrl: cartProductsProvider[index].picPath?.first.image != null
+                    ? ApiService.imageBaseURL + cartProductsProvider[index].picPath!.first.image!
                     : 'https://uhired.herokuapp.com/profile-images/profile.png',
                 errorWidget: (context, url, error) =>
                     Image.asset(

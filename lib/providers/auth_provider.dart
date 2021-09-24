@@ -103,13 +103,14 @@ class AuthProvider with ChangeNotifier {
     return result;
   }
 
-  Future<Result> register(String email, String password, String name) async {
+  Future<Result> register(String email, String password, String name, String phone) async {
     Result result;
 
     String deviceName = await _sharedPreferences
         .getValueWithKey(Constants.userDeviceModelPrefKey);
 
-    User user = User("",
+    User user = User(
+      phone: phone,
         name: name, email: email, password: password, deviceName: deviceName);
 
     final Map<String, dynamic> registrationData = user.toJson();
@@ -139,11 +140,10 @@ class AuthProvider with ChangeNotifier {
       _sharedPreferences.saveValueWithKey(
           Constants.userEmailPrefKey, user.email);
         _sharedPreferences.saveValueWithKey(
-            Constants.userProfilePrefKey, user.profile ?? "");
-                 if (       user.phone != null) {
+            Constants.userPhonePrefKey, user.phone);
         _sharedPreferences.saveValueWithKey(
-            Constants.userPhonePrefKey, user.phone ?? "");
-      }
+            Constants.userProfilePrefKey, user.profile ?? "");
+      
 
       _registeredInStatus = Status.Registered;
       notifyListeners();
@@ -208,7 +208,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   getUserFromPreferences() async {
-    User user;
+    User? user;
     // user = await UserPreferences().getUser();
     print("user prefs values: $user");
     return user;
@@ -242,7 +242,7 @@ class AuthProvider with ChangeNotifier {
       user = User.fromJsonUserData(myuser);
     } else {
       var errors = responseData['errors'];
-      user = User("");
+      user = User();
     }
     return user;
   }

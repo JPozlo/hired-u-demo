@@ -22,7 +22,7 @@ class ProductsOperationsController extends ChangeNotifier {
   ProductStatus _createProductStatus = ProductStatus.NotCreating;
   ProductStatus get createOrderStatus => _createProductStatus;
 
-  List<Product> allList;
+  late List<Product> allList;
 
   List _selectedCategories = [];
 
@@ -82,10 +82,10 @@ class ProductsOperationsController extends ChangeNotifier {
   //       ),
   // ];
 
-  List<Product> _shoppingCart = [];
-  VoidCallback onCheckOutCallback;
+  late List<Product> _shoppingCart = [];
+  late VoidCallback onCheckOutCallback;
 
-  void onCheckOut({VoidCallback onCheckOutCallback}) {
+  void onCheckOut({required VoidCallback onCheckOutCallback}) {
     this.onCheckOutCallback = onCheckOutCallback;
   }
 
@@ -108,7 +108,7 @@ class ProductsOperationsController extends ChangeNotifier {
       double lowPrice, double highPrice) {
     var products = _productsInStock
         .where((element) =>
-            (lowPrice <= element.price) && (element.price <= highPrice))
+            (lowPrice <= element.price!) && (element.price! <= highPrice))
         .toList();
     return UnmodifiableListView(products);
   }
@@ -117,7 +117,7 @@ class ProductsOperationsController extends ChangeNotifier {
       List<Product> productsList, double lowPrice, double highPrice) {
     var products = productsList
         .where((element) =>
-            (lowPrice <= element.price) && (element.price <= highPrice))
+            (lowPrice <= element.price!) && (element.price! <= highPrice))
         .toList();
     return UnmodifiableListView(products);
   }
@@ -193,7 +193,7 @@ class ProductsOperationsController extends ChangeNotifier {
         ),
       );
       for (int i = 0; i < _shoppingCart.length; i++) {
-        _totalCost += _shoppingCart[i].price * _shoppingCart[i].orderedQuantity;
+        _totalCost += _shoppingCart[i].price! * _shoppingCart[i].orderedQuantity;
         notifyListeners();
       }
       // _shoppingCart.map((e) => {_totalCost += e.price * e.orderedQuantity});
@@ -207,13 +207,13 @@ class ProductsOperationsController extends ChangeNotifier {
   void returnTotalCost() {
     if (_totalCost == 0) {
       for (int i = 0; i < _shoppingCart.length; i++) {
-        _totalCost += _shoppingCart[i].price * _shoppingCart[i].orderedQuantity;
+        _totalCost += _shoppingCart[i].price! * _shoppingCart[i].orderedQuantity;
         notifyListeners();
       }
     } else {
       _totalCost = 0.0;
       for (int i = 0; i < _shoppingCart.length; i++) {
-        _totalCost += _shoppingCart[i].price * _shoppingCart[i].orderedQuantity;
+        _totalCost += _shoppingCart[i].price! * _shoppingCart[i].orderedQuantity;
         notifyListeners();
       }
     }
@@ -285,7 +285,7 @@ class ProductsOperationsController extends ChangeNotifier {
             productStatus: productsDataStatus);
       }
     } else {
-      String errorMessage;
+      String? errorMessage;
 
       var errors = responseData['errors'];
 

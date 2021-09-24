@@ -13,7 +13,6 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    // addIntroSeenStatusToPrefs(true);
   }
 
   @override
@@ -43,15 +42,6 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ),
-                  // Container(
-                  //   child: Padding(
-                  //     padding: EdgeInsets.all(20.0),
-                  //     child: Image.asset(
-                  //       "assets/logo.jpg",
-                  //       scale: 1.1,
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -76,7 +66,7 @@ class _HomeState extends State<Home> {
                       SizedBox(height: 20.0),
                       Text(
                         "Welcome!",
-                        style: Theme.of(context).textTheme.headline6.copyWith(
+                        style: Theme.of(context).textTheme.headline6?.copyWith(
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(19, 22, 33, 1),
                             ),
@@ -101,7 +91,6 @@ class _HomeState extends State<Home> {
                         onPressed: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) => Login()));
-                          // nextScreen(context, "/login");
                         },
                       ),
                       SizedBox(
@@ -113,7 +102,6 @@ class _HomeState extends State<Home> {
                         onPressed: () {
                              Navigator.push(context,
                               MaterialPageRoute(builder: (context) => Register()));
-                          // nextScreen(context, "/register");
                         },
                       )
                     ],

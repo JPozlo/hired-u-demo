@@ -15,7 +15,7 @@ import 'package:groceries_shopping_app/widgets/input_decoration_widget.dart';
 import 'package:provider/provider.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({Key key, @required this.user}) : super(key: key);
+  const EditProfilePage({Key? key, required this.user}) : super(key: key);
   final User user;
 
   @override
@@ -27,13 +27,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _emailController = new TextEditingController();
   final TextEditingController _nameController = new TextEditingController();
   final TextEditingController _phoneController = new TextEditingController();
-  String _email, _password, _name, _phone;
+  late String _email, _password, _name, _phone;
 
   @override
   void initState() {
     super.initState();
-    _emailController.text = this.widget.user.email;
-    _nameController.text = this.widget.user.name;
+    _emailController.text = this.widget.user.email!;
+    _nameController.text = this.widget.user.name!;
     _phoneController.text = this.widget.user.phone ?? "";
   }
 
@@ -80,7 +80,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 children: [
                   TextSpan(
                     text: "Update Profile",
-                    style: Theme.of(context).textTheme.headline6.copyWith(
+                    style: Theme.of(context).textTheme.headline6?.copyWith(
                           color: Colors.black,
                         ),
                   ),
@@ -111,7 +111,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
             ],
             borderRadius: BorderRadius.all(Radius.circular(13.5))),
-        width: response.setWidth(response.screenWidth * 0.7),
+        width: response.setWidth(response.screenWidth! * 0.7),
         height: response.setHeight(210),
         child: Center(
           child: Column(
@@ -121,7 +121,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               CircleAvatar(
                 backgroundImage: user.profile == null
                     ? AssetImage("assets/avatar.png")
-                    : NetworkImage(ApiService.imageBaseURL + user.profile),
+                    : NetworkImage(ApiService.imageBaseURL + user.profile!) as ImageProvider,
                 radius: 50.0,
               ),
               SizedBox(
@@ -158,34 +158,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final emailInput = TextFormField(
         controller: _emailController,
         validator: validateEmail,
-        onSaved: (value) => _email = value,
+        onSaved: (value) => _email = value!,
         decoration: inputFieldDecoration("Enter your email address"));
     final phoneInput = TextFormField(
         controller: _phoneController,
         validator: (value) {
-          String validator;
-          if (value.isEmpty) {
+          String? validator;
+          if (value!.isEmpty) {
             validator = "Please fill in your phone number";
           }
           return validator;
         },
-        onSaved: (value) => _phone = value,
+        onSaved: (value) => _phone = value!,
         decoration: inputFieldDecoration("Enter your phone number"));
     final nameInput = TextFormField(
         controller: _nameController,
         validator: (value) {
-          String validator;
-          if (value.isEmpty) {
+          String? validator;
+          if (value!.isEmpty) {
             validator = "Please fill in your name";
           }
           return validator;
         },
-        onSaved: (value) => _name = value,
+        onSaved: (value) => _name = value!,
         decoration: inputFieldDecoration("Enter your name"));
     final passwordInput = TextFormField(
         obscureText: true,
-        validator: (value) => value.isEmpty ? "Please enter password" : null,
-        onSaved: (value) => _password = value,
+        validator: (value) => value!.isEmpty ? "Please enter password" : null,
+        onSaved: (value) => _password = value!,
         decoration: inputFieldDecoration("Enter your password"));
 
     var loading = Row(
@@ -198,7 +198,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     var doUpdate = () {
       final form = _formKey.currentState;
-      if (form.validate()) {
+      if (form!.validate()) {
         form.save();
 
         print("Email value: $_email");
@@ -211,7 +211,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         loginResponse.then((response) {
           if (response.status) {
             if (response.user != null) {
-              userProvider.user = response.user;
+              userProvider.user = response.user!;
             }
             Fluttertoast.showToast(
                 msg: "Successfully updated information",

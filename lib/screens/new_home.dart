@@ -12,7 +12,7 @@ var response = ResponseUI.instance;
 double currentMainScreenFactor = 0.045;
 
 class NewHome extends StatefulWidget {
-  const NewHome({Key key}) : super(key: key);
+  const NewHome({Key? key}) : super(key: key);
 
   @override
   _NewHomeState createState() => _NewHomeState();
@@ -43,13 +43,13 @@ class _NewHomeState extends State<NewHome> {
                         children: [
                           TextSpan(
                             text: "Welcome, ",
-                            style: Theme.of(context).textTheme.headline6.copyWith(
+                            style: Theme.of(context).textTheme.headline6?.copyWith(
                                   color: Colors.black,
                                 ),
                           ),
                           TextSpan(
                             text: user == null ? "Osolo" : user.name,
-                            style: Theme.of(context).textTheme.headline6.copyWith(
+                            style: Theme.of(context).textTheme.headline6?.copyWith(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -60,14 +60,14 @@ class _NewHomeState extends State<NewHome> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: user.profile == null || user.profile.isEmpty
+                    child: user.profile == null || user.profile!.isEmpty
                         ? Image.asset(
                             "assets/avatar.png",
                             height: 70,
                             width: 70,
                           )
                         : Image.network(
-                            ApiService.imageBaseURL + user.profile,
+                            ApiService.imageBaseURL + user.profile!,
                             height: 70,
                             width: 70,
                           ),

@@ -11,14 +11,14 @@ import 'package:provider/provider.dart';
 import 'package:provider/provider.dart';
 
 class UpdatePassword extends StatefulWidget {
-  const UpdatePassword({ Key key }) : super(key: key);
+  const UpdatePassword({ Key? key }) : super(key: key);
 
   @override
   _UpdatePasswordState createState() => _UpdatePasswordState();
 }
 
 class _UpdatePasswordState extends State<UpdatePassword> {
-  String _password, _newpassword;
+  late String _password, _newpassword;
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +42,13 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
     final passwordInput = TextFormField(
         obscureText: true,
-        validator: (value) => value.isEmpty ? "Please enter current password" : null,
-        onSaved: (value) => _password = value,
+        validator: (value) => value!.isEmpty ? "Please enter current password" : null,
+        onSaved: (value) => _password = value!,
         decoration: inputFieldDecoration("Enter your current password"));
           final newPasswordInput = TextFormField(
         obscureText: true,
-        validator: (value) => value.isEmpty ? "Please enter new password" : null,
-        onSaved: (value) => _newpassword = value,
+        validator: (value) => value!.isEmpty ? "Please enter new password" : null,
+        onSaved: (value) => _newpassword = value!,
         decoration: inputFieldDecoration("Enter your new password"));
 
     var loading = Row(
@@ -61,7 +61,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
     var doUpdate = () {
       final form = _formKey.currentState;
-      if (form.validate()) {
+      if (form!.validate()) {
         form.save();
 
         UpdatePasswordDTO updateProfileDTO =
@@ -72,7 +72,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         loginResponse.then((response) {
           if (response.status) {
             if (response.user != null) {
-              userProvider.user = response.user;
+              userProvider.user = response.user!;
             }
             Fluttertoast.showToast(
                 msg: "Successfully updated password information",
@@ -164,7 +164,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                 children: [
                   TextSpan(
                     text: "Update Profile",
-                    style: Theme.of(context).textTheme.headline6.copyWith(
+                    style: Theme.of(context).textTheme.headline6?.copyWith(
                           color: Colors.black,
                         ),
                   ),

@@ -1,18 +1,29 @@
 import 'package:groceries_shopping_app/models/models.dart';
 
 class Order {
-  final int id;
-  final int addressId;
-  final List<Product> orderItems;
-  final String token;
-  final int total;
+  final int? id;
+  final int? addressId;
+  final List<Product>? orderItems;
+  final String? token;
+  final String? status;
+  final String? description;
+  final int? total;
 
-  Order({this.id, this.addressId, this.token, this.orderItems, this.total});
+  Order(
+      {this.id,
+      this.addressId,
+      this.token,
+      this.orderItems,
+      this.description,
+      this.total,
+      this.status});
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['id'] as int,
       total: json['total'] as int,
+      description: json['description'] as String,
+      status: json['status'] as String
     );
   }
 

@@ -21,19 +21,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   double animationValue = 1;
   double transformAnimationValue = 0;
   double cartCheckoutTransitionValue = 0;
-  AnimationController _animationController;
-  Animation transformAnimation;
-  Animation _animation;
-  Animation cartCheckoutTransitionAnimation;
-  Animation mainBoardAnimation;
-  Animation cartBoardAnimation;
-  AnimationStatus currentAnimationStatus;
-  CurvedAnimation curvedAnimation;
-  CurvedAnimation cartCheckoutCurvedAnimation;
-  CurvedAnimation mainBoardCurvedAnimation;
-  CurvedAnimation cartBoardCurvedAnimation;
-  Duration _duration;
-  Curve _curve;
+  late AnimationController _animationController;
+  late Animation transformAnimation;
+  late Animation _animation;
+  late Animation cartCheckoutTransitionAnimation;
+  late Animation mainBoardAnimation;
+  late Animation cartBoardAnimation;
+  AnimationStatus? currentAnimationStatus;
+  late CurvedAnimation curvedAnimation;
+  late CurvedAnimation cartCheckoutCurvedAnimation;
+  late CurvedAnimation mainBoardCurvedAnimation;
+  late CurvedAnimation cartBoardCurvedAnimation;
+  late Duration _duration;
+  late Curve _curve;
 
   @override
   void initState() {
@@ -142,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               //open = 0.12
               //closed = 0.92
               Positioned(
-                bottom: -response.screenHeight * currentCartScreenFactor,
+                bottom: -response.screenHeight! * currentCartScreenFactor,
                 left: 0,
                 width: response.screenWidth,
                 child: IgnorePointer(
@@ -166,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: response.setWidth(20)),
                           child: Container(
-                            height: response.screenHeight * 0.85,
+                            height: response.screenHeight! * 0.85,
                             width: response.screenWidth,
                             // color: Colors.redAccent,
                             child: ProductsCheckout(
@@ -185,13 +185,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               //open = 0.01
               //closed = 0.8
               Positioned(
-                top: -response.screenHeight * currentMainScreenFactor,
+                top: -response.screenHeight! * currentMainScreenFactor,
                 left: 0,
                 width: response.screenWidth,
                 child: Hero(
                   tag: 'detailsScreen',
                   child: Container(
-                    height: response.screenHeight * 0.90,
+                    height: response.screenHeight! * 0.90,
                     width: response.screenWidth,
                     decoration: BoxDecoration(
                       color: AppTheme.mainScaffoldBackgroundColor,
@@ -205,13 +205,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 ),
               ),
               Positioned(
-                top: -response.screenHeight * currentMainScreenFactor,
+                top: -response.screenHeight! * currentMainScreenFactor,
                 left: 0,
                 width: response.screenWidth,
                 child: IgnorePointer(
                   ignoring: isCartExpanded,
                   child: Container(
-                    height: response.screenHeight * 0.90,
+                    height: response.screenHeight! * 0.90,
                     width: response.screenWidth,
                     child: ProductsPreview(),
                   ),
@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   void dispose() {
-    _animationController?.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 }

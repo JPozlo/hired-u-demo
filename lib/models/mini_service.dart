@@ -1,10 +1,10 @@
 class MiniService {
   MiniService(
-      {this.id, this.price, this.name, this.address, this.isChecked = false});
+      {required this.id, required this.price, required this.name, this.address, this.isChecked = false});
   final int id;
   final String name;
   final int price;
-  final String address;
+  final String? address;
   bool isChecked;
 
   factory MiniService.fromJson(Map<String, dynamic> json) {

@@ -1,7 +1,7 @@
 import 'package:provider/provider.dart';
 
 class CreateServiceDTO {
-  CreateServiceDTO({this.ids, this.location});
+  CreateServiceDTO({required this.ids, required this.location});
   final List<int> ids;
   final String location;
 

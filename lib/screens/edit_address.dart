@@ -11,7 +11,7 @@ import 'package:groceries_shopping_app/widgets/input_decoration_widget.dart';
 import 'package:provider/provider.dart';
 
 class EditAddressPage extends StatefulWidget {
-  const EditAddressPage({Key key, @required this.address}) : super(key: key);
+  const EditAddressPage({Key? key, required this.address}) : super(key: key);
   final UserAddress address;
 
   @override
@@ -27,7 +27,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
   final TextEditingController _streetController = new TextEditingController();
   final TextEditingController _buildingController = new TextEditingController();
   final TextEditingController _suiteController = new TextEditingController();
-  String _country, _county, _building, _hometown, _streetaddress, _suite;
+  late String _country, _county, _building, _hometown, _streetaddress, _suite;
   bool isFavourite = false;
 
   @override
@@ -84,7 +84,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
               children: [
                 TextSpan(
                   text: "Update Address",
-                  style: Theme.of(context).textTheme.headline6.copyWith(
+                  style: Theme.of(context).textTheme.headline6?.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -103,33 +103,33 @@ class _EditAddressPageState extends State<EditAddressPage> {
 
     final countryInput = TextFormField(
         controller: _countryController,
-        validator: (value) => value.isEmpty ? "Please enter country" : null,
-        onSaved: (value) => _country = value,
+        validator: (value) => value!.isEmpty ? "Please enter country" : null,
+        onSaved: (value) => _country = value!,
         decoration: inputFieldDecoration("Enter the country"));
     final countyInput = TextFormField(
         controller: _countyController,
-        validator: (value) => value.isEmpty ? "Please enter county" : null,
-        onSaved: (value) => _county = value,
+        validator: (value) => value!.isEmpty ? "Please enter county" : null,
+        onSaved: (value) => _county = value!,
         decoration: inputFieldDecoration("Enter the county"));
     final townInput = TextFormField(
         controller: _townController,
-        validator: (value) => value.isEmpty ? "Please enter town" : null,
-        onSaved: (value) => _hometown = value,
+        validator: (value) => value!.isEmpty ? "Please enter town" : null,
+        onSaved: (value) => _hometown = value!,
         decoration: inputFieldDecoration("Enter the town"));
     final streetInput = TextFormField(
         controller: _streetController,
-        validator: (value) => value.isEmpty ? "Please enter street" : null,
-        onSaved: (value) => _streetaddress = value,
+        validator: (value) => value!.isEmpty ? "Please enter street" : null,
+        onSaved: (value) => _streetaddress = value!,
         decoration: inputFieldDecoration("Enter the street"));
     final buildingInput = TextFormField(
         controller: _buildingController,
-        validator: (value) => value.isEmpty ? "Please enter building" : null,
-        onSaved: (value) => _building = value,
+        validator: (value) => value!.isEmpty ? "Please enter building" : null,
+        onSaved: (value) => _building = value!,
         decoration: inputFieldDecoration("Enter the building"));
     final suiteInput = TextFormField(
         controller: _suiteController,
-        validator: (value) => value.isEmpty ? "Please enter suite" : null,
-        onSaved: (value) => _suite = value,
+        validator: (value) => value!.isEmpty ? "Please enter suite" : null,
+        onSaved: (value) => _suite = value!,
         decoration: inputFieldDecoration("Enter the suite"));
 
     Widget inputFav() {
@@ -175,7 +175,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
 
     var doCreateAddress = () {
       final form = _formKey.currentState;
-      if (form.validate()) {
+      if (form!.validate()) {
         form.save();
 
         UserAddress updateAddressDTO = UserAddress(
@@ -187,20 +187,15 @@ class _EditAddressPageState extends State<EditAddressPage> {
             suite: _suite);
 
         final Future<Result> createAddressResponse = addressProvider
-            .updateAddress(updateAddressDTO, this.widget.address.id);
+            .updateAddress(updateAddressDTO, this.widget.address.id!);
 
 
         createAddressResponse.then((response) async{
           if (response.status){
             if (response.user != null || response.address != null) {
-              userProvider.user = response.user;
-              addressProvider.userAddress = response.address;
+              userProvider.user = response.user!;
                         if(isFavourite){
-            // response.address.isFavorite = true;
-                await _sharedPreferences.saveFavoriteAddress(response.address);
-            // if (!result) {
-            //   response.address.isFavorite = false;
-            // }
+                await _sharedPreferences.saveFavoriteAddress(response.address!);
             }
             }
             Fluttertoast.showToast(

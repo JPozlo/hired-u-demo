@@ -1,5 +1,5 @@
 class OrderItem {
-  OrderItem({this.id, this.quantity});
+  OrderItem({required this.id, required this.quantity});
   final int id;
   final int quantity;
 

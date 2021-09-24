@@ -1,16 +1,9 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:groceries_shopping_app/appTheme.dart';
-import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/providers/providers.dart';
-import 'package:groceries_shopping_app/screens/main_home.dart';
-import 'package:groceries_shopping_app/screens/new_home.dart';
-import 'package:groceries_shopping_app/services/api/google_auth.dart';
-import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class SocialSignIn extends StatefulWidget {
-  const SocialSignIn({Key key}) : super(key: key);
+  const SocialSignIn({Key? key}) : super(key: key);
 
   @override
   _SocialSignInState createState() => _SocialSignInState();

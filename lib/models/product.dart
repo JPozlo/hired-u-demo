@@ -17,16 +17,16 @@ class Product {
     this.orderedQuantity = 1,
   });
 
-  final int id;
-  final String name;
-  final List<ProductImage> picPath;
-  final String description;
-  final ProductCategory foodCategory;
-  final String tags;
-  final Supplier supplier;
-  final int quantity;
-  final int discount;
-  final int price;
+  final int? id;
+  final String? name;
+  final List<ProductImage>? picPath;
+  final String? description;
+  final ProductCategory? foodCategory;
+  final String? tags;
+  final Supplier? supplier;
+  final int? quantity;
+  final int? discount;
+  final int? price;
   int orderedQuantity;
 
   void makeOrder({int bulkOrder = 0}) {
@@ -66,6 +66,6 @@ class Product {
 
   @override
   String toString() {
-    return "The product name: $name\n The product price is: $price\n The product image 1 is: ${picPath.length}\n The product description is: $description";
+    return "The product name: $name\n The product price is: $price\n The product image 1 is: ${picPath!.length}\n The product description is: $description";
   }
 }
