@@ -1,15 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/models/product.dart';
 import 'dart:collection';
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
 import '../appTheme.dart';
 
 class CartPreview extends StatelessWidget {
   const CartPreview({
-    Key key,
-    @required this.transformAnimationValue,
-    @required this.animationValue,
-    @required this.cartProductsProvider,
+    Key? key,
+    required this.transformAnimationValue,
+    required this.animationValue,
+    required this.cartProductsProvider,
   }) : super(key: key);
 
   final double transformAnimationValue;
@@ -94,9 +96,9 @@ class CartPreview extends StatelessWidget {
 
 class CartPreviewCard extends StatelessWidget {
   const CartPreviewCard({
-    Key key,
-    @required this.cartProductsProvider,
-    @required this.index,
+    Key? key,
+    required this.cartProductsProvider,
+    required this.index,
   }) : super(key: key);
 
   final UnmodifiableListView<Product> cartProductsProvider;
@@ -111,13 +113,20 @@ class CartPreviewCard extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: response.setHeight(3)),
             child: CircleAvatar(
-              backgroundColor: Colors.white,
               radius: response.setWidth(21),
-              child: Image.asset(
-                cartProductsProvider[index].picPath,
-                scale: 7,
+               backgroundColor: Colors.white,
+              child: CachedNetworkImage(                
+                placeholder: (context, url) => const CircularProgressIndicator(),
+                imageUrl: cartProductsProvider[index].picPath?.first.image != null
+                    ? ApiService.imageBaseURL + cartProductsProvider[index].picPath!.first.image!
+                    : 'https://uhired.herokuapp.com/profile-images/profile.png',
+                errorWidget: (context, url, error) =>
+                    Image.asset(
+                      'assets/avatar.png',
+                      scale: 7,
+                    ),
               ),
-            ),
+            ), 
           ),
           cartProductsProvider[index].orderedQuantity > 1
               ? Positioned(

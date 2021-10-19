@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class DeliveryCard extends StatelessWidget {
   const DeliveryCard({
-    Key key,
-    @required this.totalPriceProvider,
+    Key? key,
+    required this.totalPriceProvider,
   }) : super(key: key);
 
   final double totalPriceProvider;
@@ -22,7 +21,7 @@ class DeliveryCard extends StatelessWidget {
           radius: response.setWidth(22),
           child: FaIcon(
             FontAwesomeIcons.truckMoving,
-            color: AppTheme.mainOrangeColor,
+            color: AppTheme.mainRedColor,
             size: response.setHeight(20),
           ),
         ),
@@ -38,25 +37,25 @@ class DeliveryCard extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   fontSize: response.setFontSize(15)),
             ),
-            SizedBox(height: response.setHeight(15)),
-            Text(
-              "All orders of \$40 or more\nqualify for FREE delivery.",
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: response.setFontSize(11),
-              ),
-            ),
-            SizedBox(height: response.setHeight(12)),
-            StepProgressIndicator(
-              fallbackLength: 140,
-              totalSteps: 40,
-              currentStep:
-                  totalPriceProvider <= 40 ? totalPriceProvider.round() : 40,
-              size: 4,
-              padding: 0,
-              selectedColor: Colors.yellow,
-              unselectedColor: Colors.grey,
-            )
+            // SizedBox(height: response.setHeight(15)),
+            // Text(
+            //   "All deliveries start with \$40.",
+            //   style: TextStyle(
+            //     color: Colors.white70,
+            //     fontSize: response.setFontSize(11),
+            //   ),
+            // ),
+            // SizedBox(height: response.setHeight(12)),
+            // StepProgressIndicator(
+            //   fallbackLength: 140,
+            //   totalSteps: 40,
+            //   currentStep:
+            //       totalPriceProvider <= 40 ? totalPriceProvider.round() : 40,
+            //   size: 4,
+            //   padding: 0,
+            //   selectedColor: Colors.yellow,
+            //   unselectedColor: Colors.grey,
+            // )
           ],
         ),
         Spacer(),

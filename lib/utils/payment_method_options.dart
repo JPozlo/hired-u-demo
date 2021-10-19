@@ -1,0 +1,4 @@
+enum PaymentMethodOptions{
+  MPESA,
+  CARD
+}

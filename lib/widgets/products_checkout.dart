@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/models/product.dart';
-import 'package:groceries_shopping_app/product_provider.dart';
+import 'package:groceries_shopping_app/providers/product_provider.dart';
+import 'package:groceries_shopping_app/screens/checkout_page.dart';
 import 'package:groceries_shopping_app/screens/checkout_screen.dart';
 import 'dart:collection';
 import 'package:groceries_shopping_app/screens/new_home.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
 import 'package:groceries_shopping_app/widgets/IllustraionContainer.dart';
 import 'package:groceries_shopping_app/widgets/checkout_card.dart';
 import 'package:groceries_shopping_app/widgets/delivery_card.dart';
@@ -12,10 +14,10 @@ import 'package:provider/provider.dart';
 
 class ProductsCheckout extends StatelessWidget {
   const ProductsCheckout({
-    Key key,
-    @required this.cartCheckoutTransitionValue,
-    @required this.cartProductsProvider,
-    @required this.totalPriceProvider,
+    Key? key,
+    required this.cartCheckoutTransitionValue,
+    required this.cartProductsProvider,
+    required this.totalPriceProvider,
   }) : super(key: key);
 
   final double cartCheckoutTransitionValue;
@@ -26,9 +28,7 @@ class ProductsCheckout extends StatelessWidget {
   Widget build(BuildContext context) {
     var finalTotalCost = totalPriceProvider == 0
         ? 0
-        : (totalPriceProvider > 40
-            ? totalPriceProvider
-            : totalPriceProvider + 5);
+        : totalPriceProvider;
     var cartProductsProvider =
         Provider.of<ProductsOperationsController>(context).cart;
     return Stack(
@@ -60,7 +60,7 @@ class ProductsCheckout extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.all(15.0),
                       child: Text(
-                        "You don't have any items in your Cart.\nStart shopping now, and checkout.",
+                        "You don't have any items in your Cart.\nStart shopping now and checkout.",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 15,
@@ -78,16 +78,11 @@ class ProductsCheckout extends StatelessWidget {
               response.setHeight(cartProductsProvider.isNotEmpty ? 40 : 200),
           right: 0,
           child: Container(
-            // color: AppTheme.mainCartBackgroundColor,
             child: Visibility(
               visible: cartProductsProvider.isNotEmpty,
-              replacement: IllustrationContainer(
-                path: AppTheme.emptyCartSVG2,
-              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  DeliveryCard(totalPriceProvider: totalPriceProvider),
                   SizedBox(height: response.setHeight(40)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -102,7 +97,7 @@ class ProductsCheckout extends StatelessWidget {
                       ),
                       Spacer(),
                       Text(
-                        "\$${finalTotalCost..toStringAsExponential(3)}",
+                        "KSh ${finalTotalCost..toStringAsExponential(3)}",
                         style: TextStyle(
                           color: Colors.white.withAlpha(240),
                           fontWeight: FontWeight.bold,
@@ -126,31 +121,26 @@ class ProductsCheckout extends StatelessWidget {
   Widget _buildNextButton(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (context) => CheckOut())),
+          context,
+           MaterialPageRoute(builder: (context) => CheckoutPage(cartProductsProvider: cartProductsProvider))
+           ),
       child: Container(
         height: response.setHeight(55),
         decoration: BoxDecoration(
-            color: AppTheme.mainOrangeColor,
+            color: AppTheme.mainBlueColor,
             borderRadius: BorderRadius.circular(response.setHeight(50))),
         child: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                "Place Order",
+                "Checkout",
                 style: TextStyle(
                   fontSize: response.setFontSize(16),
                   fontWeight: FontWeight.w700,
-                  color: Colors.black87,
+                  color: Colors.white,
                 ),
               ),
-              SizedBox(
-                width: 20,
-              ),
-              Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.black,
-              )
             ],
           ),
         ),
@@ -163,7 +153,7 @@ class ProductsCheckout extends StatelessWidget {
       itemCount: cartProductsProvider.length,
       itemBuilder: (BuildContext context, int index) {
         return Dismissible(
-          key: Key(cartProductsProvider[index].picPath),
+          key: Key( ApiService.imageBaseURL + cartProductsProvider[index].picPath!.first.image!),
           direction: DismissDirection.endToStart,
           onDismissed: (direction) {
             Provider.of<ProductsOperationsController>(context, listen: false)

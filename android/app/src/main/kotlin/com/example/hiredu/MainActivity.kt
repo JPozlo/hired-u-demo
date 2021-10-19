@@ -1,4 +1,4 @@
-package com.example.groceries_shopping_app
+package com.example.hiredu
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
