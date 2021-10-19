@@ -113,8 +113,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
               return Padding(
                 padding: const EdgeInsets.all(11.0),
                 child: ListTile(
+                  leading: Text("#${currentOrder.id}"),
                   title: Text("KSh ${currentOrder.total.toString()}"),
-                  subtitle: Text("#${currentOrder.id}"),
+                  subtitle: Text(currentOrder.description!),
                   trailing: Text(currentOrder.status!, style: TextStyle(fontWeight: FontWeight.bold),),
                 ),
               );

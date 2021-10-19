@@ -42,13 +42,13 @@ class Product {
       name: json['name'] as String,
       id: json['id'] as int,
       description: json['desc'] as String,
-      foodCategory: ProductCategory.fromJson(json['category']),
-      picPath: (json['images'].map<ProductImage>((e) => ProductImage.fromJson(e)).toList()) ?? null,
+      foodCategory: json['category'] == null ? null : ProductCategory.fromJson(json['category']),
+      picPath: json['images'] == null ? null : (json['images'].map<ProductImage>((e) => ProductImage.fromJson(e)).toList()),
       price: json['price'] as int,
       discount: json['discount'] as int,
       quantity: json['quantity'] as int,
       tags: json['tags'] as String,
-      supplier: Supplier.fromJson(json['supplier']),
+      supplier: json['supplier'] == null ? null : Supplier.fromJson(json['supplier']),
     );
   }
 

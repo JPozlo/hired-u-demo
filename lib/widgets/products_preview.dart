@@ -45,8 +45,9 @@ class _ProductsPreviewState extends State<ProductsPreview> {
     var productsList =
         Provider.of<ProductsOperationsController>(context).productsInStock;
 
-        return (productsList != null && productsList.length > 0)?  productsMainDisplay(productsList, context) :
-         FutureBuilder(
+    return (productsList != null && productsList.length > 0)
+        ? productsMainDisplay(productsList, context)
+        : FutureBuilder(
             future: _productsFuture,
             initialData: Result(false, "Success", products: []),
             builder: (context, AsyncSnapshot<Result> snapshot) {
@@ -63,11 +64,13 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                     print("Snapshot data: ${snapshot.data.toString()}");
                     defaultWidget =
                         productsMainDisplay(snapshot.data!.products!, context);
-                    Provider.of<ProductsOperationsController>(context, listen: false)
+                    Provider.of<ProductsOperationsController>(context,
+                            listen: false)
                         .updateProductsList = snapshot.data!.products!;
                     print("listProducts: ${snapshot.data!.products!}");
                   } else if (snapshot.hasError) {
-                    defaultWidget = errorWidget(error: snapshot.error.toString());
+                    defaultWidget =
+                        errorWidget(error: snapshot.error.toString());
                   }
                   break;
                 default:
@@ -77,14 +80,13 @@ class _ProductsPreviewState extends State<ProductsPreview> {
               return defaultWidget;
             },
           );
-  
   }
 
   Widget errorWidget({String? error}) {
-    return Stack(
-      alignment: Alignment.center,
-      children:[
-         Positioned(
+    String myError = "Error";
+    print("The error is ${error ??= myError}");
+    return Stack(alignment: Alignment.center, children: [
+      Positioned(
         top: 230,
         left: 10,
         width: response.screenWidth,
@@ -106,20 +108,19 @@ class _ProductsPreviewState extends State<ProductsPreview> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                error == null ? "Sorry! No products available yet" : error,
+                "Sorry! An error occured. Kindly try again",
                 style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
               )
             ],
           ),
         ),
       ),
-      ]);
+    ]);
   }
 
   Widget productsMainDisplay(List<Product> listInfo, BuildContext context) {
-    return Stack(
-      children: [
-        Positioned(
+    return Stack(children: [
+      Positioned(
         top: 90,
         left: 0,
         right: 0,
@@ -143,8 +144,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                     itemBuilder: (context, index) {
                       Product currentProduct = listInfo[index];
                       print("Current product: ${currentProduct.tags}");
-                      return ProductCard(
-                          product: currentProduct, index: index);
+                      return ProductCard(product: currentProduct, index: index);
                     }),
               ),
             ),
@@ -153,10 +153,10 @@ class _ProductsPreviewState extends State<ProductsPreview> {
       ),
       topBarWidget(),
       filterBarWidget(listInfo: listInfo.length)
-      ]);
+    ]);
   }
 
-   Widget productsLocalDisplay(List<Product> listInfo, BuildContext context) {
+  Widget productsLocalDisplay(List<Product> listInfo, BuildContext context) {
     return Positioned(
       top: 90,
       left: 0,
@@ -181,8 +181,7 @@ class _ProductsPreviewState extends State<ProductsPreview> {
                   itemBuilder: (context, index) {
                     Product currentProduct = listInfo[index];
                     print("Current product: ${currentProduct.tags}");
-                    return ProductCard(
-                        product: currentProduct, index: index);
+                    return ProductCard(product: currentProduct, index: index);
                   }),
             ),
           ),
@@ -191,68 +190,66 @@ class _ProductsPreviewState extends State<ProductsPreview> {
     );
   }
 
-  Widget topBarWidget(){
-       return Positioned(
-          top: 0,
-          left: 0,
-          width: response.screenWidth,
-          child: Container(
-            height: response.setHeight(70),
-            margin: EdgeInsets.only(top: 6.0),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0.5, 1],
-                colors: [
-                  AppTheme.mainScaffoldBackgroundColor,
-                  AppTheme.mainScaffoldBackgroundColor.withAlpha(150)
-                ],
-              ),
-            ),
-            child: Opacity(
-              opacity: 1,
-              child: Align(
-                alignment: Alignment(0, 0.4),
-                child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: response.setWidth(20)),
-                  child: getTopBar(context),
-                ),
-              ),
+  Widget topBarWidget() {
+    return Positioned(
+      top: 0,
+      left: 0,
+      width: response.screenWidth,
+      child: Container(
+        height: response.setHeight(70),
+        margin: EdgeInsets.only(top: 6.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.5, 1],
+            colors: [
+              AppTheme.mainScaffoldBackgroundColor,
+              AppTheme.mainScaffoldBackgroundColor.withAlpha(150)
+            ],
+          ),
+        ),
+        child: Opacity(
+          opacity: 1,
+          child: Align(
+            alignment: Alignment(0, 0.4),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: response.setWidth(20)),
+              child: getTopBar(context),
             ),
           ),
-        );
+        ),
+      ),
+    );
   }
 
-  Widget filterBarWidget({required int listInfo}){
+  Widget filterBarWidget({required int listInfo}) {
     return Positioned(
-          top: 70,
-          left: 0,
-          width: response.screenWidth,
-          child: Container(
-            height: response.setHeight(60),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0.5, 1],
-                colors: [
-                  AppTheme.mainScaffoldBackgroundColor,
-                  AppTheme.mainScaffoldBackgroundColor.withAlpha(150)
-                ],
-              ),
-            ),
-            child: Align(
-              alignment: Alignment(0, 0.4),
-              child: Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: response.setWidth(20)),
-                child: getFilterBarUI(productsCount: listInfo),
-              ),
-            ),
+      top: 70,
+      left: 0,
+      width: response.screenWidth,
+      child: Container(
+        height: response.setHeight(60),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.5, 1],
+            colors: [
+              AppTheme.mainScaffoldBackgroundColor,
+              AppTheme.mainScaffoldBackgroundColor.withAlpha(150)
+            ],
           ),
-        );
+        ),
+        child: Align(
+          alignment: Alignment(0, 0.4),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: response.setWidth(20)),
+            child: getFilterBarUI(productsCount: listInfo),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget getTopBar(BuildContext context) {
@@ -413,5 +410,4 @@ class _ProductsPreviewState extends State<ProductsPreview> {
       ),
     );
   }
-
 }

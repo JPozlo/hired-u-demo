@@ -15,6 +15,9 @@ import 'package:provider/provider.dart';
 import 'package:response/Response.dart';
 import 'local_database.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 void main() async {
   ///Configure your debug options (settings used in development mode)
   CatcherOptions debugOptions = CatcherOptions(
@@ -58,6 +61,7 @@ void main() async {
         // );
   });
 }
+ 
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -68,6 +72,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
   PreferenceUtils _sharedPreferences = PreferenceUtils.getInstance();
   String? token;
 
@@ -116,6 +121,8 @@ class _MyAppState extends State<MyApp> {
       ],
       child: Response(
         child: MaterialApp(
+          navigatorKey: navigatorKey,
+          scaffoldMessengerKey: rootScaffoldMessengerKey,
           // navigatorKey: Catcher.navigatorKey,
           //       builder: (BuildContext context, Widget? widget) {
           //   Catcher.addDefaultErrorWidget(

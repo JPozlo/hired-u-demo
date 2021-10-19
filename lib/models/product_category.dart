@@ -6,8 +6,8 @@ class ProductCategory {
 
   factory ProductCategory.fromJson(Map<String, dynamic> json) =>
       ProductCategory(
-        name: json['name'] as String,
-        description: json['description'] as String,
-        id: json['id'] as int
+        name: json['name'] ?? null,
+        description: json['description'] ?? null,
+        id: json['id'] ?? null
       );
 }

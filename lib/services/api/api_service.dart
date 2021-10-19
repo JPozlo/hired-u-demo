@@ -140,9 +140,6 @@ class ApiService {
       var productsData = responseData['products']['data'];
       var paginationData = responseData['products']['pagination'];
       bool productsDataStatus;
-      // var uid = responseData['uid'];
-      // var token = responseData['token'];
-      print("fetchData: ${fetchData.toString()}");
       print("productsData: ${productsData.toString()}");
 
       if (productsData == null) {
@@ -162,7 +159,7 @@ class ApiService {
 
         String? message = responseData['message'];
 
-        print("Service products list: ${products.first.picPath?.first.image}");
+        print("SERVICE PRODUCTS LIST: ${products.first.picPath?.first.image}");
 
         result = Result(true, message == null ? "Success" : message,
             products: products,

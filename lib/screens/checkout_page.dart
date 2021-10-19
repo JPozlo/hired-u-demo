@@ -9,6 +9,7 @@ import 'package:flutterwave/flutterwave.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:groceries_shopping_app/appTheme.dart';
 import 'package:groceries_shopping_app/local_database.dart';
+import 'package:groceries_shopping_app/main.dart';
 import 'package:groceries_shopping_app/models/models.dart';
 import 'package:groceries_shopping_app/models/product.dart';
 import 'package:groceries_shopping_app/providers/product_provider.dart';
@@ -56,7 +57,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   void initState() {
     super.initState();
-        name = _sharedPreferences.getValueWithKey(Constants.userNamePrefKey);
+    name = _sharedPreferences.getValueWithKey(Constants.userNamePrefKey);
     email = _sharedPreferences.getValueWithKey(Constants.userEmailPrefKey);
     phone = _sharedPreferences.getValueWithKey(Constants.userPhonePrefKey);
     var address = _sharedPreferences.getFavoriteAddress();
@@ -199,7 +200,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                   result.payment!.id!,
                                   result.payment!.amount!,
                                   result.payment!.transactionRef!);
-                            
                             } else {
                               Flushbar(
                                 message: result.errors?.first.toString(),
@@ -290,7 +290,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
         // user didn't complete the transaction.
         Fluttertoast.showToast(msg: "Transaction cancelled");
       } else {
-        final isSuccessful = checkPaymentIsSuccessful(response, amount, transactionRef);
+        final isSuccessful =
+            checkPaymentIsSuccessful(response, amount, transactionRef);
         print("Success status: $isSuccessful");
         if (isSuccessful) {
           var result = await ApiService()
@@ -302,11 +303,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
           print("Message: ${response.message}");
           // check status
           print("Status : ${response.status}");
-          // Fluttertoast.showToast(msg: "Successfully made payment");
+          Fluttertoast.showToast(msg: "Successfully made payment", toastLength: Toast.LENGTH_LONG);
           Provider.of<ProductsOperationsController>(context, listen: false)
               .clearCart();
-          // nextScreen(context, CheckOut());
-          awesomeSuccessDialog(context);
+          // nextScreen(context, MainHome());
+          // navigatorKey.currentState
+          //     ?.push(MaterialPageRoute(builder: (_) => CheckOut()));
+          // awesomeSuccessDialog();
+          // showSuccessDialog();
+          // rootScaffoldMessengerKey.currentState?.showSnackBar(
+          //   SnackBar(content: Text("Success!"))
+          // );
         } else {
           // check message
           print("Message: ${response.message}");
@@ -315,10 +322,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
           // check processor error
           print("Procesor error: ${response.data?.processorResponse}");
-          // Fluttertoast.showToast(msg: "Error occurred. Try again!");
+          Fluttertoast.showToast(msg: "Error occurred. Try again!", toastLength: Toast.LENGTH_LONG);
           Provider.of<ProductsOperationsController>(context, listen: false)
               .clearCart();
-          awesomeErrorDialog(context);
+          // awesomeErrorDialog();
         }
       }
     } catch (error, stacktrace) {
@@ -326,11 +333,43 @@ class _CheckoutPageState extends State<CheckoutPage> {
     }
   }
 
-  AwesomeDialog awesomeSuccessDialog(BuildContext context) {
+  showSuccessDialog() {
+    return showDialog(
+      context: navigatorKey.currentContext!,
+      builder: (context) => Container(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Success',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: IllustrationContainer(
+                    path: AppTheme.checkingoutSVG,
+                    reduceSizeByHalf: true,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  AwesomeDialog awesomeSuccessDialog() {
     return AwesomeDialog(
       btnOkColor: Theme.of(context).primaryColor,
-      context: context,
-      animType: AnimType.BOTTOMSLIDE,
+      context: navigatorKey.currentContext!,
+      // animType: AnimType.BOTTOMSLIDE,
       headerAnimationLoop: false,
       dialogType: DialogType.SUCCES,
       autoHide: Duration(minutes: 10),
@@ -377,11 +416,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
     )..show();
   }
 
-  AwesomeDialog awesomeErrorDialog(BuildContext context) {
+  AwesomeDialog awesomeErrorDialog() {
     return AwesomeDialog(
       btnOkColor: Theme.of(context).primaryColor,
-      context: context,
-      animType: AnimType.BOTTOMSLIDE,
+      context: navigatorKey.currentContext!,
+      // animType: AnimType.BOTTOMSLIDE,
       headerAnimationLoop: false,
       dialogType: DialogType.ERROR,
       autoHide: Duration(minutes: 10),
@@ -432,7 +471,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
     )..show();
   }
 
-  bool checkPaymentIsSuccessful(final ChargeResponse response, int amount, String transactionRef) {
+  bool checkPaymentIsSuccessful(
+      final ChargeResponse response, int amount, String transactionRef) {
     return response.data?.status == FlutterwaveConstants.SUCCESSFUL &&
         response.data?.currency == this.currency &&
         response.data?.amount == amount.toString() &&

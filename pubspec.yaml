@@ -43,6 +43,7 @@ dependencies:
   flutterwave: ^1.0.1
   flutter_dotenv: ^5.0.2
   catcher: ^0.6.8
+  stacked_services: ^0.8.13
 
 flutter_icons:
   android: "launcher_icon"
