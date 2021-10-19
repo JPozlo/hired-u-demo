@@ -1,27 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:groceries_shopping_app/product_provider.dart';
+import 'package:groceries_shopping_app/models/models.dart';
+import 'package:groceries_shopping_app/providers/product_provider.dart';
 import 'package:groceries_shopping_app/screens/new_home.dart';
 import 'package:groceries_shopping_app/screens/product_details.dart';
+import 'package:groceries_shopping_app/services/api/api_service.dart';
+import 'package:groceries_shopping_app/utils/utils.dart';
 import 'package:groceries_shopping_app/widgets/details_page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../appTheme.dart';
 
-class ProductCard extends StatelessWidget {
-  ProductCard({@required this.index});
+class ProductCard extends StatefulWidget {
+  const ProductCard({Key? key, required this.product, required this.index}) : super(key: key);
+  final Product product;
   final int index;
+
+  @override
+  _ProductCardState createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  late List<Product> producInfoProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    print("Lenght of picpath: ${this.widget.product.picPath!.length}");
+  }
+
   @override
   Widget build(BuildContext context) {
-    var producInfoProvider =
-        Provider.of<ProductsOperationsController>(context).productsInStock;
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            DetailsPageRoute(route: ProductDetails(productIndex: index)));
+        Navigator.push(
+            context,
+            DetailsPageRoute(
+                route: ProductDetails(
+              product: this.widget.product,
+              index: this.widget.index
+            )));
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
-        height: response.setHeight(240),
-        width: response.setWidth(170),
         decoration: BoxDecoration(
             color: AppTheme.secondaryScaffoldColor,
             borderRadius: BorderRadius.circular(10),
@@ -42,40 +62,37 @@ class ProductCard extends StatelessWidget {
             children: <Widget>[
               //2.4
               Hero(
-                tag: '${producInfoProvider[index].picPath}-path',
+                tag: '${this.widget.product.tags}-path',
                 child: Align(
-                  alignment: Alignment.center,
-                  child: Image.asset(
-                    producInfoProvider[index].picPath,
-                    scale: 2.4,
-                  ),
-                ),
+                    alignment: Alignment.center,
+                    child: CachedNetworkImage(
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      imageUrl: this.widget.product.picPath!.length > 0
+                          ? ApiService.imageBaseURL +
+                              this.widget.product.picPath!.first.image!
+                          : 'https://uhired.herokuapp.com/profile-images/profile.png',
+                      errorWidget: (context, url, error) =>
+                          Text("Problem loading the image"),
+                    )
+                    ),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    producInfoProvider[index].price,
+                    "KSh ${this.widget.product.price}",
                     style: TextStyle(
-                      fontSize: response.setFontSize(24),
+                      fontSize: response.setFontSize(19),
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  SizedBox(height: response.setHeight(10)),
+                  SizedBox(height: response.setHeight(8)),
                   Text(
-                    producInfoProvider[index].name,
+                    this.widget.product.name!,
                     style: TextStyle(
                       fontSize: response.setFontSize(15),
                       fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  SizedBox(height: response.setHeight(4)),
-                  Text(
-                    producInfoProvider[index].weight,
-                    style: TextStyle(
-                      fontSize: response.setFontSize(14),
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],

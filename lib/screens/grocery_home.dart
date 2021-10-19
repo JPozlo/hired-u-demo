@@ -3,7 +3,7 @@ import 'package:groceries_shopping_app/screens/new_home.dart';
 import 'package:groceries_shopping_app/widgets/category_card.dart';
 
 class GroceryHome extends StatefulWidget {
-  const GroceryHome({ Key key }) : super(key: key);
+  const GroceryHome({ Key? key }) : super(key: key);
 
   @override
   _GroceryHomeState createState() => _GroceryHomeState();
@@ -15,7 +15,7 @@ class _GroceryHomeState extends State<GroceryHome> {
     return Scaffold(
       body: SafeArea(
           child: Container(
-        height: response.screenHeight * 0.40,
+        height: response.screenHeight! * 0.40,
         width: response.screenWidth,
         child: SingleChildScrollView(
           child: Padding(

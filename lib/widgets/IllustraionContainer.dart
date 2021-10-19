@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class IllustrationContainer extends StatelessWidget {
-  final String path;
+  final String? path;
   final bool reduceSizeByHalf;
   const IllustrationContainer({
-    Key key,
+    Key? key,
     @required this.path,
     this.reduceSizeByHalf = false,
   }) : super(key: key);
@@ -13,7 +13,7 @@ class IllustrationContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      path,
+      path!,
       width: MediaQuery.of(context).size.height *
           (reduceSizeByHalf ? 0.3 / 2 : 0.3),
       height: MediaQuery.of(context).size.height *

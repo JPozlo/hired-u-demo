@@ -13,7 +13,7 @@ name: groceries_shopping_app
 version: 1.0.0+2
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.13.4 <3.0.0"
 
 dependencies:
   flutter:
@@ -28,16 +28,30 @@ dependencies:
   provider: ^6.0.0
   response: ^1.0.0
   shared_preferences: ^2.0.7
-  step_progress_indicator: ^1.0.1
   swipe_gesture_recognizer: ^0.0.2
+  http: ^0.13.3
+  flutter_screenutil: ^5.0.0+2
+  smooth_page_indicator: ^1.0.0+2
+  carousel_slider: ^4.0.0
+  another_flushbar: ^1.10.11
+  google_sign_in: ^5.1.1
+  device_info: ^2.0.2
+  fluttertoast: ^8.0.8
+  url_launcher: ^6.0.12
+  cached_network_image: ^3.1.0
+  pixel_perfect: ^1.1.0
+  flutterwave: ^1.0.1
+  flutter_dotenv: ^5.0.2
+  catcher: ^0.6.8
+  stacked_services: ^0.8.13
 
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/icon.jpg"
+  image_path: "assets/logo.png"
 
 flutter_native_splash:
-  image: assets/icon.jpg
+  image: assets/logo.png
   color: "ffffff"
 
 dev_dependencies:
@@ -59,6 +73,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - .env
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.dev/assets-and-images/#resolution-aware.
     # For details regarding adding assets from package dependencies, see
